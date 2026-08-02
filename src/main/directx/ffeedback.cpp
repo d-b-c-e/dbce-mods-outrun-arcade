@@ -175,6 +175,10 @@ static LPDIRECTINPUTDEVICE8 g_pDevice    = nullptr;
 static LPDIRECTINPUTEFFECT  g_pEffect    = nullptr;
 static bool                 g_supported  = false;
 
+// Force range from config.xml (controls/analog/haptic)
+static LONG                 g_max_force  = DI_FFNOMINALMAX;
+static LONG                 g_min_force  = DI_FFNOMINALMAX / 2;
+
 static unsigned short parse_hex4(const char* s) {
     unsigned v=0; if (!s) return 0;
     std::sscanf(s, "%x", &v); return (unsigned short)v;
@@ -275,9 +279,12 @@ static BOOL CALLBACK EnumFFDevicesCallback(const DIDEVICEINSTANCE* pdidInstance,
     return DIENUM_STOP;
 }
 
-bool init(int, int, int)
+bool init(int max_force, int min_force, int /*force_duration*/)
 {
     if (g_supported) return true;
+
+    g_max_force = (LONG)max_force;
+    g_min_force = (LONG)min_force;
 
     if (FAILED(DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&g_pDI, nullptr)))
         return false;
@@ -307,20 +314,25 @@ static HRESULT start_or_reacquire(DIEFFECT* peff, DWORD flags)
     return r;
 }
 
-int set(int, int force)
+int set(int xdirection, int force)
 {
-    if (!g_supported || !g_pEffect) return -1;
+    if (!g_supported || !g_pEffect || force < 0) return -1;
 
-    // map 1..5 → 100%..20%
-    force = (std::max)(1, (std::min)(5, force));
-    //force = std::clamp(force, 1, 5);
-    LONG mag = (LONG)(DI_FFNOMINALMAX * (1.0f - (force - 1) * 0.2f));
+    // motor_output() passes the motor command as xdirection and a magnitude as
+    // force, so direction is only available here, relative to MOTOR_CENTRE (0x08).
+    LONG lDirection[2] = { 0, 0 };
+    if (xdirection > 0x08)      lDirection[0] =  1;   // right
+    else if (xdirection < 0x08) lDirection[0] = -1;   // left
+
+    // 7 force positions, so divide the span by 7. Higher force is a weaker effect.
+    LONG mag = g_max_force - (((g_max_force - g_min_force) / 7) * (LONG)force);
+    if (mag >  DI_FFNOMINALMAX) mag =  DI_FFNOMINALMAX;
+    else if (mag < -DI_FFNOMINALMAX) mag = -DI_FFNOMINALMAX;
 
     DICONSTANTFORCE cf; std::memset(&cf, 0, sizeof(cf));
     cf.lMagnitude = mag;
 
     DIEFFECT eff; std::memset(&eff, 0, sizeof(eff));
-    LONG lDirection[2] = { 0, 0 };
 
     eff.dwSize = sizeof(DIEFFECT);
     eff.dwFlags = DIEFF_CARTESIAN | DIEFF_OBJECTOFFSETS;
