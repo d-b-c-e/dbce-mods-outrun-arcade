@@ -20,11 +20,11 @@ without LaunchBox, the wheel toolkit, or the triple-screen optimizer.
 
 ## Source and availability
 
-As checked on 2026-10-01, the fork's default branch `master` is at `086591c`.
-The Windows FFB direction/range fix is on `fix/windows-ffb-direction-and-force-range`
-at `422d1d370f84d605e1602fcc6056f240081301c3`, matching the local source checkout's HEAD.
-Build that branch when evaluating the Windows FFB candidate; selecting `master`
-does not include the fix. The fork currently has no published GitHub releases.
+The default branch `master` includes the Windows FFB direction/range fix from
+`422d1d370f84d605e1602fcc6056f240081301c3` and the reviewed source-organization
+documentation. Build `master` for the current source. The historical
+`fix/windows-ffb-direction-and-force-range` branch remains pinned at `422d1d3`;
+`086591c` identifies the upstream base before the fork's Windows FFB fix. The fork currently has no published GitHub releases.
 Upstream releases remain upstream artifacts and do not establish fork acceptance.
 
 SDL wheel/gamepad input, SDL rumble and a Windows DirectInput force backend exist.
@@ -84,7 +84,8 @@ Before release, verify the staged package, not the live installation:
   mechanism where static LGPL linking requires it.
 - Keep distribution noncommercial and preserve credits. Existing CMake license
   installation entries alone are not proof that a complete release package is compliant.
-- Reconcile current owner work before promoting the FFB branch to the default branch;
-  preserve the source checkout ownership guard until an approved owner resolves it.
+- Before updating a live checkout, inspect and preserve any owner work. Keep its
+  ownership guard intact until an approved owner resolves it. Remote source promotion
+  does not update local checkouts or settings.
 
 The repository rename is complete. This documentation does not publish a release.

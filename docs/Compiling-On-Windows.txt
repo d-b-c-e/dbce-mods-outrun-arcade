@@ -2,8 +2,9 @@ CannonBall-SE can be compiled under Windows, and the included CMake files automa
 
 If you're unfamiliar with compiling on Windows, this guide should get you started.
 
-For the d-b-c-e Windows FFB candidate, select branch fix/windows-ffb-direction-and-force-range
-(revision 422d1d370f84d605e1602fcc6056f240081301c3) after cloning; master omits that fix.
+The default master branch includes the Windows FFB direction/range fix from
+422d1d370f84d605e1602fcc6056f240081301c3. New clones can build master;
+the historical fix/windows-ffb-direction-and-force-range branch is retained.
 See OUTRUN-ARCADE-SETUP.md for settings preservation and release requirements.
 
 Process:
