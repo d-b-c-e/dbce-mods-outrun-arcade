@@ -6,11 +6,11 @@ OutRun 2006: Coast 2 Coast and OutRun arcade SP SDX are separate products.
 
 ## Product identity
 
-The product display name is **OutRun Arcade (CannonBall-SE)**. The proposed canonical
-repository slug is **dbce-mods-outrun-arcade**. Until a reviewed rename happens, the source is
-[d-b-c-e/cannonball-se](https://github.com/d-b-c-e/cannonball-se).
-Any rename should retain this same GitHub repository, native fork relationship,
-branches, tags, history and visibility. Keep `cannonball-se.exe`, `config.xml`,
+The product display name is **OutRun Arcade (CannonBall-SE)**. The canonical
+repository is [d-b-c-e/dbce-mods-outrun-arcade](https://github.com/d-b-c-e/dbce-mods-outrun-arcade).
+The in-place rename retained repository ID 1319808619, the native fork relationship,
+branches, tags, history and public visibility. Old repository URLs redirect to this name.
+Keep `cannonball-se.exe`, `config.xml`,
 resource paths and existing installation directories compatible. A repository rename
 does not require renaming the installed executable or moving user data.
 
@@ -87,4 +87,4 @@ Before release, verify the staged package, not the live installation:
 - Reconcile current owner work before promoting the FFB branch to the default branch;
   preserve the source checkout ownership guard until an approved owner resolves it.
 
-No release or repository rename has been performed by this documentation candidate.
+The repository rename is complete. This documentation does not publish a release.

@@ -4,7 +4,7 @@
 Designed with home-made cabinets in mind, gives Outrun enthusiasts an improved experience on LCD screens
 with minimal hardware requirements - anything from a RaspberryPi Zero will work!
 
-> This is the d-b-c-e OutRun arcade fork of CannonBall-SE. Start with the [standalone setup guide](docs/OUTRUN-ARCADE-SETUP.md). The current [fork release page](https://github.com/d-b-c-e/cannonball-se/releases) has no published release as of 2026-10-01; upstream downloads do not include this fork's Windows FFB fix.
+> This is the d-b-c-e OutRun arcade fork of CannonBall-SE. Start with the [standalone setup guide](docs/OUTRUN-ARCADE-SETUP.md). The current [fork release page](https://github.com/d-b-c-e/dbce-mods-outrun-arcade/releases) has no published release as of 2026-10-01; upstream downloads do not include this fork's Windows FFB fix.
 
 ![CannonBall-SE Start Line](screenshots/CannonBall-SE-Startline.jpg)
 
@@ -69,8 +69,8 @@ a few minutes (the process takes 40+ minutes on a Pi Zero or Pi 1, but requires 
 
 ```bash
 # 1) Fetch sources
-git clone https://github.com/d-b-c-e/cannonball-se.git
-cd cannonball-se
+git clone https://github.com/d-b-c-e/dbce-mods-outrun-arcade.git
+cd dbce-mods-outrun-arcade
 
 # 2) Build & set up (installs deps, compiles, grants permissions)
 chmod +x install.sh

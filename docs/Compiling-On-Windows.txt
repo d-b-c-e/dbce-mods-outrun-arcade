@@ -10,7 +10,7 @@ Process:
 
 1. Install Visual Studio 26 (VS), being sure to select "Desktop Development with C++" under "Workloads" in the installer.
 
-2. Open VS, select "Clone a Respository", and enter "https://github.com/d-b-c-e/cannonball-se". Note where this will be
+2. Open VS, select "Clone a Respository", and enter "https://github.com/d-b-c-e/dbce-mods-outrun-arcade". Note where this will be
    saved to, shown in the 'Path' box (defaults to C:\Users\[username]\Source\Repos). Click Clone, and VS will download the
    source code directly from GitHub.
 
