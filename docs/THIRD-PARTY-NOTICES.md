@@ -9,8 +9,8 @@ licenses are included where required.
 
 - **Component:** `snes_ntsc`
 - **Author:** Shay Green ('Blargg') <gblargg@gmail.com>
-- **License:** GNU Lesser General Public License (LGPL) — see `licenses/LGPL-2.1.txt`
-- **Docs:** `docs/snes_ntsc.txt`
+- **License:** GNU Lesser General Public License (LGPL) — see `LGPL-2.1.txt`
+- **Docs:** `Blargg-NTSC-Filter-Concepts-and-Implementation.txt`
 
 ### Notes
 
@@ -19,5 +19,5 @@ LGPL code into binaries, ensure recipients can relink with a modified version (f
 example, by providing relinkable object files); when dynamically linking, ensure users
 can swap in a compatible modified library. Preserve copyright and license notices.
 
-For the full terms, see `licenses/LGPL-2.1.txt`.
+For the full terms, see `LGPL-2.1.txt`.
 

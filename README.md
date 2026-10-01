@@ -1,10 +1,10 @@
-# CannonBall‑SE
+# OutRun Arcade (CannonBall-SE)
 
 *A fork of Chris White's incredible Outrun engine, CannonBall, with enhancements.*
 Designed with home-made cabinets in mind, gives Outrun enthusiasts an improved experience on LCD screens
 with minimal hardware requirements - anything from a RaspberryPi Zero will work!
 
-> **Note:** Windows executable available for download [in Releases](https://github.com/J1mbo/cannonball-se/releases/tag/v1.3)
+> This is the d-b-c-e OutRun arcade fork of CannonBall-SE. Start with the [standalone setup guide](docs/OUTRUN-ARCADE-SETUP.md). The current [fork release page](https://github.com/d-b-c-e/cannonball-se/releases) has no published release as of 2026-10-01; upstream downloads do not include this fork's Windows FFB fix.
 
 ![CannonBall-SE Start Line](screenshots/CannonBall-SE-Startline.jpg)
 
@@ -69,7 +69,7 @@ a few minutes (the process takes 40+ minutes on a Pi Zero or Pi 1, but requires 
 
 ```bash
 # 1) Fetch sources
-git clone https://github.com/J1mbo/cannonball-se.git
+git clone https://github.com/d-b-c-e/cannonball-se.git
 cd cannonball-se
 
 # 2) Build & set up (installs deps, compiles, grants permissions)
@@ -93,7 +93,7 @@ into `./build/`, and applies permissions so it can access `/dev/watchdog` and `/
 
 ## Quick Start Guide (Windows)
 
-A Windows executable is available [in Releases](https://github.com/J1mbo/cannonball-se/releases/tag/v1.3).
+See the [standalone setup guide](docs/OUTRUN-ARCADE-SETUP.md) for this fork's Windows source branch and release status.
 CannonBall-SE can also be compiled easily with Visual Studio Community Edition as the process is fully
 automated. Please see `docs/Compiling-On-Windows.txt`.
 
@@ -177,9 +177,9 @@ On hardware with a watchdog (all RaspberryPi boards), the game integrates with i
 
 ## License
 
-* **Upstream CannonBall license**: non‑commercial use; modified redistributions must include full source; warranty disclaimer. See `license.txt` in the repo.
-* **CannonBall‑SE additional terms**: this fork’s enhancements © 2020–2025 James Pearce; provided "as is"; not for sale/monetisation; preserve notices. See `CannonBall-SE-license.txt`.
-* **Third‑party notices**: includes Blargg’s `snes_ntsc` under **LGPL‑2.1**; if statically linking, provide relinkable objects or equivalent. See `THIRD-PARTY-NOTICES.md` and `licenses/`.
+* **Upstream CannonBall license**: non‑commercial use; modified redistributions must include full source; warranty disclaimer. See [the upstream license](docs/license.txt).
+* **CannonBall‑SE additional terms**: this fork’s enhancements © 2020–2025 James Pearce; provided "as is"; not for sale/monetisation; preserve notices. See [the SE terms](docs/CannonBall-SE-license.txt).
+* **Third‑party notices**: includes Blargg’s `snes_ntsc` under **LGPL‑2.1**; if statically linking, provide relinkable objects or equivalent. See [third-party notices](docs/THIRD-PARTY-NOTICES.md) and [LGPL-2.1](docs/LGPL-2.1.txt).
 
 *OutRun is a trademark of SEGA Corporation. This project is not affiliated with SEGA.*
 
