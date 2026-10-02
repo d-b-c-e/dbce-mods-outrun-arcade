@@ -1,0 +1,69 @@
+{
+  "schema": "dbce-outrun-arcade-unresolved-evidence-v1",
+  "status": "review-only",
+  "releaseReady": false,
+  "engineSnapshot": "d128256afa2c9e7ac4dc164125c30e95a7d1ab3c",
+  "issues": [
+    {
+      "id": "dependency-compiler-provenance",
+      "status": "missing",
+      "scope": [
+        "SDL2.dll",
+        "tinyxml2.dll",
+        "mpg123.dll",
+        "libEGL.dll",
+        "libGLESv2.dll",
+        "zlib1.dll"
+      ],
+      "needed": "Historical compiler/build attestation for retained DLLs. Executable compiler receipt does not cover these.",
+      "blocksReleaseReview": true
+    },
+    {
+      "id": "complete-dependency-sources",
+      "status": "missing",
+      "needed": "Review complete corresponding sources, patches and transitive notice coverage against exact recorded source recipes. Links and one source file do not establish completeness.",
+      "blocksReleaseReview": true
+    },
+    {
+      "id": "angle-transitive-notices",
+      "status": "missing",
+      "needed": "Review nested third-party sources including chromium zlib and registry/header notices at recipe refs.",
+      "blocksReleaseReview": true
+    },
+    {
+      "id": "tile-resource-provenance",
+      "status": "unknown",
+      "scope": [
+        "res/tilemap.bin",
+        "res/tilepatch.bin"
+      ],
+      "needed": "Creation source, asset origin and rights evidence. Tracked hashes do not establish ROM-free redistributability.",
+      "blocksReleaseReview": true
+    },
+    {
+      "id": "icon-provenance",
+      "status": "unknown",
+      "scope": [
+        "res/cannonball.ico",
+        "res/icon.png"
+      ],
+      "needed": "Asset origin and rights evidence, including embedded executable icon.",
+      "blocksReleaseReview": true
+    },
+    {
+      "id": "controller-db-historical-license",
+      "status": "unknown",
+      "scope": [
+        "res/gamecontrollerdb.txt"
+      ],
+      "needed": "Exact upstream revision and matching historical license. Current upstream Zlib license is a lead, not clearance for this copy.",
+      "blocksReleaseReview": true
+    },
+    {
+      "id": "inherited-license-review",
+      "status": "unreviewed",
+      "needed": "Review inherited engine/SE noncommercial terms together with GPL/LGPL component obligations, including source and relinking obligations. No compatibility conclusion is asserted.",
+      "blocksReleaseReview": true
+    }
+  ]
+}

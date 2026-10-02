@@ -52,6 +52,38 @@ $sourceInventoryFile = [IO.Path]::GetFullPath($SourceInventoryPath)
 if ($sourceInventoryFile.StartsWith($stage + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or
     ((Get-Item -LiteralPath $sourceInventoryFile -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) { Fail 'source inventory must be an independent reviewed file' }
 $approvedSource = $utf8.GetString([IO.File]::ReadAllBytes($sourceInventoryFile)) | ConvertFrom-Json
+$evidenceFile = Join-Path $PSScriptRoot 'unresolved-evidence.json'
+if (-not (Test-Path -LiteralPath $evidenceFile -PathType Leaf)) { Fail 'required unresolved-evidence record is missing' }
+if ((Get-Item -LiteralPath $evidenceFile -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) { Fail 'evidence record is a link' }
+$unresolved = $utf8.GetString([IO.File]::ReadAllBytes($evidenceFile)) | ConvertFrom-Json
+$reviewedCommit = 'd128256afa2c9e7ac4dc164125c30e95a7d1ab3c'
+$reviewedTree = '559f22a398640674b30c1fe6950f185644486b33'
+$requiredIssues = @{
+    'dependency-compiler-provenance' = 'missing'
+    'complete-dependency-sources' = 'missing'
+    'angle-transitive-notices' = 'missing'
+    'tile-resource-provenance' = 'unknown'
+    'icon-provenance' = 'unknown'
+    'controller-db-historical-license' = 'unknown'
+    'inherited-license-review' = 'unreviewed'
+}
+if ($unresolved.schema -cne 'dbce-outrun-arcade-unresolved-evidence-v1' -or $unresolved.status -cne 'review-only' -or
+    $unresolved.releaseReady -isnot [bool] -or $unresolved.releaseReady -ne $false -or
+    $unresolved.engineSnapshot -cne $reviewedCommit -or @($unresolved.issues).Count -ne $requiredIssues.Count) {
+    Fail 'invalid or prematurely cleared review-only evidence record'
+}
+if ($approvedSource.commit -cne $reviewedCommit -or $approvedSource.tree -cne $reviewedTree -or
+    $contract.source.commit -cne $reviewedCommit -or $contract.source.tree -cne $reviewedTree) {
+    Fail 'source snapshot differs from unresolved-evidence reviewed snapshot'
+}
+$issueIds = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+foreach ($issue in $unresolved.issues) {
+    if ($issue.id -isnot [string] -or -not $issueIds.Add($issue.id) -or
+        $issue.id -cnotin @($requiredIssues.Keys) -or $issue.status -cne $requiredIssues[$issue.id] -or
+        $issue.blocksReleaseReview -isnot [bool] -or $issue.blocksReleaseReview -ne $true) {
+        Fail 'invalid or prematurely cleared review-only evidence record: required unique unresolved blocking issue differs'
+    }
+}
 if ($approvedSource.schema -ne 'dbce-outrun-arcade-source-inventory-v1' -or $approvedSource.repository -ne $contract.repository -or
     $approvedSource.commit -ne $contract.source.commit -or $approvedSource.tree -ne $contract.source.tree) { Fail 'source snapshot identity differs from reviewed inventory' }
 if ($contract.schema -ne 'dbce-outrun-arcade-stage-v1' -or $contract.repository -ne 'd-b-c-e/dbce-mods-outrun-arcade') { Fail 'wrong game/product contract' }
@@ -73,7 +105,7 @@ if (@($contract.files | Where-Object role -EQ 'runtime').Count -ne $runtime.Coun
 $resources = @('res/gamecontrollerdb.txt','res/tilemap.bin','res/tilepatch.bin','res/Cannonball-Shader-Vertex.glsl','res/Cannonball-Shader-Fragment.glsl','res/Cannonball-Shader-Fragment-Fast.glsl')
 foreach ($path in $resources) { if (-not $expected.ContainsKey($path) -or $expected[$path].role -ne 'resource') { Fail "missing default-path resource: $path" } }
 if (@($contract.files | Where-Object role -EQ 'resource').Count -ne $resources.Count) { Fail 'unexpected runtime resource' }
-foreach ($name in @('license.txt','CannonBall-SE-license.txt','THIRD-PARTY-NOTICES.md','LGPL-2.1.txt','license_mame.txt','license_atari800.txt')) {
+foreach ($name in @('license.txt','CannonBall-SE-license.txt','THIRD-PARTY-NOTICES.md','LGPL-2.1.txt','license_mame.txt','license_atari800.txt','GPL-2.0.txt','dirent-LICENSE.txt','sdl2-LICENSE.txt','tinyxml2-LICENSE.txt','mpg123-LICENSE.txt','angle-LICENSE.txt','zlib-LICENSE.txt')) {
     $path = 'notices/' + $name
     if (-not $expected.ContainsKey($path) -or $expected[$path].role -ne 'notice') { Fail "missing notice: $name" }
 }
@@ -120,4 +152,4 @@ foreach ($file in $actual) {
         if (-not $inventory.ContainsKey($sourcePath) -or $blob -ne $inventory[$sourcePath]) { Fail "source/resource Git blob mismatch: $path" }
     }
 }
-[pscustomobject]@{ verified=$true; repository=$contract.repository; sourceCommit=$contract.source.commit; buildSourceCommit=$contract.build.source_commit; files=$actual.Count; contractSHA256=(HashFile $contractFile); sourceInventorySHA256=(HashFile $sourceInventoryFile); runtimeExecuted=$false }
+[pscustomobject]@{ verified=$true; verificationScope='file identity and declared coverage only'; reviewOnly=$true; releaseReady=$false; unresolvedEvidence=@($unresolved.issues.id); evidenceSHA256=(HashFile $evidenceFile); repository=$contract.repository; sourceCommit=$contract.source.commit; buildSourceCommit=$contract.build.source_commit; files=$actual.Count; contractSHA256=(HashFile $contractFile); sourceInventorySHA256=(HashFile $sourceInventoryFile); runtimeExecuted=$false }

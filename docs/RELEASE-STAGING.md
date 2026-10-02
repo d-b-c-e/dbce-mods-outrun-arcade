@@ -4,6 +4,33 @@ This is the downstream d-b-c-e OutRun arcade fork. Its build and stage identitie
 must be recorded independently of J1mbo's upstream releases. A verified stage is
 not a public release, hardware acceptance or permission to redistribute assets.
 
+The verifier's successful result is explicitly **review-only**: `verified` covers
+file identities and declared coverage; `reviewOnly` is true and `releaseReady` is
+always false. The adjacent `unresolved-evidence.json` is mandatory and its issue
+IDs and hash appear in the verdict. Missing/invalid or prematurely cleared records
+are rejected. Editing the stage contract cannot authorize a release.
+
+This review-only policy pins engine commit d128256 and its exact reviewed tree.
+The record must retain all seven unique issue IDs with their reviewed unresolved
+statuses (`missing`, `unknown`, or `unreviewed` for the corresponding issue) and
+Boolean `blocksReleaseReview: true`. Duplicate, replaced, removed, resolved or
+nonblocking issues, string-valued Boolean flags and unrelated snapshots are
+rejected. A later evidence-policy/snapshot change requires a separately reviewed
+verifier change; this candidate contains no clearance or release-ready mode.
+
+Include the seven added notices at `notices/`: `GPL-2.0.txt`,
+`dirent-LICENSE.txt`, `sdl2-LICENSE.txt`, `tinyxml2-LICENSE.txt`,
+`mpg123-LICENSE.txt`, `angle-LICENSE.txt`, `zlib-LICENSE.txt`, alongside the six
+inherited notices below. Missing notice or dependency-source declarations still
+fail closed. One declared source file cannot prove source completeness; successful
+identity checks remain review-only for that reason, even for synthetic fixtures.
+
+`dependency-evidence.json` records the retained DLL identities, versions,
+license hashes and exact recipe/source references. It is evidence, not a production
+stage contract. No compiler identity is assigned to retained dependency DLLs.
+The engine source inventory remains pinned to d128256; candidate notice/document
+edits require a freshly reviewed source inventory if later selected for staging.
+
 ## Prepare and review the contract before staging
 
 Use PowerShell 7. Keep the reviewed JSON contract and source inventory outside the
@@ -16,7 +43,7 @@ The contract schema is `dbce-outrun-arcade-stage-v1` and repository is
 
 - `source.commit`, `source.tree` and `source.inventory`: exact reviewed engine
   snapshot, with every included public source path and Git blob SHA. The accompanying
-  `tools/package/source-inventory.d128256.json` pins current canonical master
+  `tools/package/source-inventory.d128256.json` pins the reviewed engine snapshot
   `d128256afa2c9e7ac4dc164125c30e95a7d1ab3c`, tree
   `559f22a398640674b30c1fe6950f185644486b33`, and 148 non-ROM tracked files.
   Its only excluded tracked path is `roms/roms.txt` (ROM-list instructions, not a ROM).
@@ -102,13 +129,13 @@ never be used for real release approval.
 ## Current evidence and remaining release work
 
 The verified Release x64 build and four-notice CMake install remain valid evidence.
-Current master's later changes are documentation-only; no new build or runtime test
+Published 925697f adds documentation/validation after that build; no new runtime test
 is claimed here. CMake install currently stages notices, not a complete runnable
 package. The build's vcpkg toolchain stages the seven runtime files, while runtime
 resources, six inherited notices, full engine/component sources and an approved
 source/build/artifact contract still require deliberate assembly and review.
 
-This candidate adds an offline validation gate and instructions only. No actual
+This notice candidate adds source-side notices and explicit review-only evidence. No actual
 release contract is supplied because complete dependency sources/notice coverage and
 asset provenance have not been assembled and reviewed. No ROM/private asset is
 downloaded or included; no public binary release is made.

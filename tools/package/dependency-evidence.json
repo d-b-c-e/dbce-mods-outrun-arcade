@@ -1,0 +1,780 @@
+{
+  "schema": "dbce-outrun-arcade-dependency-evidence-v1",
+  "status": "review-only",
+  "releaseReady": false,
+  "publishedSource": "925697f383d026fa4b1aa62a699fc8473d8bef50",
+  "engineSnapshot": "d128256afa2c9e7ac4dc164125c30e95a7d1ab3c",
+  "buildSource": "2085b1c55047a3f567086faf449a6d15001cf2ae",
+  "runtime": [
+    {
+      "name": "cannonball-se.exe",
+      "sha256": "F7F3920A7CC330F70B5970A3D1FF8E7664A8BC3F9C27CE3354B4B84FCCD21667",
+      "bytes": 601088
+    },
+    {
+      "name": "libEGL.dll",
+      "sha256": "9A61D0D45325AA48F6D5BD6277C72D5D1BB85ADF59F0091F094181FA6D0EE1E8",
+      "bytes": 21504
+    },
+    {
+      "name": "libGLESv2.dll",
+      "sha256": "AAFED79094945EE81ADA9C7B6234F8FCD381F22C6CBECA4046147D3EA743E99F",
+      "bytes": 5887488
+    },
+    {
+      "name": "mpg123.dll",
+      "sha256": "27B604B745E74EFCDA1F997FE24287BB03B8DED8414DDFF59E6ABAE42E073B41",
+      "bytes": 310272
+    },
+    {
+      "name": "SDL2.dll",
+      "sha256": "F8ABA132A2ED8728278DA0D452937E34F3CF924ECBD164559F9C5CF7FF038E6B",
+      "bytes": 1641472
+    },
+    {
+      "name": "tinyxml2.dll",
+      "sha256": "3DC82EA1BF41143670120689A8BEA653BE71A1310761508D29040AE5A39D06B9",
+      "bytes": 95744
+    },
+    {
+      "name": "zlib1.dll",
+      "sha256": "0C96EFD2416A40B2B61D09AE81B80162CB388A0613FBA591D46A1C695C92EDA9",
+      "bytes": 90112
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "sdl2",
+      "metadataPackages": [
+        {
+          "name": "sdl2",
+          "SPDXID": "SPDXRef-port",
+          "versionInfo": "2.32.8",
+          "downloadLocation": "git+https://github.com/microsoft/vcpkg@18fee2d21bc61416833b7428caeb58ef09d763a1",
+          "homepage": "https://www.libsdl.org/download-2.0.php",
+          "licenseConcluded": "Zlib",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "description": "Simple DirectMedia Layer is a cross-platform development library designed to provide low level access to audio, keyboard, mouse, joystick, and graphics hardware via OpenGL and Direct3D.",
+          "comment": "This is the port (recipe) consumed by vcpkg."
+        },
+        {
+          "name": "sdl2:x64-windows",
+          "SPDXID": "SPDXRef-binary",
+          "versionInfo": "82987a7bf5e11c983de3ca78b68757de6821f7736bc79ea02a9c43d5489e421a",
+          "downloadLocation": "NONE",
+          "licenseConcluded": "Zlib",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "comment": "This is a binary package built by vcpkg."
+        },
+        {
+          "SPDXID": "SPDXRef-resource-0",
+          "name": "libsdl-org/SDL",
+          "downloadLocation": "git+https://github.com/libsdl-org/SDL@release-2.32.8",
+          "licenseConcluded": "NOASSERTION",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "checksums": [
+            {
+              "algorithm": "SHA512",
+              "checksumValue": "d58b5b9964fea3c04d13aae646b92e9646125f269088fc6698089f0dbb9506091739cb8a72bfead08aa3952f8b4df0a7886396eeee54a28388a6b89be01f44cf"
+            }
+          ]
+        }
+      ],
+      "runtimeFiles": [
+        {
+          "name": "SDL2.dll",
+          "sha256": "F8ABA132A2ED8728278DA0D452937E34F3CF924ECBD164559F9C5CF7FF038E6B",
+          "spdxSHA256": "f8aba132a2ed8728278da0d452937e34f3cf924ecbd164559f9c5cf7ff038e6b",
+          "spdxMatches": true,
+          "intendedRuntime": true,
+          "buildReceiptMatches": true
+        }
+      ],
+      "copyrightPath": "aggregate-deps/x64-windows/share/sdl2/copyright",
+      "copyrightSHA256": "97F35B302B361680EC1E891E95D2D52097BB95ABFF361434916D99DC1305F127",
+      "spdxSHA256": "D20B2D3C656844E39733BF579C4DC1802472DD97D044026DAA84075D40316162",
+      "abiInfoSHA256": "82987A7BF5E11C983DE3CA78B68757DE6821F7736BC79EA02A9C43D5489E421A",
+      "compilerProvenance": "Not established by retained package metadata"
+    },
+    {
+      "name": "tinyxml2",
+      "metadataPackages": [
+        {
+          "name": "tinyxml2",
+          "SPDXID": "SPDXRef-port",
+          "versionInfo": "11.0.0",
+          "downloadLocation": "git+https://github.com/microsoft/vcpkg@642c5abe1171318729a73bdf95ce6c2ca58e079c",
+          "homepage": "https://github.com/leethomason/tinyxml2",
+          "licenseConcluded": "Zlib",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "description": "A simple, small, efficient, C++ XML parser",
+          "comment": "This is the port (recipe) consumed by vcpkg."
+        },
+        {
+          "name": "tinyxml2:x64-windows",
+          "SPDXID": "SPDXRef-binary",
+          "versionInfo": "d63772026f1a277784c1e30aca4fb3a0fefed65ff9caf42b2fa88f2a995757c2",
+          "downloadLocation": "NONE",
+          "licenseConcluded": "Zlib",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "comment": "This is a binary package built by vcpkg."
+        },
+        {
+          "SPDXID": "SPDXRef-resource-0",
+          "name": "leethomason/tinyxml2",
+          "downloadLocation": "git+https://github.com/leethomason/tinyxml2@11.0.0",
+          "licenseConcluded": "NOASSERTION",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "checksums": [
+            {
+              "algorithm": "SHA512",
+              "checksumValue": "8a6ddd48c96bc4287437d5b5ca62c131c4416c57310b664c9088ca9c1ac9f4d43d16c1bad03f82dc5588d9486752f510d631609a3930f1d4243f12184ad1c5f9"
+            }
+          ]
+        }
+      ],
+      "runtimeFiles": [
+        {
+          "name": "tinyxml2.dll",
+          "sha256": "3DC82EA1BF41143670120689A8BEA653BE71A1310761508D29040AE5A39D06B9",
+          "spdxSHA256": "3dc82ea1bf41143670120689a8bea653be71a1310761508d29040ae5a39d06b9",
+          "spdxMatches": true,
+          "intendedRuntime": true,
+          "buildReceiptMatches": true
+        }
+      ],
+      "copyrightPath": "aggregate-deps/x64-windows/share/tinyxml2/copyright",
+      "copyrightSHA256": "9332252E9B9E46DB8285D4A3F0BF25F139BF1DCA6781B956D57F2302EFCA6432",
+      "spdxSHA256": "E01F926E64392EDB4B0EAF1F80E49ACB6A17B45E26C5DE324E0C70ADF37A42FD",
+      "abiInfoSHA256": "D63772026F1A277784C1E30ACA4FB3A0FEFED65FF9CAF42B2FA88F2A995757C2",
+      "compilerProvenance": "Not established by retained package metadata"
+    },
+    {
+      "name": "mpg123",
+      "metadataPackages": [
+        {
+          "name": "mpg123",
+          "SPDXID": "SPDXRef-port",
+          "versionInfo": "1.32.9#1",
+          "downloadLocation": "git+https://github.com/microsoft/vcpkg@0c11d8d8818fece4a1fb1de93e5423a078f6c29e",
+          "homepage": "https://sourceforge.net/projects/mpg123/",
+          "licenseConcluded": "LGPL-2.1-or-later",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "description": "mpg123 is a real time MPEG 1.0/2.0/2.5 audio player/decoder for layers 1, 2 and 3 (MPEG 1.0 layer 3 also known as MP3).",
+          "comment": "This is the port (recipe) consumed by vcpkg."
+        },
+        {
+          "name": "mpg123:x64-windows",
+          "SPDXID": "SPDXRef-binary",
+          "versionInfo": "5ea796a9e5617a2014064a9f2c9f0b207ea4cc8f2ad38a8ed2d70ef3cae29c3b",
+          "downloadLocation": "NONE",
+          "licenseConcluded": "LGPL-2.1-or-later",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "comment": "This is a binary package built by vcpkg."
+        },
+        {
+          "SPDXID": "SPDXRef-resource-0",
+          "name": "mpg123-1.32.9.tar.bz2",
+          "packageFileName": "mpg123-1.32.9.tar.bz2",
+          "downloadLocation": "https://sourceforge.net/projects/mpg123/mpg123/files/1.32.9/mpg123-1.32.9.tar.bz2",
+          "licenseConcluded": "NOASSERTION",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "checksums": [
+            {
+              "algorithm": "SHA512",
+              "checksumValue": "dccb640b0845061811cb41bf145587e7093556d686d49a748232b079659b46284b6cc40db42d14febceac11277c58edf2b69d1b4c46c223829a3d15478e2e26c"
+            }
+          ]
+        }
+      ],
+      "runtimeFiles": [
+        {
+          "name": "mpg123.dll",
+          "sha256": "27B604B745E74EFCDA1F997FE24287BB03B8DED8414DDFF59E6ABAE42E073B41",
+          "spdxSHA256": "27b604b745e74efcda1f997fe24287bb03b8ded8414ddff59e6abae42e073b41",
+          "spdxMatches": true,
+          "intendedRuntime": true,
+          "buildReceiptMatches": true
+        },
+        {
+          "name": "out123.dll",
+          "sha256": "3624C8F4C83E379FC750E2B9423C07F17484942653193591739A858BAE17D8DA",
+          "spdxSHA256": "3624c8f4c83e379fc750e2b9423c07f17484942653193591739a858bae17d8da",
+          "spdxMatches": true,
+          "intendedRuntime": false,
+          "buildReceiptMatches": false
+        },
+        {
+          "name": "syn123.dll",
+          "sha256": "10474893698ED66833E689440302FED88F2EB147467F10FD61FD23857ECF6852",
+          "spdxSHA256": "10474893698ed66833e689440302fed88f2eb147467f10fd61fd23857ecf6852",
+          "spdxMatches": true,
+          "intendedRuntime": false,
+          "buildReceiptMatches": false
+        }
+      ],
+      "copyrightPath": "aggregate-deps/x64-windows/share/mpg123/copyright",
+      "copyrightSHA256": "C22482728A634A8DFDB4FF72A96D4C1ED64CD8F3E79335C401751AC591609366",
+      "spdxSHA256": "5C0EEF57BCCE595FF34CB42EDD7BBCA6B12C004BAF7BE9B7B84588B0DB1024C0",
+      "abiInfoSHA256": "5EA796A9E5617A2014064A9F2C9F0B207EA4CC8F2AD38A8ED2D70EF3CAE29C3B",
+      "compilerProvenance": "Not established by retained package metadata"
+    },
+    {
+      "name": "angle",
+      "metadataPackages": [
+        {
+          "name": "angle",
+          "SPDXID": "SPDXRef-port",
+          "versionInfo": "chromium_7258#1",
+          "downloadLocation": "git+https://github.com/microsoft/vcpkg@165d665818d070431c2889ac2b8f97f006948924",
+          "homepage": "https://github.com/google/angle",
+          "licenseConcluded": "BSD-3-Clause",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "description": "A conformant OpenGL ES implementation for Windows, Mac and Linux.\nThe goal of ANGLE is to allow users of multiple operating systems to seamlessly run WebGL and other OpenGL ES content by translating OpenGL ES API calls to one of the hardware-supported APIs available for that platform. ANGLE currently provides translation from OpenGL ES 2.0 and 3.0 to desktop OpenGL, OpenGL ES, Direct3D 9, and Direct3D 11. Support for translation from OpenGL ES to Vulkan is underway, and future plans include compute shader support (ES 3.1) and MacOS support.",
+          "comment": "This is the port (recipe) consumed by vcpkg."
+        },
+        {
+          "name": "angle:x64-windows",
+          "SPDXID": "SPDXRef-binary",
+          "versionInfo": "96f5ae34cbc26bf2ae5f628c8f2bcbb67096f798b20890f5c26b26f871810107",
+          "downloadLocation": "NONE",
+          "licenseConcluded": "BSD-3-Clause",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "comment": "This is a binary package built by vcpkg."
+        },
+        {
+          "SPDXID": "SPDXRef-resource-0",
+          "name": "google/angle",
+          "downloadLocation": "git+https://github.com/google/angle@${ANGLE_COMMIT}",
+          "licenseConcluded": "NOASSERTION",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "checksums": [
+            {
+              "algorithm": "SHA512",
+              "checksumValue": "${angle_sha512}"
+            }
+          ]
+        },
+        {
+          "SPDXID": "SPDXRef-resource-1",
+          "name": "${URL}",
+          "downloadLocation": "git+${URL}@${REF}",
+          "licenseConcluded": "NOASSERTION",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION"
+        },
+        {
+          "SPDXID": "SPDXRef-resource-2",
+          "name": "gni-to-cmake.py",
+          "packageFileName": "gni-to-cmake.py",
+          "downloadLocation": "https://github.com/WebKit/WebKit/raw/${ANGLE_WEBKIT_BUILDSYSTEM_COMMIT}/Source/ThirdParty/ANGLE/gni-to-cmake.py",
+          "licenseConcluded": "NOASSERTION",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "checksums": [
+            {
+              "algorithm": "SHA512",
+              "checksumValue": "cf9dab1b59cd44b9ce05a2dc4636115e770dfe7d5cfbd90c3fef659628ac8155c57b866480f7cfe9a0afeb31ff5ce5eed74473f386120a7fc5910e8b032bd61d"
+            }
+          ]
+        },
+        {
+          "SPDXID": "SPDXRef-resource-3",
+          "name": "include_CMakeLists.txt",
+          "packageFileName": "include_CMakeLists.txt",
+          "downloadLocation": "https://github.com/WebKit/WebKit/raw/${ANGLE_WEBKIT_BUILDSYSTEM_COMMIT}/Source/ThirdParty/ANGLE/include/CMakeLists.txt",
+          "licenseConcluded": "NOASSERTION",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "checksums": [
+            {
+              "algorithm": "SHA512",
+              "checksumValue": "a7ddf3c6df7565e232f87ec651cc4fd84240b8866609e23e3e6e41d22532fd34c70e0f3b06120fd3d6d930ca29c1d0d470d4c8cb7003a66f8c1a840a42f32949"
+            }
+          ]
+        }
+      ],
+      "runtimeFiles": [
+        {
+          "name": "libEGL.dll",
+          "sha256": "9A61D0D45325AA48F6D5BD6277C72D5D1BB85ADF59F0091F094181FA6D0EE1E8",
+          "spdxSHA256": "9a61d0d45325aa48f6d5bd6277c72d5d1bb85adf59f0091f094181fa6d0ee1e8",
+          "spdxMatches": true,
+          "intendedRuntime": true,
+          "buildReceiptMatches": true
+        },
+        {
+          "name": "libGLESv2.dll",
+          "sha256": "AAFED79094945EE81ADA9C7B6234F8FCD381F22C6CBECA4046147D3EA743E99F",
+          "spdxSHA256": "aafed79094945ee81ada9c7b6234f8fcd381f22c6cbeca4046147d3ea743e99f",
+          "spdxMatches": true,
+          "intendedRuntime": true,
+          "buildReceiptMatches": true
+        }
+      ],
+      "copyrightPath": "aggregate-deps/x64-windows/share/angle/copyright",
+      "copyrightSHA256": "BF4DA21BD20BCFB5B60B7ECC67FA864A79BE049E21D6178076887F178DD6C71A",
+      "spdxSHA256": "8ECCD4FAD649E847750837E21E01CB30ABD2E8A9E16690B2180CA932FF2C3CD2",
+      "abiInfoSHA256": "96F5AE34CBC26BF2AE5F628C8F2BCBB67096F798B20890F5C26B26F871810107",
+      "compilerProvenance": "Not established by retained package metadata"
+    },
+    {
+      "name": "zlib",
+      "metadataPackages": [
+        {
+          "name": "zlib",
+          "SPDXID": "SPDXRef-port",
+          "versionInfo": "1.3.1",
+          "downloadLocation": "git+https://github.com/microsoft/vcpkg@3f05e04b9aededb96786a911a16193cdb711f0c9",
+          "homepage": "https://www.zlib.net/",
+          "licenseConcluded": "Zlib",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "description": "A compression library",
+          "comment": "This is the port (recipe) consumed by vcpkg."
+        },
+        {
+          "name": "zlib:x64-windows",
+          "SPDXID": "SPDXRef-binary",
+          "versionInfo": "dbfdc726b504049d5621dad8707a5ce50ddc51540cf2a1a14806a6f57fc4fb81",
+          "downloadLocation": "NONE",
+          "licenseConcluded": "Zlib",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "comment": "This is a binary package built by vcpkg."
+        },
+        {
+          "SPDXID": "SPDXRef-resource-0",
+          "name": "madler/zlib",
+          "downloadLocation": "git+https://github.com/madler/zlib@v1.3.1",
+          "licenseConcluded": "NOASSERTION",
+          "licenseDeclared": "NOASSERTION",
+          "copyrightText": "NOASSERTION",
+          "checksums": [
+            {
+              "algorithm": "SHA512",
+              "checksumValue": "8c9642495bafd6fad4ab9fb67f09b268c69ff9af0f4f20cf15dfc18852ff1f312bd8ca41de761b3f8d8e90e77d79f2ccacd3d4c5b19e475ecf09d021fdfe9088"
+            }
+          ]
+        }
+      ],
+      "runtimeFiles": [
+        {
+          "name": "zlib1.dll",
+          "sha256": "0C96EFD2416A40B2B61D09AE81B80162CB388A0613FBA591D46A1C695C92EDA9",
+          "spdxSHA256": "0c96efd2416a40b2b61d09ae81b80162cb388a0613fba591d46a1c695c92eda9",
+          "spdxMatches": true,
+          "intendedRuntime": true,
+          "buildReceiptMatches": true
+        }
+      ],
+      "copyrightPath": "aggregate-deps/x64-windows/share/zlib/copyright",
+      "copyrightSHA256": "845EFC77857D485D91FB3E0B884AAA929368C717AE8186B66FE1ED2495753243",
+      "spdxSHA256": "C78C7194D11FD032AB7DE2D1305990C7CC7187FBC14DEC8FE07EEF08D793C0A8",
+      "abiInfoSHA256": "DBFDC726B504049D5621DAD8707A5CE50DDC51540CF2A1A14806A6F57FC4FB81",
+      "compilerProvenance": "Not established by retained package metadata"
+    }
+  ],
+  "sourceRecipes": {
+    "baseline": "b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01",
+    "ports": {
+      "sdl2": {
+        "manifest": {
+          "content": "{\n  \"name\": \"sdl2\",\n  \"version\": \"2.32.8\",\n  \"description\": \"Simple DirectMedia Layer is a cross-platform development library designed to provide low level access to audio, keyboard, mouse, joystick, and graphics hardware via OpenGL and Direct3D.\",\n  \"homepage\": \"https://www.libsdl.org/download-2.0.php\",\n  \"license\": \"Zlib\",\n  \"dependencies\": [\n    {\n      \"name\": \"vcpkg-cmake\",\n      \"host\": true\n    },\n    {\n      \"name\": \"vcpkg-cmake-config\",\n      \"host\": true\n    }\n  ],\n  \"default-features\": [\n    {\n      \"name\": \"dbus\",\n      \"platform\": \"linux\"\n    },\n    {\n      \"name\": \"ibus\",\n      \"platform\": \"linux\"\n    },\n    {\n      \"name\": \"wayland\",\n      \"platform\": \"linux\"\n    },\n    {\n      \"name\": \"x11\",\n      \"platform\": \"linux\"\n    }\n  ],\n  \"features\": {\n    \"alsa\": {\n      \"description\": \"Support for alsa audio\",\n      \"dependencies\": [\n        \"alsa\"\n      ]\n    },\n    \"dbus\": {\n      \"description\": \"Build with D-Bus support\",\n      \"dependencies\": [\n        {\n          \"name\": \"dbus\",\n          \"default-features\": false,\n          \"platform\": \"linux\"\n        }\n      ]\n    },\n    \"ibus\": {\n      \"description\": \"Build with ibus IME support\",\n      \"supports\": \"linux\"\n    },\n    \"samplerate\": {\n      \"description\": \"Use libsamplerate for audio rate conversion\",\n      \"dependencies\": [\n        \"libsamplerate\"\n      ]\n    },\n    \"vulkan\": {\n      \"description\": \"Vulkan functionality for SDL\"\n    },\n    \"wayland\": {\n      \"description\": \"Build with Wayland support\",\n      \"supports\": \"linux\"\n    },\n    \"x11\": {\n      \"description\": \"Build with X11 support\",\n      \"supports\": \"!windows\"\n    }\n  }\n}\n",
+          "encoding": "utf-8",
+          "sha": "f6ec7a87b6ea820ac40280012f9e46fcc6efc71b",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/sdl2/vcpkg.json",
+          "display_title": "vcpkg.json"
+        },
+        "recipe": {
+          "content": "vcpkg_from_github(\n    OUT_SOURCE_PATH SOURCE_PATH\n    REPO libsdl-org/SDL\n    REF \"release-${VERSION}\"\n    SHA512 d58b5b9964fea3c04d13aae646b92e9646125f269088fc6698089f0dbb9506091739cb8a72bfead08aa3952f8b4df0a7886396eeee54a28388a6b89be01f44cf\n    HEAD_REF main\n    PATCHES\n        deps.patch\n        alsa-dep-fix.patch\n        cxx-linkage-pkgconfig.diff\n)\n\nstring(COMPARE EQUAL \"${VCPKG_LIBRARY_LINKAGE}\" \"static\" SDL_STATIC)\nstring(COMPARE EQUAL \"${VCPKG_LIBRARY_LINKAGE}\" \"dynamic\" SDL_SHARED)\nstring(COMPARE EQUAL \"${VCPKG_CRT_LINKAGE}\" \"static\" FORCE_STATIC_VCRT)\n\nvcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS\n    FEATURES\n        alsa     SDL_ALSA\n        dbus     SDL_DBUS\n        ibus     SDL_IBUS\n        samplerate SDL_LIBSAMPLERATE\n        vulkan   SDL_VULKAN\n        wayland  SDL_WAYLAND\n        x11      SDL_X11\n)\n\nif (\"x11\" IN_LIST FEATURES)\n    message(WARNING \"You will need to install Xorg dependencies to use feature x11:\\nsudo apt install libx11-dev libxft-dev libxext-dev\\n\")\nendif()\nif (\"wayland\" IN_LIST FEATURES)\n    message(WARNING \"You will need to install Wayland dependencies to use feature wayland:\\nsudo apt install libwayland-dev libxkbcommon-dev libegl1-mesa-dev\\n\")\nendif()\nif (\"ibus\" IN_LIST FEATURES)\n    message(WARNING \"You will need to install ibus dependencies to use feature ibus:\\nsudo apt install libibus-1.0-dev\\n\")\nendif()\n\nif(VCPKG_TARGET_IS_UWP)\n    set(configure_opts WINDOWS_USE_MSBUILD)\nendif()\n\nvcpkg_cmake_configure(\n    SOURCE_PATH \"${SOURCE_PATH}\"\n    ${configure_opts}\n    OPTIONS ${FEATURE_OPTIONS}\n        -DSDL_STATIC=${SDL_STATIC}\n        -DSDL_SHARED=${SDL_SHARED}\n        -DSDL_FORCE_STATIC_VCRT=${FORCE_STATIC_VCRT}\n        -DSDL_LIBC=ON\n        -DSDL_TEST=OFF\n        -DSDL_INSTALL_CMAKEDIR=cmake\n        -DCMAKE_DISABLE_FIND_PACKAGE_Git=ON\n        -DSDL_LIBSAMPLERATE_SHARED=OFF\n    MAYBE_UNUSED_VARIABLES\n        SDL_FORCE_STATIC_VCRT\n)\n\nvcpkg_cmake_install()\nvcpkg_cmake_config_fixup(CONFIG_PATH cmake)\n\nfile(REMOVE_RECURSE\n    \"${CURRENT_PACKAGES_DIR}/debug/include\"\n    \"${CURRENT_PACKAGES_DIR}/debug/share\"\n    \"${CURRENT_PACKAGES_DIR}/bin/sdl2-config\"\n    \"${CURRENT_PACKAGES_DIR}/debug/bin/sdl2-config\"\n    \"${CURRENT_PACKAGES_DIR}/SDL2.framework\"\n    \"${CURRENT_PACKAGES_DIR}/debug/SDL2.framework\"\n    \"${CURRENT_PACKAGES_DIR}/share/licenses\"\n    \"${CURRENT_PACKAGES_DIR}/share/aclocal\"\n)\n\nfile(GLOB BINS \"${CURRENT_PACKAGES_DIR}/debug/bin/*\" \"${CURRENT_PACKAGES_DIR}/bin/*\")\nif(NOT BINS)\n    file(REMOVE_RECURSE\n        \"${CURRENT_PACKAGES_DIR}/bin\"\n        \"${CURRENT_PACKAGES_DIR}/debug/bin\"\n    )\nendif()\n\nif(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_UWP AND NOT VCPKG_TARGET_IS_MINGW)\n    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL \"release\")\n        file(MAKE_DIRECTORY \"${CURRENT_PACKAGES_DIR}/lib/manual-link\")\n        file(RENAME \"${CURRENT_PACKAGES_DIR}/lib/SDL2main.lib\" \"${CURRENT_PACKAGES_DIR}/lib/manual-link/SDL2main.lib\")\n    endif()\n    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL \"debug\")\n        file(MAKE_DIRECTORY \"${CURRENT_PACKAGES_DIR}/debug/lib/manual-link\")\n        file(RENAME \"${CURRENT_PACKAGES_DIR}/debug/lib/SDL2maind.lib\" \"${CURRENT_PACKAGES_DIR}/debug/lib/manual-link/SDL2maind.lib\")\n    endif()\n\n    file(GLOB SHARE_FILES \"${CURRENT_PACKAGES_DIR}/share/sdl2/*.cmake\")\n    foreach(SHARE_FILE ${SHARE_FILES})\n        vcpkg_replace_string(\"${SHARE_FILE}\" \"lib/SDL2main\" \"lib/manual-link/SDL2main\" IGNORE_UNCHANGED)\n    endforeach()\nendif()\n\nvcpkg_copy_pdbs()\n\nset(DYLIB_COMPATIBILITY_VERSION_REGEX \"set\\\\(DYLIB_COMPATIBILITY_VERSION (.+)\\\\)\")\nset(DYLIB_CURRENT_VERSION_REGEX \"set\\\\(DYLIB_CURRENT_VERSION (.+)\\\\)\")\nfile(STRINGS \"${SOURCE_PATH}/CMakeLists.txt\" DYLIB_COMPATIBILITY_VERSION REGEX ${DYLIB_COMPATIBILITY_VERSION_REGEX})\nfile(STRINGS \"${SOURCE_PATH}/CMakeLists.txt\" DYLIB_CURRENT_VERSION REGEX ${DYLIB_CURRENT_VERSION_REGEX})\nstring(REGEX REPLACE ${DYLIB_COMPATIBILITY_VERSION_REGEX} \"\\\\1\" DYLIB_COMPATIBILITY_VERSION \"${DYLIB_COMPATIBILITY_VERSION}\")\nstring(REGEX REPLACE ${DYLIB_CURRENT_VERSION_REGEX} \"\\\\1\" DYLIB_CURRENT_VERSION \"${DYLIB_CURRENT_VERSION}\")\n\nif(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL \"debug\" AND NOT VCPKG_TARGET_IS_ANDROID)\n    vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/sdl2.pc\" \"-lSDL2main\" \"-lSDL2maind\" IGNORE_UNCHANGED)\n    vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/sdl2.pc\" \"-lSDL2 \" \"-lSDL2d \" IGNORE_UNCHANGED)\n    vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/sdl2.pc\" \"-lSDL2-static \" \"-lSDL2-staticd \" IGNORE_UNCHANGED)\nendif()\n\nif(VCPKG_TARGET_IS_UWP)\n    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL \"release\")\n        vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/lib/pkgconfig/sdl2.pc\" \"$<$<CONFIG:Debug>:d>.lib\" \"\")\n        vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/lib/pkgconfig/sdl2.pc\" \"-l-nodefaultlib:\" \"-nodefaultlib:\")\n    endif()\n    if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL \"debug\")\n        vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/sdl2.pc\" \"$<$<CONFIG:Debug>:d>.lib\" \"d\")\n        vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/sdl2.pc\" \"-l-nodefaultlib:\" \"-nodefaultlib:\")\n    endif()\nendif()\n\nvcpkg_fixup_pkgconfig()\n\nfile(INSTALL \"${CMAKE_CURRENT_LIST_DIR}/usage\" DESTINATION \"${CURRENT_PACKAGES_DIR}/share/${PORT}\")\nvcpkg_install_copyright(FILE_LIST \"${SOURCE_PATH}/LICENSE.txt\")\n",
+          "encoding": "utf-8",
+          "sha": "5215e9bad94ec246843ffb601bd3488a273a9a92",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/sdl2/portfile.cmake",
+          "display_title": "portfile.cmake"
+        },
+        "recordedPortTree": {
+          "sha": "18fee2d21bc61416833b7428caeb58ef09d763a1",
+          "url": "https://api.github.com/repos/microsoft/vcpkg/git/trees/18fee2d21bc61416833b7428caeb58ef09d763a1",
+          "tree": [
+            {
+              "path": "alsa-dep-fix.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "5ee6eefe22f1f53968b4698409ca1dcf65d8d532",
+              "size": 444,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/5ee6eefe22f1f53968b4698409ca1dcf65d8d532"
+            },
+            {
+              "path": "cxx-linkage-pkgconfig.diff",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "beaed424cf916d1be42094e5975674302fb6478f",
+              "size": 940,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/beaed424cf916d1be42094e5975674302fb6478f"
+            },
+            {
+              "path": "deps.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "a8637d8c801b71f3876e7b47f01026e1828aebd1",
+              "size": 473,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/a8637d8c801b71f3876e7b47f01026e1828aebd1"
+            },
+            {
+              "path": "portfile.cmake",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "5215e9bad94ec246843ffb601bd3488a273a9a92",
+              "size": 5463,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/5215e9bad94ec246843ffb601bd3488a273a9a92"
+            },
+            {
+              "path": "usage",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "1cddcd46ffcf46838ef7c2e8d19df8ef5bb5d1d6",
+              "size": 241,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/1cddcd46ffcf46838ef7c2e8d19df8ef5bb5d1d6"
+            },
+            {
+              "path": "vcpkg.json",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "f6ec7a87b6ea820ac40280012f9e46fcc6efc71b",
+              "size": 1627,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/f6ec7a87b6ea820ac40280012f9e46fcc6efc71b"
+            }
+          ],
+          "truncated": false
+        }
+      },
+      "tinyxml2": {
+        "manifest": {
+          "content": "{\n  \"name\": \"tinyxml2\",\n  \"version-semver\": \"11.0.0\",\n  \"description\": \"A simple, small, efficient, C++ XML parser\",\n  \"homepage\": \"https://github.com/leethomason/tinyxml2\",\n  \"license\": \"Zlib\",\n  \"dependencies\": [\n    {\n      \"name\": \"vcpkg-cmake\",\n      \"host\": true\n    },\n    {\n      \"name\": \"vcpkg-cmake-config\",\n      \"host\": true\n    }\n  ]\n}\n",
+          "encoding": "utf-8",
+          "sha": "13c121cb2ef2d2fb92a72b122ab5ed33393c7aa3",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/tinyxml2/vcpkg.json",
+          "display_title": "vcpkg.json"
+        },
+        "recipe": {
+          "content": "vcpkg_from_github(\n    OUT_SOURCE_PATH SOURCE_PATH\n    REPO leethomason/tinyxml2\n    REF \"${VERSION}\"\n    SHA512 8a6ddd48c96bc4287437d5b5ca62c131c4416c57310b664c9088ca9c1ac9f4d43d16c1bad03f82dc5588d9486752f510d631609a3930f1d4243f12184ad1c5f9\n    HEAD_REF master\n    PATCHES\n        0001-fix-do-not-force-export-the-symbols-when-building-st.patch\n        0002-fix-check-for-TINYXML2_EXPORT-on-non-windows.patch\n)\n\nvcpkg_cmake_configure(\n    SOURCE_PATH \"${SOURCE_PATH}\"\n    OPTIONS\n        -Dtinyxml2_BUILD_TESTING=OFF\n)\n\nvcpkg_cmake_install()\n\nvcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/tinyxml2)\nvcpkg_fixup_pkgconfig()\n\nvcpkg_copy_pdbs()\n\nfile(REMOVE_RECURSE \"${CURRENT_PACKAGES_DIR}/debug/include\")\n\nfile(INSTALL \"${SOURCE_PATH}/LICENSE.txt\" DESTINATION \"${CURRENT_PACKAGES_DIR}/share/${PORT}\" RENAME copyright)\n",
+          "encoding": "utf-8",
+          "sha": "debc19cdf3f095051919e538117217a3185e49e0",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/tinyxml2/portfile.cmake",
+          "display_title": "portfile.cmake"
+        },
+        "recordedPortTree": {
+          "sha": "642c5abe1171318729a73bdf95ce6c2ca58e079c",
+          "url": "https://api.github.com/repos/microsoft/vcpkg/git/trees/642c5abe1171318729a73bdf95ce6c2ca58e079c",
+          "tree": [
+            {
+              "path": "0001-fix-do-not-force-export-the-symbols-when-building-st.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "ef334ec1b125be38a808cb0ebf7f817af2ae83e1",
+              "size": 1311,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/ef334ec1b125be38a808cb0ebf7f817af2ae83e1"
+            },
+            {
+              "path": "0002-fix-check-for-TINYXML2_EXPORT-on-non-windows.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "7f2f750deb6dd3dbf1e6acaec7f5f5480d08d3ee",
+              "size": 674,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/7f2f750deb6dd3dbf1e6acaec7f5f5480d08d3ee"
+            },
+            {
+              "path": "portfile.cmake",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "debc19cdf3f095051919e538117217a3185e49e0",
+              "size": 819,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/debc19cdf3f095051919e538117217a3185e49e0"
+            },
+            {
+              "path": "vcpkg.json",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "13c121cb2ef2d2fb92a72b122ab5ed33393c7aa3",
+              "size": 349,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/13c121cb2ef2d2fb92a72b122ab5ed33393c7aa3"
+            }
+          ],
+          "truncated": false
+        }
+      },
+      "mpg123": {
+        "manifest": {
+          "content": "{\n  \"name\": \"mpg123\",\n  \"version\": \"1.32.9\",\n  \"port-version\": 1,\n  \"description\": \"mpg123 is a real time MPEG 1.0/2.0/2.5 audio player/decoder for layers 1, 2 and 3 (MPEG 1.0 layer 3 also known as MP3).\",\n  \"homepage\": \"https://sourceforge.net/projects/mpg123/\",\n  \"license\": \"LGPL-2.1-or-later\",\n  \"supports\": \"!xbox\",\n  \"dependencies\": [\n    {\n      \"name\": \"vcpkg-cmake\",\n      \"host\": true\n    },\n    {\n      \"name\": \"vcpkg-cmake-config\",\n      \"host\": true\n    },\n    {\n      \"name\": \"yasm\",\n      \"host\": true,\n      \"features\": [\n        \"tools\"\n      ],\n      \"platform\": \"windows & !mingw\"\n    }\n  ]\n}\n",
+          "encoding": "utf-8",
+          "sha": "b4f71a6efdbdf8664bcef40197ef4258bb48bbbb",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/mpg123/vcpkg.json",
+          "display_title": "vcpkg.json"
+        },
+        "recipe": {
+          "content": "vcpkg_from_sourceforge(\n    OUT_SOURCE_PATH SOURCE_PATH\n    REPO mpg123/mpg123\n    REF \"${VERSION}\"\n    FILENAME \"mpg123-${VERSION}.tar.bz2\"\n    SHA512 dccb640b0845061811cb41bf145587e7093556d686d49a748232b079659b46284b6cc40db42d14febceac11277c58edf2b69d1b4c46c223829a3d15478e2e26c\n    PATCHES\n        fix-dllexport.diff\n        have-fpu.diff\n        pkgconfig.diff\n)\n\nif(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)\n    yasm_tool_helper(APPEND_TO_PATH)\nendif()\n\nvcpkg_list(SET options)\nif(VCPKG_TARGET_IS_WINDOWS)\n    vcpkg_list(APPEND options \"-DLIBMPG123_LIBS=-lshlwapi\")\nendif()\n\nvcpkg_cmake_configure(\n    SOURCE_PATH \"${SOURCE_PATH}/ports/cmake\"\n    OPTIONS\n        -DUSE_MODULES=OFF\n        -DBUILD_PROGRAMS=OFF\n        -DCMAKE_DISABLE_FIND_PACKAGE_ALSA=ON\n        -DCMAKE_DISABLE_FIND_PACKAGE_PkgConfig=ON\n        ${options}\n    MAYBE_UNUSED_VARIABLES\n        BUILD_PROGRAMS\n        CMAKE_DISABLE_FIND_PACKAGE_ALSA\n        CMAKE_DISABLE_FIND_PACKAGE_PkgConfig\n)\nvcpkg_cmake_install()\nvcpkg_copy_pdbs()\nvcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/${PORT})\nvcpkg_fixup_pkgconfig()\n\nfile(REMOVE_RECURSE \"${CURRENT_PACKAGES_DIR}/debug/share\")\nfile(REMOVE_RECURSE \"${CURRENT_PACKAGES_DIR}/debug/include\")\n\nvcpkg_install_copyright(FILE_LIST \"${SOURCE_PATH}/COPYING\")\n",
+          "encoding": "utf-8",
+          "sha": "8a92c99fc1060376be960ecd7ae93b293a0200ee",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/mpg123/portfile.cmake",
+          "display_title": "portfile.cmake"
+        },
+        "recordedPortTree": {
+          "sha": "0c11d8d8818fece4a1fb1de93e5423a078f6c29e",
+          "url": "https://api.github.com/repos/microsoft/vcpkg/git/trees/0c11d8d8818fece4a1fb1de93e5423a078f6c29e",
+          "tree": [
+            {
+              "path": "fix-dllexport.diff",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "efd15ce772d864c4c82db179165cc02acfc63e34",
+              "size": 665,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/efd15ce772d864c4c82db179165cc02acfc63e34"
+            },
+            {
+              "path": "have-fpu.diff",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "57eb3cda19a4b9426b82659438140c1c391d6481",
+              "size": 499,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/57eb3cda19a4b9426b82659438140c1c391d6481"
+            },
+            {
+              "path": "pkgconfig.diff",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "5e2119cff3f426b6edf838f2ea8fa0f0c9057b11",
+              "size": 2452,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/5e2119cff3f426b6edf838f2ea8fa0f0c9057b11"
+            },
+            {
+              "path": "portfile.cmake",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "8a92c99fc1060376be960ecd7ae93b293a0200ee",
+              "size": 1281,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/8a92c99fc1060376be960ecd7ae93b293a0200ee"
+            },
+            {
+              "path": "vcpkg.json",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "b4f71a6efdbdf8664bcef40197ef4258bb48bbbb",
+              "size": 612,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/b4f71a6efdbdf8664bcef40197ef4258bb48bbbb"
+            }
+          ],
+          "truncated": false
+        }
+      },
+      "angle": {
+        "manifest": {
+          "content": "{\n  \"name\": \"angle\",\n  \"version-string\": \"chromium_7258\",\n  \"port-version\": 1,\n  \"description\": [\n    \"A conformant OpenGL ES implementation for Windows, Mac and Linux.\",\n    \"The goal of ANGLE is to allow users of multiple operating systems to seamlessly run WebGL and other OpenGL ES content by translating OpenGL ES API calls to one of the hardware-supported APIs available for that platform. ANGLE currently provides translation from OpenGL ES 2.0 and 3.0 to desktop OpenGL, OpenGL ES, Direct3D 9, and Direct3D 11. Support for translation from OpenGL ES to Vulkan is underway, and future plans include compute shader support (ES 3.1) and MacOS support.\"\n  ],\n  \"homepage\": \"https://github.com/google/angle\",\n  \"license\": \"BSD-3-Clause\",\n  \"dependencies\": [\n    \"egl-registry\",\n    \"opengl-registry\",\n    {\n      \"name\": \"vcpkg-cmake\",\n      \"host\": true\n    },\n    {\n      \"name\": \"vcpkg-cmake-config\",\n      \"host\": true\n    },\n    {\n      \"name\": \"vcpkg-get-python-packages\",\n      \"host\": true\n    },\n    \"zlib\"\n  ],\n  \"features\": {\n    \"metal\": {\n      \"description\": \"Metal support for angle\",\n      \"supports\": \"osx | ios\"\n    }\n  }\n}\n",
+          "encoding": "utf-8",
+          "sha": "6b980defca1574b60740e9ed93685fccdc3811ab",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/angle/vcpkg.json",
+          "display_title": "vcpkg.json"
+        },
+        "recipe": {
+          "content": "if (VCPKG_TARGET_IS_LINUX)\n    message(WARNING \"Building with a gcc version less than 6.1 is not supported.\")\n    message(WARNING \"${PORT} currently requires the following libraries from the system package manager:\\n    mesa-common-dev\\n\\nThese can be installed on Ubuntu systems via apt-get install mesa-common-dev.\")\nendif()\n\nif (VCPKG_TARGET_ARCHITECTURE STREQUAL \"x86\")\n    set(ANGLE_CPU_BITNESS ANGLE_IS_32_BIT_CPU)\nelseif (VCPKG_TARGET_ARCHITECTURE STREQUAL \"x64\")\n    set(ANGLE_CPU_BITNESS ANGLE_IS_64_BIT_CPU)\nelseif (VCPKG_TARGET_ARCHITECTURE STREQUAL \"arm\")\n    set(ANGLE_CPU_BITNESS ANGLE_IS_32_BIT_CPU)\nelseif (VCPKG_TARGET_ARCHITECTURE STREQUAL \"arm64\")\n    set(ANGLE_CPU_BITNESS ANGLE_IS_64_BIT_CPU)\nelse()\n    message(FATAL_ERROR \"Unsupported architecture: ${VCPKG_TARGET_ARCHITECTURE}\")\nendif()\n\nset(ANGLE_USE_D3D11_COMPOSITOR_NATIVE_WINDOW \"OFF\")\nif (VCPKG_TARGET_IS_WINDOWS OR VCPKG_TARGET_IS_UWP)\n  set(ANGLE_BUILDSYSTEM_PORT \"Win\")\n  if (NOT VCPKG_TARGET_IS_MINGW)\n    set(ANGLE_USE_D3D11_COMPOSITOR_NATIVE_WINDOW \"ON\")\n  endif()\nelseif (VCPKG_TARGET_IS_OSX)\n  set(ANGLE_BUILDSYSTEM_PORT \"Mac\")\nelseif (VCPKG_TARGET_IS_LINUX)\n  set(ANGLE_BUILDSYSTEM_PORT \"Linux\")\nelse()\n  # default other platforms to \"Linux\" config\n  set(ANGLE_BUILDSYSTEM_PORT \"Linux\")\nendif()\n\nset(USE_METAL OFF)\nif (\"metal\" IN_LIST FEATURES)\n    set(USE_METAL ON)\nendif()\n\n# chromium/7258\nset(ANGLE_COMMIT d9fc4a372074b1079c193c422fc4a180e79b6636)\nset(ANGLE_VERSION 7258)\nset(ANGLE_SHA512 483f29b6eaac5c657a3aeb238e5da48b9dd92aaa0b5eb3b4f95ebd771360cea84249ef6870dac9e1fc3b6f6c8686fa46a7a45a89a912f9b4fc258575065a28c7)\nset(ANGLE_THIRDPARTY_ZLIB_COMMIT 4028ebf8710ee39d2286cb0f847f9b95c59f84d8)\n\nvcpkg_from_github(\n    OUT_SOURCE_PATH SOURCE_PATH\n    REPO google/angle\n    REF ${ANGLE_COMMIT}\n    SHA512 ${ANGLE_SHA512}\n    # On update check headers against opengl-registry\n    PATCHES\n        001-fix-builder-error.patch\n)\n\n# Generate angle_commit.h\nset(ANGLE_COMMIT_HASH_SIZE 12)\nstring(SUBSTRING \"${ANGLE_COMMIT}\" 0 ${ANGLE_COMMIT_HASH_SIZE} ANGLE_COMMIT_HASH)\nset(ANGLE_COMMIT_DATE \"invalid-date\")\nset(ANGLE_REVISION \"${ANGLE_VERSION}\")\nconfigure_file(\"${CMAKE_CURRENT_LIST_DIR}/angle_commit.h.in\" \"${SOURCE_PATH}/angle_commit.h\" @ONLY)\nconfigure_file(\"${CMAKE_CURRENT_LIST_DIR}/angle_commit.h.in\" \"${SOURCE_PATH}/src/common/angle_commit.h\" @ONLY)\n\n# Generate ANGLEShaderProgramVersion.h.in\n# FIXME: ANGLE's build system hashes the renderer files to determine the program version hash.\n#        For now, we'll just use the ANGLE commit hash.\n#        See: https://github.com/google/angle/commit/82826be01fcc4d02a637312f4df3ba97e74f7226#diff-81195814d06b98e6258a63901769078f42c522448b2847a33bd51e24ac9faef6\nset(ANGLE_PROGRAM_VERSION_HASH_SIZE 12)\nstring(SUBSTRING \"${ANGLE_COMMIT}\" 0 ${ANGLE_PROGRAM_VERSION_HASH_SIZE} ANGLE_PROGRAM_VERSION)\nconfigure_file(\"${CMAKE_CURRENT_LIST_DIR}/ANGLEShaderProgramVersion.h.in\" \"${SOURCE_PATH}/ANGLEShaderProgramVersion.h\" @ONLY)\nconfigure_file(\"${CMAKE_CURRENT_LIST_DIR}/ANGLEShaderProgramVersion.h.in\" \"${SOURCE_PATH}/src/common/ANGLEShaderProgramVersion.h\" @ONLY)\n\nfile(COPY \"${CMAKE_CURRENT_LIST_DIR}/unofficial-angle-config.cmake\" DESTINATION \"${SOURCE_PATH}\")\n\nset(ANGLE_WEBKIT_BUILDSYSTEM_COMMIT \"0742522b24152262b04913242cb0b3c48de92ba0\")\n\n# Download WebKit gni-to-cmake.py conversion script\nvcpkg_download_distfile(GNI_TO_CMAKE_PY\n    URLS \"https://github.com/WebKit/WebKit/raw/${ANGLE_WEBKIT_BUILDSYSTEM_COMMIT}/Source/ThirdParty/ANGLE/gni-to-cmake.py\"\n    FILENAME \"gni-to-cmake.py\"\n    SHA512 cf9dab1b59cd44b9ce05a2dc4636115e770dfe7d5cfbd90c3fef659628ac8155c57b866480f7cfe9a0afeb31ff5ce5eed74473f386120a7fc5910e8b032bd61d\n)\n\n# Generate CMake files from GN / GNI files\nx_vcpkg_get_python_packages(PYTHON_VERSION \"3\" OUT_PYTHON_VAR \"PYTHON3\" PACKAGES ply)\n\nset(_root_gni_files_to_convert\n  \"compiler.gni Compiler.cmake\"\n  \"libGLESv2.gni GLESv2.cmake\"\n)\nset(_renderer_gn_files_to_convert\n  \"libANGLE/renderer/d3d/BUILD.gn D3D.cmake\"\n  \"libANGLE/renderer/gl/BUILD.gn GL.cmake\"\n  \"libANGLE/renderer/metal/BUILD.gn Metal.cmake\"\n)\n\nforeach(_root_gni_file IN LISTS _root_gni_files_to_convert)\n  separate_arguments(_file_values UNIX_COMMAND \"${_root_gni_file}\")\n  list(GET _file_values 0 _src_gn_file)\n  list(GET _file_values 1 _dst_file)\n  vcpkg_execute_required_process(\n      COMMAND \"${PYTHON3}\" \"${GNI_TO_CMAKE_PY}\" \"src/${_src_gn_file}\" \"${_dst_file}\"\n      WORKING_DIRECTORY \"${SOURCE_PATH}\"\n      LOGNAME \"gni-to-cmake-${_dst_file}-${TARGET_TRIPLET}\"\n  )\nendforeach()\n\nforeach(_renderer_gn_file IN LISTS _renderer_gn_files_to_convert)\n  separate_arguments(_file_values UNIX_COMMAND \"${_renderer_gn_file}\")\n  list(GET _file_values 0 _src_gn_file)\n  list(GET _file_values 1 _dst_file)\n  get_filename_component(_src_dir \"${_src_gn_file}\" DIRECTORY)\n  vcpkg_execute_required_process(\n      COMMAND \"${PYTHON3}\" \"${GNI_TO_CMAKE_PY}\" \"src/${_src_gn_file}\" \"${_dst_file}\" --prepend \"src/${_src_dir}/\"\n      WORKING_DIRECTORY \"${SOURCE_PATH}\"\n      LOGNAME \"gni-to-cmake-${_dst_file}-${TARGET_TRIPLET}\"\n  )\nendforeach()\n\n# Fetch additional CMake files from WebKit ANGLE buildsystem\nvcpkg_download_distfile(WK_ANGLE_INCLUDE_CMAKELISTS\n    URLS \"https://github.com/WebKit/WebKit/raw/${ANGLE_WEBKIT_BUILDSYSTEM_COMMIT}/Source/ThirdParty/ANGLE/include/CMakeLists.txt\"\n    FILENAME \"include_CMakeLists.txt\"\n    SHA512 a7ddf3c6df7565e232f87ec651cc4fd84240b8866609e23e3e6e41d22532fd34c70e0f3b06120fd3d6d930ca29c1d0d470d4c8cb7003a66f8c1a840a42f32949\n)\nconfigure_file(\"${WK_ANGLE_INCLUDE_CMAKELISTS}\" \"${SOURCE_PATH}/include/CMakeLists.txt\" COPYONLY)\n\n# Copy additional custom CMake buildsystem into appropriate folders\nfile(GLOB MAIN_BUILDSYSTEM \"${CMAKE_CURRENT_LIST_DIR}/cmake-buildsystem/CMakeLists.txt\" \"${CMAKE_CURRENT_LIST_DIR}/cmake-buildsystem/*.cmake\")\nfile(COPY ${MAIN_BUILDSYSTEM} DESTINATION \"${SOURCE_PATH}\")\nfile(GLOB MODULES \"${CMAKE_CURRENT_LIST_DIR}/cmake-buildsystem/cmake/*.cmake\")\nfile(COPY ${MODULES} DESTINATION \"${SOURCE_PATH}/cmake\")\n\nfunction(checkout_in_path PATH URL REF)\n    vcpkg_from_git(\n        OUT_SOURCE_PATH DEP_SOURCE_PATH\n        URL \"${URL}\"\n        REF \"${REF}\"\n    )\n    if (CMAKE_HOST_WIN32)\n        file(COPY \"${DEP_SOURCE_PATH}/\" DESTINATION \"${PATH}\")\n    else()\n        file(RENAME \"${DEP_SOURCE_PATH}\" \"${PATH}\")\n    endif()\n    file(REMOVE_RECURSE \"${DEP_SOURCE_PATH}\")\nendfunction()\n\ncheckout_in_path(\n    \"${SOURCE_PATH}/third_party/zlib\"\n    \"https://chromium.googlesource.com/chromium/src/third_party/zlib\"\n    \"${ANGLE_THIRDPARTY_ZLIB_COMMIT}\"\n)\n\nvcpkg_cmake_configure(\n    SOURCE_PATH \"${SOURCE_PATH}\"\n    OPTIONS_DEBUG -DDISABLE_INSTALL_HEADERS=1\n    OPTIONS\n        \"-D${ANGLE_CPU_BITNESS}=1\"\n        \"-DPORT=${ANGLE_BUILDSYSTEM_PORT}\"\n        \"-DANGLE_USE_D3D11_COMPOSITOR_NATIVE_WINDOW=${ANGLE_USE_D3D11_COMPOSITOR_NATIVE_WINDOW}\"\n        \"-DVCPKG_TARGET_IS_WINDOWS=${VCPKG_TARGET_IS_WINDOWS}\"\n        \"-DUSE_METAL=${USE_METAL}\"\n)\n\nvcpkg_cmake_install()\n\nvcpkg_cmake_config_fixup(CONFIG_PATH share/unofficial-angle PACKAGE_NAME unofficial-angle)\n\nvcpkg_copy_pdbs()\n\nfile(INSTALL \"${SOURCE_PATH}/LICENSE\" DESTINATION \"${CURRENT_PACKAGES_DIR}/share/${PORT}\" RENAME copyright)\n\nfile(REMOVE_RECURSE \"${CURRENT_PACKAGES_DIR}/debug/include\")\n# Remove empty directories inside include directory\nfile(GLOB directory_children RELATIVE \"${CURRENT_PACKAGES_DIR}/include\" \"${CURRENT_PACKAGES_DIR}/include/*\")\nforeach(directory_child ${directory_children})\n    if(IS_DIRECTORY \"${CURRENT_PACKAGES_DIR}/include/${directory_child}\")\n        file(GLOB_RECURSE subdirectory_children \"${CURRENT_PACKAGES_DIR}/include/${directory_child}/*\")\n        if(\"${subdirectory_children}\" STREQUAL \"\")\n            file(REMOVE_RECURSE \"${CURRENT_PACKAGES_DIR}/include/${directory_child}\")\n        endif()\n    endif()\nendforeach()\nunset(subdirectory_children)\nunset(directory_child)\nunset(directory_children)\n\nfile(INSTALL \"${CMAKE_CURRENT_LIST_DIR}/usage\" DESTINATION \"${CURRENT_PACKAGES_DIR}/share/${PORT}\")\n",
+          "encoding": "utf-8",
+          "sha": "77bdee25d4e73c268c4d52ea2c2c34af55fb4e28",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/angle/portfile.cmake",
+          "display_title": "portfile.cmake"
+        },
+        "recordedPortTree": {
+          "sha": "165d665818d070431c2889ac2b8f97f006948924",
+          "url": "https://api.github.com/repos/microsoft/vcpkg/git/trees/165d665818d070431c2889ac2b8f97f006948924",
+          "tree": [
+            {
+              "path": "001-fix-builder-error.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "e0844d7d4336b3914b3c1945355b2953ee1dafe4",
+              "size": 686,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/e0844d7d4336b3914b3c1945355b2953ee1dafe4"
+            },
+            {
+              "path": "001-fix-uwp.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "cba68d69be7503851daca8a17ff84236242a5d57",
+              "size": 1450,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/cba68d69be7503851daca8a17ff84236242a5d57"
+            },
+            {
+              "path": "002-fix-builder-error.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "a6d56ac62f9d099134638933a49c27b8a10e7565",
+              "size": 974,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/a6d56ac62f9d099134638933a49c27b8a10e7565"
+            },
+            {
+              "path": "003-fix-mingw.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "304d822ec58a86a23de732b265cd04b4cf745386",
+              "size": 823,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/304d822ec58a86a23de732b265cd04b4cf745386"
+            },
+            {
+              "path": "ANGLEShaderProgramVersion.h.in",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "f288d0cb8f64a53626031492748f9c76be75e715",
+              "size": 140,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/f288d0cb8f64a53626031492748f9c76be75e715"
+            },
+            {
+              "path": "angle_commit.h.in",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "e0dc7874155cc82961b21af0b2821ee67247d510",
+              "size": 212,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/e0dc7874155cc82961b21af0b2821ee67247d510"
+            },
+            {
+              "path": "cmake-buildsystem",
+              "mode": "040000",
+              "type": "tree",
+              "sha": "15625840b05532470b2e4291dc97c08d2245168f",
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/trees/15625840b05532470b2e4291dc97c08d2245168f"
+            },
+            {
+              "path": "portfile.cmake",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "77bdee25d4e73c268c4d52ea2c2c34af55fb4e28",
+              "size": 7962,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/77bdee25d4e73c268c4d52ea2c2c34af55fb4e28"
+            },
+            {
+              "path": "unofficial-angle-config.cmake",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "f0b712b9904d73da7373476ac25aa30998521d7e",
+              "size": 125,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/f0b712b9904d73da7373476ac25aa30998521d7e"
+            },
+            {
+              "path": "usage",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "b1fdc146a148c317eb3686263c70158a114ff942",
+              "size": 320,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/b1fdc146a148c317eb3686263c70158a114ff942"
+            },
+            {
+              "path": "vcpkg.json",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "6b980defca1574b60740e9ed93685fccdc3811ab",
+              "size": 1145,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/6b980defca1574b60740e9ed93685fccdc3811ab"
+            }
+          ],
+          "truncated": false
+        }
+      },
+      "zlib": {
+        "manifest": {
+          "content": "{\n  \"name\": \"zlib\",\n  \"version\": \"1.3.1\",\n  \"description\": \"A compression library\",\n  \"homepage\": \"https://www.zlib.net/\",\n  \"license\": \"Zlib\",\n  \"dependencies\": [\n    {\n      \"name\": \"vcpkg-cmake\",\n      \"host\": true\n    }\n  ]\n}\n",
+          "encoding": "utf-8",
+          "sha": "f54a99d43e600ceea175205850560f6dd37ea6cf",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/zlib/vcpkg.json",
+          "display_title": "vcpkg.json"
+        },
+        "recipe": {
+          "content": "# When this port is updated, the minizip port should be updated at the same time\nvcpkg_from_github(\n    OUT_SOURCE_PATH SOURCE_PATH\n    REPO madler/zlib\n    REF v${VERSION}\n    SHA512 8c9642495bafd6fad4ab9fb67f09b268c69ff9af0f4f20cf15dfc18852ff1f312bd8ca41de761b3f8d8e90e77d79f2ccacd3d4c5b19e475ecf09d021fdfe9088\n    HEAD_REF master\n    PATCHES\n        0001-Prevent-invalid-inclusions-when-HAVE_-is-set-to-0.patch\n        0002-build-static-or-shared-not-both.patch\n        0003-android-and-mingw-fixes.patch\n)\n\n# This is generated during the cmake build\nfile(REMOVE \"${SOURCE_PATH}/zconf.h\")\n\nvcpkg_cmake_configure(\n    SOURCE_PATH \"${SOURCE_PATH}\"\n    OPTIONS\n        -DSKIP_INSTALL_FILES=ON\n        -DZLIB_BUILD_EXAMPLES=OFF\n    OPTIONS_DEBUG\n        -DSKIP_INSTALL_HEADERS=ON\n)\n\nvcpkg_cmake_install()\nfile(INSTALL \"${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake\" DESTINATION \"${CURRENT_PACKAGES_DIR}/share/${PORT}\")\n\n# Install the pkgconfig file\nif(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL \"release\")\n    if(VCPKG_TARGET_IS_WINDOWS)\n        vcpkg_replace_string(\"${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/zlib.pc\" \"-lz\" \"-lzlib\")\n    endif()\n    file(COPY \"${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/zlib.pc\" DESTINATION \"${CURRENT_PACKAGES_DIR}/lib/pkgconfig\")\nendif()\nif(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL \"debug\")\n    if(VCPKG_TARGET_IS_WINDOWS)\n        vcpkg_replace_string(\"${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/zlib.pc\" \"-lz\" \"-lzlibd\")\n    endif()\n    file(COPY \"${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-dbg/zlib.pc\" DESTINATION \"${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig\")\nendif()\n\nvcpkg_fixup_pkgconfig()\nvcpkg_copy_pdbs()\n\nif(VCPKG_LIBRARY_LINKAGE STREQUAL \"static\")\n    vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/include/zconf.h\" \"ifdef ZLIB_DLL\" \"if 0\")\nelse()\n    vcpkg_replace_string(\"${CURRENT_PACKAGES_DIR}/include/zconf.h\" \"ifdef ZLIB_DLL\" \"if 1\")\nendif()\n\nfile(COPY \"${CMAKE_CURRENT_LIST_DIR}/usage\" DESTINATION \"${CURRENT_PACKAGES_DIR}/share/${PORT}\")\nfile(INSTALL \"${SOURCE_PATH}/LICENSE\" DESTINATION \"${CURRENT_PACKAGES_DIR}/share/${PORT}\" RENAME copyright)\n",
+          "encoding": "utf-8",
+          "sha": "61733a4b2ea798a37a6abbbbb8e11475b8849135",
+          "display_url": "https://github.com/microsoft/vcpkg/blob/b1b19307e2d2ec1eefbdb7ea069de7d4bcd31f01/ports/zlib/portfile.cmake",
+          "display_title": "portfile.cmake"
+        },
+        "recordedPortTree": {
+          "sha": "3f05e04b9aededb96786a911a16193cdb711f0c9",
+          "url": "https://api.github.com/repos/microsoft/vcpkg/git/trees/3f05e04b9aededb96786a911a16193cdb711f0c9",
+          "tree": [
+            {
+              "path": "0001-Prevent-invalid-inclusions-when-HAVE_-is-set-to-0.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "8fe2b2f5a6683c9f4c93435a6a5093933a0b17c4",
+              "size": 1417,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/8fe2b2f5a6683c9f4c93435a6a5093933a0b17c4"
+            },
+            {
+              "path": "0002-build-static-or-shared-not-both.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "60e3f8d39d93b9916aec1bebc995524b317e15ce",
+              "size": 2235,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/60e3f8d39d93b9916aec1bebc995524b317e15ce"
+            },
+            {
+              "path": "0003-android-and-mingw-fixes.patch",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "a051372ca51100211a85dc4eb2f8d2df85b93fd1",
+              "size": 1096,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/a051372ca51100211a85dc4eb2f8d2df85b93fd1"
+            },
+            {
+              "path": "portfile.cmake",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "61733a4b2ea798a37a6abbbbb8e11475b8849135",
+              "size": 2156,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/61733a4b2ea798a37a6abbbbb8e11475b8849135"
+            },
+            {
+              "path": "usage",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "39d8618221a6fc910a0a3e4c5a4d593e82f2be56",
+              "size": 148,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/39d8618221a6fc910a0a3e4c5a4d593e82f2be56"
+            },
+            {
+              "path": "vcpkg-cmake-wrapper.cmake",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "8624b70867e9c82aa7c18a222da3b01367af7f08",
+              "size": 709,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/8624b70867e9c82aa7c18a222da3b01367af7f08"
+            },
+            {
+              "path": "vcpkg.json",
+              "mode": "100644",
+              "type": "blob",
+              "sha": "f54a99d43e600ceea175205850560f6dd37ea6cf",
+              "size": 230,
+              "url": "https://api.github.com/repos/microsoft/vcpkg/git/blobs/f54a99d43e600ceea175205850560f6dd37ea6cf"
+            }
+          ],
+          "truncated": false
+        }
+      }
+    },
+    "resourceLicenseReferences": {
+      "controllerDatabase": "https://github.com/mdqinc/SDL_GameControllerDB/blob/master/LICENSE",
+      "controllerDatabaseLicenseBlob": "23abb73f2b67d1f5b5b9b4d6c949654d525173bb",
+      "dirent": "https://github.com/tronkko/dirent/blob/master/LICENSE",
+      "direntLicenseBlob": "af04360668d8913aaeba7ae44cf71d5dc22639ea"
+    }
+  },
+  "unresolvedEvidence": "unresolved-evidence.json"
+}
