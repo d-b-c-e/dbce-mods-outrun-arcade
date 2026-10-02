@@ -89,3 +89,6 @@ Before release, verify the staged package, not the live installation:
   does not update local checkouts or settings.
 
 The repository rename is complete. This documentation does not publish a release.
+
+For downstream package identity and a read-only ROM-free staging gate, see
+[release staging and verification](RELEASE-STAGING.md).
