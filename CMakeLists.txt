@@ -595,10 +595,14 @@ if(INSTALL_MANPAGE AND UNIX AND MANPAGE_SOURCE)
 endif()
 
 # Install upstream license and third-party notices
-install(FILES "${CMAKE_SOURCE_DIR}/license.txt"
+install(FILES "${CMAKE_SOURCE_DIR}/docs/license.txt"
+              "${CMAKE_SOURCE_DIR}/docs/CannonBall-SE-license.txt"
+              "${CMAKE_SOURCE_DIR}/docs/license_mame.txt"
+              "${CMAKE_SOURCE_DIR}/docs/license_atari800.txt"
         DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")
-if(EXISTS "${CMAKE_SOURCE_DIR}/THIRD-PARTY-NOTICES.md")
-  install(FILES "${CMAKE_SOURCE_DIR}/THIRD-PARTY-NOTICES.md"
+if(EXISTS "${CMAKE_SOURCE_DIR}/docs/THIRD-PARTY-NOTICES.md")
+  install(FILES "${CMAKE_SOURCE_DIR}/docs/THIRD-PARTY-NOTICES.md"
+                "${CMAKE_SOURCE_DIR}/docs/LGPL-2.1.txt"
           DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/licenses")
 endif()
 if(EXISTS "${CMAKE_SOURCE_DIR}/licenses")

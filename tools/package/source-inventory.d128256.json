@@ -1,0 +1,751 @@
+{
+  "schema": "dbce-outrun-arcade-source-inventory-v1",
+  "repository": "d-b-c-e/dbce-mods-outrun-arcade",
+  "commit": "d128256afa2c9e7ac4dc164125c30e95a7d1ab3c",
+  "tree": "559f22a398640674b30c1fe6950f185644486b33",
+  "excludedPaths": [
+    "roms/roms.txt"
+  ],
+  "files": [
+    {
+      "path": "CHANGELOG",
+      "blob": "43e004703000d7b05d50101d932223ae346242f8",
+      "mode": "100644"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "blob": "256d1762087b92579fa174e826a248be530c3891",
+      "mode": "100755"
+    },
+    {
+      "path": "CMakePresets.json",
+      "blob": "a5c35ae145e02d3e313c6b9622ff85015c6c5fb1",
+      "mode": "100755"
+    },
+    {
+      "path": "README.md",
+      "blob": "59ee2ffae0de6621bfcacfca376fc12b367e08c3",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/Blargg-NTSC-Filter-Concepts-and-Implementation.txt",
+      "blob": "c8497838e22b2dd338cb092cfcfd9af7384c6dc9",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/CannonBall-SE-Screen-Filters.txt",
+      "blob": "3b9a361e01082cadc32ab6b981d8ca78a506e1a5",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/CannonBall-SE-license.txt",
+      "blob": "7685146c3347575223fec4b810c6d88561e4ab4a",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/Compiling-On-Windows.txt",
+      "blob": "80c3563734cef093bcb61662bf9251a0239c1907",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/LGPL-2.1.txt",
+      "blob": "52fb9a9ab9ab48c027c691f2638ace5bd238f8be",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/OUTRUN-ARCADE-SETUP.md",
+      "blob": "c8e7ed71266d168481b76a4df4ba68dd17d1e283",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/THIRD-PARTY-NOTICES.md",
+      "blob": "3da0bf3a451f080caa03cb23e7dce92f0d4c6ad0",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/cannonball-se.6",
+      "blob": "f5ca78198f20955592f0757d396eba3e128c8f27",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/known-bugs.txt",
+      "blob": "ff28d73753062d24decbd6547d341e7e01c4b311",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/license.txt",
+      "blob": "094b8c703b6afa742710f9ad0de2f6597eed8183",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/license_atari800.txt",
+      "blob": "e85dfbea7376864baa21a0035e0a75b9c1285127",
+      "mode": "100644"
+    },
+    {
+      "path": "docs/license_mame.txt",
+      "blob": "18358c535c95eba4e66125a1443a94dda538e576",
+      "mode": "100644"
+    },
+    {
+      "path": "install.sh",
+      "blob": "9477e75cf27938e4f5a1650c34109a2052e7b1aa",
+      "mode": "100755"
+    },
+    {
+      "path": "res/Cannonball-Shader-Fragment-Fast.glsl",
+      "blob": "81ea310c40392db59bdc131606f4f691025e288d",
+      "mode": "100755"
+    },
+    {
+      "path": "res/Cannonball-Shader-Fragment.glsl",
+      "blob": "f94c66a3a29466ccc188d5667bd99302ad6267df",
+      "mode": "100755"
+    },
+    {
+      "path": "res/Cannonball-Shader-Vertex.glsl",
+      "blob": "96908cebaf0565c4ff875c015358cf4dfb7b141d",
+      "mode": "100755"
+    },
+    {
+      "path": "res/cannonball.ico",
+      "blob": "4f53bbc589204135a32e1ed5172e33739f900c27",
+      "mode": "100755"
+    },
+    {
+      "path": "res/cannonball.rc",
+      "blob": "e88e20ed89332e7d63630a1653949f19cab25d31",
+      "mode": "100755"
+    },
+    {
+      "path": "res/config.xml",
+      "blob": "7fed9bc4d7a06365a461c39c059c863d1b6fd6a1",
+      "mode": "100755"
+    },
+    {
+      "path": "res/gamecontrollerdb.txt",
+      "blob": "86d8bf317c5a2883e110430b77b8fc93644b8ca0",
+      "mode": "100644"
+    },
+    {
+      "path": "res/icon.png",
+      "blob": "b46dff8ddd1768f3f585122215f7cc9fe4593ffc",
+      "mode": "100755"
+    },
+    {
+      "path": "res/tilemap.bin",
+      "blob": "41c8a7d4d86b314824b6f097a7efa74e3147daa0",
+      "mode": "100755"
+    },
+    {
+      "path": "res/tilepatch.bin",
+      "blob": "2d588fc529732d1fa55a94d9657469aedde6b67d",
+      "mode": "100755"
+    },
+    {
+      "path": "screenshots/CannonBall-SE-Startline.jpg",
+      "blob": "226f2475ecab93cce1e4d4b0f867be51f3009323",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/directx/ffeedback.cpp",
+      "blob": "c14bfcec18eee1b12edcf8c1bba413e4478e06dc",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/directx/ffeedback.hpp",
+      "blob": "f09e424035f035a21da6ac9ac0372d22463be881",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/audio/commands.hpp",
+      "blob": "c6108ba1a3af2f04cd6b7f23bb03825aa4c57561",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/audio/osound.cpp",
+      "blob": "41c94a7847272112b316b88cb2763c6a94cb701c",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/audio/osound.hpp",
+      "blob": "c1382100b32a291e12bcd6435a93119780b43ef6",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/audio/osoundadr.hpp",
+      "blob": "cde2b77bcd4333916fe0151ec15f16d885c8a092",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/audio/osoundint.cpp",
+      "blob": "76d0a7a6e287c59474982cf8f393d2082b8cdc0c",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/audio/osoundint.hpp",
+      "blob": "595b5a5aec386682dc8b269e2bac9cda37b4a46b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/data/ozoom_lookup.hpp",
+      "blob": "7a7eead4f5c68607e86b287a2fef21fa67275256",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/data/sprite_pals.hpp",
+      "blob": "2999b8a41205bfc41866b0beb49c28777cec9e1b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oaddresses.hpp",
+      "blob": "31b7694eba5ec742a1e28246e66bbce1a5d3d92d",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oanimseq.cpp",
+      "blob": "87b50c6d1c5f184de50d04943df7f283da78422f",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oanimseq.hpp",
+      "blob": "b3312482225874b91cd4c8f45670f008f7c39187",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oanimsprite.hpp",
+      "blob": "91b6c1abef5ea22b2d6013121e710fd5942849be",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oattractai.cpp",
+      "blob": "026eb41e300cceb7b13f4e43e72bc064600d0a4a",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oattractai.hpp",
+      "blob": "c25388485a7f0240c642973d181b8f6698efaa2b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/obonus.cpp",
+      "blob": "f5326c75281e116c686d197c54a24c98439e43f6",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/obonus.hpp",
+      "blob": "e8ad13fb4f2efffb6842b760df7086dc760f6230",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ocrash.cpp",
+      "blob": "76601d6d5d2252db240caa40bd05a8512c71087d",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ocrash.hpp",
+      "blob": "412b171bd41c27e91eb59aca566821fba8240cea",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oentry.hpp",
+      "blob": "8b6741a868f29f3be997ed98893a5740736d3c99",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oferrari.cpp",
+      "blob": "8f4f0c55f40a831aecd49a277142cb4a6b306d92",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oferrari.hpp",
+      "blob": "d350d60e897c40bc52681df6a81d3574c9f1152a",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ohiscore.cpp",
+      "blob": "60dccbf90c5c121408bf007b6a288fbf22a0bf79",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ohiscore.hpp",
+      "blob": "fc71b22088ef8e36defe9ec4bebd0b41162f38d2",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ohud.cpp",
+      "blob": "f4c29d1c38eaf0485ab067718f592a4d8c0ab26a",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ohud.hpp",
+      "blob": "a13a33b466d1084e29bfbaadba6429533c2a4e3d",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oinitengine.cpp",
+      "blob": "4d620cfe71cdc25c1d26b4a6f7edce6c61b8d685",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oinitengine.hpp",
+      "blob": "d71439ea9e5ceb1b0e0bb4e9d30797efc64e4c9e",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oinputs.cpp",
+      "blob": "cc095900aca4cf08e6641dd2de16fb31ee742699",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oinputs.hpp",
+      "blob": "aad950a88672bd97c377b6231e850cf8f9cfa359",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/olevelobjs.cpp",
+      "blob": "f3bd599196a9c0be4e20c319a340ae024dab588d",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/olevelobjs.hpp",
+      "blob": "09113f8242a4722de18211a6469709497281f030",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ologo.cpp",
+      "blob": "e6ca0969dce42d169e43a032647878bcae64afc7",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ologo.hpp",
+      "blob": "4c32318e58087bb138b91a200555c90373c0e581",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/omap.cpp",
+      "blob": "d1011b2e9d3af9d5ea8aa482476375a2cdfe58f0",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/omap.hpp",
+      "blob": "edb0a889040bfad3b926c297f19106cec3870143",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/omusic.cpp",
+      "blob": "ad5e9dce00e196a26159e9987098ece72d1c011c",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/omusic.hpp",
+      "blob": "ecd0214ba23cee109a0093a27a812308f88af934",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ooutputs.cpp",
+      "blob": "743d834f9217b53ed1212d2acde04620bfcf77fe",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ooutputs.hpp",
+      "blob": "f710501d7d4339a57d9afc58de0cd1eeb534c25f",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/opalette.cpp",
+      "blob": "a42ca2e1a7d1d7c3c2c87ecd0eca231be5223a96",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/opalette.hpp",
+      "blob": "51b6391596de750aeb52757261b42b16d87baf82",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oroad.cpp",
+      "blob": "21c40ab3ab7c4f497c4261549ebb91e660378a31",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/oroad.hpp",
+      "blob": "0dc173e8cd597abcaedde602c8dd662255382e13",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/osmoke.cpp",
+      "blob": "7a123154f04c10afd8689e4f874b060b39db7774",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/osmoke.hpp",
+      "blob": "3629008de3a267f4f3bd4cf5ef61cc7418338bf9",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/osprite.cpp",
+      "blob": "520f3b2e1b3053de8d6baf7b60b445ce2af6198b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/osprite.hpp",
+      "blob": "cb0f0756e90256d5ab58748826a03bd338ae3744",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/osprites.cpp",
+      "blob": "7ec305a0e5b31bb4abaa395061000624563fb38e",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/osprites.hpp",
+      "blob": "45494c6b26861ebc482e764e9338048476fae7c3",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ostats.cpp",
+      "blob": "40a700c391fe2db2cb08a283df644f3ea315e23f",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/ostats.hpp",
+      "blob": "a9e46bc0e730a8c9cc56f6a0230b401aa9a453e2",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/otiles.cpp",
+      "blob": "752417c777da5fac39f6d13f94fce87eb7e59cff",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/otiles.hpp",
+      "blob": "d447c79959a8c209292c7b06fab13ab457591a74",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/otraffic.cpp",
+      "blob": "811e95a2352a877e6d0d149886de99a67ca1c6bd",
+      "mode": "100644"
+    },
+    {
+      "path": "src/main/engine/otraffic.hpp",
+      "blob": "aab1523fc16f5c351c955b5b60218cab7d72033f",
+      "mode": "100644"
+    },
+    {
+      "path": "src/main/engine/outils.cpp",
+      "blob": "c6dc1af0401497b12df6cd112c48150d4e0f486b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/outils.hpp",
+      "blob": "000cc6f7b75795bf403f6dba5b503523efa35c78",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/outrun.cpp",
+      "blob": "bac3f44d09fc9552aeb2212b06b6371eb9bff094",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/engine/outrun.hpp",
+      "blob": "e0113606738ea3661cde99d6397ebf67bcfbdc58",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/cabdiag.cpp",
+      "blob": "64c82b041d059b9f01544aac20a3ad0526fd2aaa",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/cabdiag.hpp",
+      "blob": "e8f0797b1754ebfb28428ab369558199361fa1b3",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/config.cpp",
+      "blob": "8316820fa71e323a0638e71e85552aad9084e28d",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/config.hpp",
+      "blob": "09f15b678883d78bcc03fb93731a6b701d48d6ea",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/menu.cpp",
+      "blob": "c8c31a596129ec3f371472985f085052c22c2f42",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/menu.hpp",
+      "blob": "3f6756a205859842bdf12708e417ac0b2777590e",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/menulabels.hpp",
+      "blob": "b94baa43232664c1b144c352aba8fac8de1fa1d7",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/ttrial.cpp",
+      "blob": "8a1055e90a570f5aefa1d3a6e41bfa8c2d43a0d2",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/ttrial.hpp",
+      "blob": "c1a6da96ca55112aa3d58ef80ed6dba94fd32729",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/frontend/xml_parser.h",
+      "blob": "48168a4b9df778e5a232032a8112a599144a61e2",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/globals.hpp",
+      "blob": "68f51035c498cc4158590b44af459ba98d8436c1",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwaudio/segapcm.cpp",
+      "blob": "7653ccc91ad075760189ae88974384d719fdc7c8",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwaudio/segapcm.hpp",
+      "blob": "2314da45601c55d634b3fff9aa9d456c6bbd45dd",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwaudio/soundchip.cpp",
+      "blob": "f3cf463e43bcc6bf42c29bc69ae3dcd7dbeda738",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwaudio/soundchip.hpp",
+      "blob": "bcf5b69fb8a9bfbe4f514d975f4a028fab767778",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwaudio/ym2151.cpp",
+      "blob": "844370df745023c5e77fb80227c5fbe1227499b2",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwaudio/ym2151.hpp",
+      "blob": "2198192db1105d1c250073c784ad2725f1b75542",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwvideo/hwroad.cpp",
+      "blob": "647322caac08a5ad952e47866b799ddc39dcbac6",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwvideo/hwroad.hpp",
+      "blob": "93972b5dbb8600f10cc540fbbf0357c7c5ff6419",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwvideo/hwsprites.cpp",
+      "blob": "54ba6375d8c2de09b43f8988569584d14b04b5a2",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwvideo/hwsprites.hpp",
+      "blob": "396922b62896bd5942a5cc5d95aa6460a36577e0",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwvideo/hwtiles.cpp",
+      "blob": "fe3cb67b6b05989a7300a786e6151100fa35934e",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/hwvideo/hwtiles.hpp",
+      "blob": "2fd3d6ce47611f90240d7c631c3410d7fe181bdf",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/main.cpp",
+      "blob": "4af5a13ce6834bed3e85061b96da6d3f9ce2ff7d",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/main.hpp",
+      "blob": "d2813ae844e23f1cc0245d1c304f0fa9b9587a90",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/romloader.cpp",
+      "blob": "e0ca5a9e4826ac94b269aaf5df76d8adeb29f635",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/romloader.hpp",
+      "blob": "ba521970ad0ca94eb9deebafcc0359307c7b5696",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/roms.cpp",
+      "blob": "e56935a309513ffe1addc027a8ca1b4d2ce5bbe6",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/roms.hpp",
+      "blob": "a3c7516ac5215f0cb3be3ccef3899523be1e5aa9",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/audio.cpp",
+      "blob": "b0264f1ff753a0486f751f1b21f1af17efec723b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/audio.hpp",
+      "blob": "3c7b28c2f896626f2e5f5e366c1e61beb9a51f43",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/gl_backend.hpp",
+      "blob": "a23230649c8f027fe97b01c96b5fb2585f7f9df1",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/input.cpp",
+      "blob": "68cba6bdd4ee30fbf8219717fe66321a133844d2",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/input.hpp",
+      "blob": "4b98494c670185dfbcdc55ee9af57912c75aec22",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/renderbase.cpp",
+      "blob": "6824ee3376980d0fa1150bc051f1996e6d0e6e11",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/renderbase.hpp",
+      "blob": "f738408ac895cd737677c4494528a9d084dacd2a",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/rendersurface.cpp",
+      "blob": "236c2c12d9ed23a09d7743bf90b241313f945f97",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/rendersurface.hpp",
+      "blob": "d4bf58fc8bbae0d6b02b1178dfcb1bd58ca9aea5",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/snes_ntsc.cpp",
+      "blob": "d9db508c3113c0a624b45a48cb6b31eb1e251f08",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/snes_ntsc.h",
+      "blob": "8164f0127a11adc7326dc049932d2c1b6183ef6e",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/snes_ntsc.txt",
+      "blob": "643994a316356905598f299f8243a34e7f55d63b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/snes_ntsc_config.h",
+      "blob": "e0c2d01dfd9854ff760fa0d7909bcf64d4492931",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/snes_ntsc_impl.h",
+      "blob": "bc31a52cb05e37e2de67c4b13dfedbe583f39eac",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/timer.cpp",
+      "blob": "14f5c696e07c64ad6f755f003479d30ddeff9c92",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/timer.hpp",
+      "blob": "ea4426259bf5812e6580b5f02cbe5b3579746884",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/wav123.cpp",
+      "blob": "aa12bbce1d2c817c2c78f5847950a53aefc253a4",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/sdl2/wav123.hpp",
+      "blob": "f68ffa1a994549394befa5e80bc9f84520ea1231",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/setup.hpp",
+      "blob": "9882ec91d53fa65f108e1284748c409ecf86bde1",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/singlecorepi.hpp",
+      "blob": "6529bc1a60f043f16d9314bc71fa729c7abc1d3b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/stdint.hpp",
+      "blob": "1fdbd44337d0dced5a7047840b08c5e37350b3e6",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/trackloader.cpp",
+      "blob": "8b54d61100182de64c1c08096c99a8cf7c4f066b",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/trackloader.hpp",
+      "blob": "76f82d16ac8f7979f1e42dbc395f430579d7eefe",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/utils.cpp",
+      "blob": "05dbc346ee6eb96e788f1ea291f0f568c4f9941a",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/utils.hpp",
+      "blob": "4d14de356187109a5ad18e7ca7cae0c26f1abdfb",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/video.cpp",
+      "blob": "a42a5cefd3eef286250103a107b4f2a7a0449d6d",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/video.hpp",
+      "blob": "3fd834edb974cb28152d72da3b5b808de634a4df",
+      "mode": "100755"
+    },
+    {
+      "path": "src/main/windirent.h",
+      "blob": "e2288649d290987637b88c1b5e53d31227ee7f93",
+      "mode": "100755"
+    },
+    {
+      "path": "vcpkg-configuration.json",
+      "blob": "d3d1bf9130030aa0c3e7b442ecdccfcadeaea88d",
+      "mode": "100755"
+    },
+    {
+      "path": "vcpkg.json",
+      "blob": "9ba6c110305cf39c081a09149e44f919c5a7409c",
+      "mode": "100755"
+    }
+  ]
+}
