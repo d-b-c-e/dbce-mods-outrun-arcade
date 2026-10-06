@@ -181,6 +181,14 @@ struct smartypi_settings_t
     int cabinet;      // Cabinet Type
 };
 
+// Forza Horizon "Data Out" telemetry (DBCE STD-016): on by default.
+struct telemetry_settings_t
+{
+    int enabled;
+    std::string host;
+    int port;
+};
+
 struct engine_settings_t
 {
     int dip_time;
@@ -218,6 +226,7 @@ public:
     engine_settings_t      engine;
     ttrial_settings_t      ttrial;
     smartypi_settings_t    smartypi;
+    telemetry_settings_t   telemetry;
 
     int master_break_key = SDLK_ESCAPE;
 

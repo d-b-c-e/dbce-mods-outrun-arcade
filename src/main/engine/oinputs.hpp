@@ -30,6 +30,9 @@ public:
     // Steering Input
     int16_t input_steering;
 
+    // DBCE telemetry: current brake input (0..255).
+    int16_t brake_input() const { return input_brake; }
+
     // Processed / Adjusted Values
     int16_t steering_adjust;
     int16_t acc_adjust;

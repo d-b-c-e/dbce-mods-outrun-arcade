@@ -40,6 +40,10 @@
 // Direct X Haptic Support.
 // Fine to include on non-windows builds as dummy functions used.
 #include "directx/ffeedback.hpp"
+#include "telemetry/forza.hpp"
+#include "engine/oferrari.hpp"
+#include "engine/oinitengine.hpp"
+#include "engine/ostats.hpp"
 
 // Multi-threading support
 // This implementation runs three parts of frame rendering in parallel to enable 60fps operation even on
@@ -196,6 +200,7 @@ static void quit_func(int code)
     audio.stop_audio();
     input.close_joy();
     forcefeedback::close();
+    telemetry::close();
     if (menu) delete menu;
     SDL_Quit();
     _Exit(code); // exit without invoking atexit bindings; this prevents seg fault caused by uninitialised SDLgpu.
@@ -265,6 +270,36 @@ static void process_events(void)
     }
 }
 
+// DBCE: one Forza Horizon telemetry packet per engine tick (30 Hz), from the engine's own state.
+static void send_telemetry()
+{
+    static float distance = 0, race_time = 0;
+    const int8_t s = outrun.game_state;
+    const bool driving = s >= GS_START1 && s <= GS_INGAME;   // countdown counts as race on (STD-016)
+    if (cannonball::state != STATE_GAME || s <= GS_ATTRACT) { distance = 0; race_time = 0; }
+    const uint16_t kmh = (uint16_t) (oinitengine.car_increment >> 16);
+    if (cannonball::state == STATE_GAME && s == GS_INGAME)
+    {
+        distance  += (kmh / 3.6f) / 30.0f;
+        race_time += 1.0f / 30.0f;
+    }
+    telemetry::Frame f;
+    f.race_on      = cannonball::state == STATE_GAME && driving;
+    f.timestamp_ms = SDL_GetTicks();
+    f.speed_kmh    = kmh;
+    f.revs         = (uint16_t) (oferrari.rev_stop_flag ? oferrari.revs_post_stop : oferrari.revs >> 16);
+    f.gear         = oinputs.gear ? 2 : 1;
+    f.accel        = (uint8_t) std::max(0, std::min(255, (int) oinputs.input_acc));
+    f.brake        = (uint8_t) std::max(0, std::min(255, (int) oinputs.brake_input()));
+    f.steering     = oinputs.input_steering;
+    f.wheels_off   = oferrari.wheel_state;
+    f.car_x        = oinitengine.car_x_pos;
+    f.distance_m   = distance;
+    f.race_time_s  = race_time;
+    f.stage        = (uint8_t) std::max(0, (int) ostats.cur_stage);
+    telemetry::tick(f);
+}
+
 static void tick()
 {
     frame++;
@@ -291,6 +326,7 @@ static void tick()
 
             if (!pause_engine || input.has_pressed(Input::STEP))
                 outrun.tick(tick_frame);
+            if (tick_frame) send_telemetry();
 
             if (tick_frame) input.frame_done();
         }
@@ -808,6 +844,7 @@ int main(int argc, char* argv[]) {
 
     if (ok) {
         config.load(); // Load config.XML file, also loads custom music files
+    telemetry::init(config.telemetry.enabled != 0, config.telemetry.host, config.telemetry.port);
         ok = roms.load_revb_roms(config.sound.fix_samples);
 
         if (cannonball::singlecore_detect || cannonball::singlecore_mode) {

@@ -277,6 +277,11 @@ void Config::load()
     smartypi.ouputs  = cfg.get_int("smartypi.outputs",                  1);
     smartypi.cabinet = cfg.get_int("smartypi.cabinet",                  1);
 
+    // DBCE: Forza Horizon Data Out telemetry, on by default (STD-016)
+    telemetry.enabled = cfg.get_int("telemetry.<xmlattr>.enabled",     1);
+    telemetry.host    = cfg.get_string("telemetry.host",               "127.0.0.1");
+    telemetry.port    = cfg.get_int("telemetry.port",                  8000);
+
     // ------------------------------------------------------------------------
     // Controls
     // ------------------------------------------------------------------------
@@ -435,6 +440,10 @@ bool Config::save()
 
     if (config.smartypi.enabled)
         cfg.put_int("smartypi.cabinet",     config.smartypi.cabinet);
+
+    cfg.put_int("telemetry.<xmlattr>.enabled", telemetry.enabled);
+    cfg.put_string("telemetry.host",        telemetry.host);
+    cfg.put_int("telemetry.port",           telemetry.port);
 
     cfg.put_int("controls.gear",            controls.gear);
     cfg.put_float("controls.rumble",        controls.rumble);

@@ -226,6 +226,8 @@ set(src_engine_audio
 set(src_directx
     "${main_cpp_base}/directx/ffeedback.hpp"
     "${main_cpp_base}/directx/ffeedback.cpp"
+    "${main_cpp_base}/telemetry/forza.hpp"
+    "${main_cpp_base}/telemetry/forza.cpp"
     )
 
 if(WIN32)
@@ -400,7 +402,7 @@ endif()
 
 # Windows-specific: DirectX and Windows multimedia (if needed)
 if(WIN32)
-    target_link_libraries(cannonball-se PRIVATE dinput8 dxguid winmm)
+    target_link_libraries(cannonball-se PRIVATE dinput8 dxguid winmm ws2_32)
 endif()
 
 # Recommended warnings for GCC/Clang
