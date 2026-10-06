@@ -299,7 +299,21 @@ void hwtiles::render_tile_layer(uint16_t* buf, uint8_t page_index, uint8_t prior
                 if (Colour >= 0x60)
 					ColourOff = 0x300 | TILEMAP_COLOUR_OFFSET;
 */
-                if (x > 7 && x < (s16_width_noscale - 8) && y > 7 && y <= (S16_HEIGHT - 8))
+                if (s16_width_noscale > 1024)
+                {
+                    // DBCE triple width: the tilemap is 1024 pixels wide, so draw each tile at
+                    // every 1024-pixel repeat that falls on screen (narrower modes unchanged).
+                    int xr = ((x % 1024) + 1024) % 1024;
+                    if (xr > 1016) xr -= 1024;
+                    for (; xr < s16_width_noscale; xr += 1024)
+                    {
+                        if (xr > 7 && xr < (s16_width_noscale - 8) && y > 7 && y <= (S16_HEIGHT - 8))
+                            (this->*render8x8_tile_mask)(buf, Code, xr, y, Colour, 3, 0, ColourOff);
+                        else if (xr > -8 && y > -8 && y < S16_HEIGHT)
+                            (this->*render8x8_tile_mask_clip)(buf, Code, xr, y, Colour, 3, 0, ColourOff);
+                    }
+                }
+                else if (x > 7 && x < (s16_width_noscale - 8) && y > 7 && y <= (S16_HEIGHT - 8))
                     (this->*render8x8_tile_mask)(buf, Code, x, y, Colour, 3, 0, ColourOff);
                 else if (x > -8 && x < s16_width_noscale && y > -8 && y < S16_HEIGHT)
 					(this->*render8x8_tile_mask_clip)(buf, Code, x, y, Colour, 3, 0, ColourOff);

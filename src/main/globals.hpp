@@ -36,6 +36,9 @@ const uint16_t S16_HEIGHT     = 224;
 // JJP - was 398. Using 404 allows for optimisation of Blargg filter with SIMD.
 const uint16_t S16_WIDTH_WIDE = 404;
 
+// DBCE: triple screens (48:9 at 224 lines, so 7680x1440 is filled exactly). widescreen = 2 in config.xml.
+const uint16_t S16_WIDTH_TRIPLE = 1196;
+
 // Palette Address in Memory
 const uint32_t S16_PALETTE_BASE    = 0x120000;
 

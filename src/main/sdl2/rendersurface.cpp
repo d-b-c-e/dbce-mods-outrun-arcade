@@ -20,6 +20,7 @@
 #include <iostream>
 #include <mutex>
 #include "rendersurface.hpp"
+#include "sdl2/span.hpp"
 #include "frontend/config.hpp"
 // Aligned Memory Allocation (standard C++17)
 #include <new>        // std::align_val_t, ::operator new/delete
@@ -319,9 +320,18 @@ bool RenderSurface::init_sdl(int video_mode)
     // Create a window manually so that it can be closed on video restart (e.g. Blargg on/off)
     // Now create our window (with an OpenGL flag)
 
-    window = SDL_CreateWindow("Cannonball",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        scn_width, scn_height, SDL_WINDOW_OPENGL);
+    // DBCE (STD-015): on separate triple monitors, one borderless window across all of them
+    // replaces desktop fullscreen on the primary display (no display mode is changed).
+    SDL_Rect span_rect;
+    const bool spanning = video_mode != video_settings_t::MODE_WINDOW && span::separate_monitors(span_rect);
+    if (spanning)
+        std::cout << std::dec << "Span window: " << span_rect.w << "x" << span_rect.h << " at (" << span_rect.x << "," << span_rect.y << ")" << std::endl;
+
+    window = spanning
+        ? SDL_CreateWindow("Cannonball", span_rect.x, span_rect.y, span_rect.w, span_rect.h, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS)
+        : SDL_CreateWindow("Cannonball",
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            scn_width, scn_height, SDL_WINDOW_OPENGL);
 
     if (!window) {
         std::cerr << "Window creation failed: " << SDL_GetError() << std::endl;
@@ -335,8 +345,9 @@ bool RenderSurface::init_sdl(int video_mode)
         return false;
     }
 
-    // go true fullscreen (desktop resolution)
-    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    // go true fullscreen (desktop resolution); the span window already covers every screen
+    if (!spanning)
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     // then fix the GL viewport to the new backbuffer size
     glb::on_drawable_resized();
 

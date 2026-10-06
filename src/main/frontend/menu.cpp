@@ -763,7 +763,7 @@ void Menu::tick_menu()
             }
             else if (SELECTED(ENTRY_WIDESCREEN))
             {
-                config.video.widescreen ^= 1;
+                config.video.widescreen = (config.video.widescreen + 1) % 3; // off, on, triple (DBCE)
                 // restart_video();
                 config.videoRestartRequired = true;
             }
@@ -1296,7 +1296,7 @@ void Menu::refresh_menu()
         {
             if (SELECTED(ENTRY_FPS_COUNTER))        set_menu_text(ENTRY_FPS_COUNTER, config.video.fps_count ? "ON" : "OFF");
             else if (SELECTED(ENTRY_FULLSCREEN))    set_menu_text(ENTRY_FULLSCREEN, VIDEO_LABELS[config.video.mode]);
-            else if (SELECTED(ENTRY_WIDESCREEN))    set_menu_text(ENTRY_WIDESCREEN, config.video.widescreen ? "ON" : "OFF");
+            else if (SELECTED(ENTRY_WIDESCREEN))    set_menu_text(ENTRY_WIDESCREEN, config.video.widescreen == 2 ? "TRIPLE" : config.video.widescreen ? "ON" : "OFF");
             else if (SELECTED(ENTRY_SCALE))         set_menu_text(ENTRY_SCALE, Utils::to_string(config.video.scale) + "X");
             else if (SELECTED(ENTRY_X_OFFSET))      set_menu_text(ENTRY_X_OFFSET, Utils::to_string(config.video.x_offset));
             else if (SELECTED(ENTRY_Y_OFFSET))      set_menu_text(ENTRY_Y_OFFSET, Utils::to_string(config.video.y_offset));

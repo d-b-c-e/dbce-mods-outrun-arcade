@@ -775,8 +775,9 @@ if ((calc_width < width) || (calc_height < height)) {
 //    int16_t sprite_y2 = sprite_y1 + height;
     int16_t sprite_y2 = sprite_y1 + calc_height;
 
-    const uint16_t x1_bounds = 512 + config.s16_x_off; // right edge
-    const uint16_t x2_bounds = 192 - config.s16_x_off; // left edge
+    // Signed: in the triple-width mode the left edge is below zero.
+    const int32_t x1_bounds = 512 + config.s16_x_off; // right edge
+    const int32_t x2_bounds = 192 - config.s16_x_off; // left edge
 
     // Hide Sprite if off screen (note bug fix to solve shadow wrapping issue on original game)
     // I think this bug might be permanently fixed with the introduction of widescreen mode

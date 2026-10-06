@@ -449,7 +449,8 @@ void hwsprites::render(uint16_t* pixels, const uint8_t priority)
                             ((ramBuff[data+5] & 0x7f) << 4);
         int32_t sprite_scanlines =
                             ((ramBuff[data+5] & 0xff00) >> 16) +1;
-        int32_t xpos      =   ramBuff[data+6]; // moved from original structure to accomodate widescreen
+        // Signed: in the triple-width mode sprites on the left screen have negative x (DBCE).
+        int32_t xpos      =   (int16_t) ramBuff[data+6]; // moved from original structure to accomodate widescreen
         int32_t rawh      =   ramBuff[data+7]; // JJP - height of sprite in rows
         int32_t y, ytarget, yacc = 0;
 
@@ -457,7 +458,8 @@ void hwsprites::render(uint16_t* pixels, const uint8_t priority)
         // adjust X coordinate
         // note: the threshhold below is a guess. If it is too high, rachero will draw garbage
         // If it is too low, smgp won't draw the bottom part of the road
-        if (xpos < 0x80 && xdelta < 0)
+        // (Not in the triple-width mode, where x below 0x80 is on screen.)
+        if (xpos < 0x80 && xdelta < 0 && config.s16_x_off < 0x80)
             xpos += 0x200;
         xpos -= 0xbe;
 

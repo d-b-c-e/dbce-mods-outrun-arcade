@@ -152,6 +152,8 @@ set(src_sdl
 set(src_render
     "${main_cpp_base}/sdl2/rendersurface.hpp"
     "${main_cpp_base}/sdl2/rendersurface.cpp"
+    "${main_cpp_base}/sdl2/span.hpp"
+    "${main_cpp_base}/sdl2/span.cpp"
     )
 
 set(src_engine

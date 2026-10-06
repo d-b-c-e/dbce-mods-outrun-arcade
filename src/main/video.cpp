@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <cstring>      // std::memset
 #include <iostream>
+#include "sdl2/span.hpp"
 #include <bit>          // std::byteswap (C++20/23)
 #include <cstring>      // std::memcpy
 
@@ -117,7 +118,16 @@ void Video::disable()
 
 int Video::set_video_mode(video_settings_t* settings)
 {
-    if (settings->widescreen)
+    // DBCE: widescreen "On" fills a triple display (Surround or separate monitors) with the
+    // triple width; "Triple" forces it; the window mode keeps the chosen width.
+    const bool triple = settings->widescreen == 2 ||
+        (settings->widescreen == 1 && settings->mode != video_settings_t::MODE_WINDOW && span::triple_display());
+    if (triple)
+    {
+        config.s16_width  = S16_WIDTH_TRIPLE;
+        config.s16_x_off = (S16_WIDTH_TRIPLE - S16_WIDTH) / 2;
+    }
+    else if (settings->widescreen)
     {
         config.s16_width  = S16_WIDTH_WIDE;
         config.s16_x_off = (S16_WIDTH_WIDE - S16_WIDTH) / 2;

@@ -13,6 +13,8 @@
 ***********************************************************************************/
 
 #include "renderbase.hpp"
+#include "sdl2/span.hpp"
+#include "frontend/config.hpp"
 #include <iostream>
 
 
@@ -40,6 +42,14 @@ bool RenderBase::sdl_screen_size()
 
         orig_width  = info.w;
         orig_height = info.h;
+
+        // DBCE (STD-015): on separate triple monitors the screen is the span of all of them.
+        SDL_Rect s;
+        if (config.video.mode != video_settings_t::MODE_WINDOW && span::separate_monitors(s))
+        {
+            orig_width  = s.w;
+            orig_height = s.h;
+        }
     }
 
     scn_width  = orig_width;

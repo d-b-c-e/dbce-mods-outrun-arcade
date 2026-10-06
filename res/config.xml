@@ -16,6 +16,8 @@
 		<scale>1</scale>
 	</window>
 	<!-- The following settings can be fully configured in-game -->
+	<!-- Widescreen: 0 = off (4:3), 1 = on (16:9; fills a triple display automatically: Surround, or three
+	     side-by-side monitors as one borderless window), 2 = always triple width (48:9). -->
 	<widescreen>0</widescreen>
 	<fps_counter>0</fps_counter>
 	<vsync>0</vsync>
