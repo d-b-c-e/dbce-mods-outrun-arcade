@@ -1,2 +1,5 @@
 # Preserve the independently hashed vendored writer byte-for-byte on Windows.
 /lib/toolkit/session/session_writer.h -text
+# Preserve the upstream bytes recorded in the native component pin.
+lib/toolkit/native/include/wheelffb.h -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+lib/toolkit/native/x64/WheelFfb.dll -text
