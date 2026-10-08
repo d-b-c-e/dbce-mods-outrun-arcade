@@ -11,7 +11,7 @@ Seeded 2026-10-04 from what was verified that day; `unchecked` rows need a look.
 | STD-001 | One mod per game | unchecked |  |
 | STD-002 | Recording and playback from launch | unchecked |  |
 | STD-003 | Normalized FFB strength | pending | Cabinet-command@2 retains the original nonzero law; Windows transport candidate only, no Art-matched force calibration. See docs/FFB-TOOLKIT-CANDIDATE.md. |
-| STD-004 | Consistent settings UX | partial | Explicit saved wheel picker in Settings/Controls builds; rendering and config round trip pending. See docs/WHEEL-SELECTION.md. |
+| STD-004 | Consistent settings UX | partial | Explicit saved wheel picker in Settings/Controls: October 8 muted menu/save/restart passed on 9fa3694. Physical output remains unqualified. See docs/WHEEL-SELECTION.md. |
 | STD-005 | Camera numpad layout 8/2 9/3 4/6 7/1 +/- 5 | unchecked |  |
 | STD-006 | Camera step sizes are settings | unchecked |  |
 | STD-007 | Triple screens in one wide window | unchecked |  |
@@ -20,7 +20,7 @@ Seeded 2026-10-04 from what was verified that day; `unchecked` rows need a look.
 | STD-010 | Install the latest build for testing | unchecked |  |
 | STD-021 | Art FFB reference | pending | Cabinet command and nominal constant request are not measured physical torque; no normalization workload yet. |
 | STD-025 | Shared force model | partial | Cabinet game has no tyre model. Reviewed d2c1a00 uses shared native 50ba139 transport; versioned cabinet arithmetic remains local, not AxleForceCurve. Muted startup passed; previous install restored. |
-| STD-026 | One player force model | partial | No model selector. Saved explicit wheel picker now builds; environment override remains developer-only. Runtime qualification pending. |
+| STD-026 | One player force model | partial | No model selector. Saved explicit wheel picker passed a muted two-launch round trip; environment override remains developer-only. Physical qualification pending. |
 | STD-027 | Independent strengths | pending | Cabinet law combines steering/crash/road; cannot relabel its overall gain as steering-only. |
 | STD-011 | Work lands on main | adopted | Changes committed/pushed to this fork's default master; upstream origin is not the owner fork. |
 | STD-012 | Original route and signals | pending | No original cabinet producer recording or qualified playback contract. |

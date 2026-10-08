@@ -27,7 +27,8 @@ static std::string wheel_label(const forcefeedback::WheelDevice& device) {
         const unsigned char byte=static_cast<unsigned char>(c);
         c=byte>=32 && byte<=126 ? static_cast<char>(std::toupper(byte)) : '?';
     }
-    return label.substr(0,17) + " [" + device.guid.substr(0,8) + "]";
+    // The arcade font does not have square brackets; keep the identity readable.
+    return label.substr(0,17) + " " + device.guid.substr(0,8);
 }
 #endif
 
