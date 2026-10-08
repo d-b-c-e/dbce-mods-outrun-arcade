@@ -1,5 +1,9 @@
 # Original cabinet force recording groundwork
 
+For strict export into the shared software analyzer, see
+[CABINET-ANALYSIS.md](CABINET-ANALYSIS.md). Recorded settings stay intact;
+this does not qualify physical normalization.
+
 October 8: runtime4336bd9 passed independent review and a first muted original
 gameplay capture. The temporary candidate was removed and the prior owner
 installation restored. STD-012
