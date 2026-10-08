@@ -8,12 +8,16 @@ static int checks;
 #define CHECK(v) do { ++checks; if (!(v)) { std::fprintf(stderr,"FAIL line %d: %s\n",__LINE__,#v); std::exit(1); } } while(0)
 struct Fake : CabinetSink {
     bool open_ok = true, send_ok = true, stop_ok = true;
+    bool transient = false, block_nonzero = false;
+    uint64_t now = 0;
     int opens = 0, stops = 0, releases = 0, hold = 0, fail_on = -1;
     std::vector<int> sent;
     bool open(const unsigned char*, int duration) override { ++opens; hold = duration; return open_ok; }
-    bool send(int force) override { sent.push_back(force); return send_ok && static_cast<int>(sent.size()) != fail_on; }
+    bool send(int force) override { sent.push_back(force); return send_ok && !(block_nonzero && force) && static_cast<int>(sent.size()) != fail_on; }
     bool stop() override { ++stops; return stop_ok; }
     void release() override { ++releases; }
+    bool transient_failure() override { return transient; }
+    uint64_t now_ms() override { return now; }
 };
 int main() {
     CabinetSettings defaults{9000,8500,20};
@@ -40,14 +44,13 @@ int main() {
         Fake f; CabinetForce c(f);
         unsigned char empty[16]{};
         CHECK(!c.initialize(nullptr,defaults)); CHECK(!c.initialize(empty,defaults)); CHECK(f.opens==0);
-        CHECK(c.initialize(guid,defaults)); CHECK(f.hold==100);
-        CHECK(f.sent==std::vector<int>({0,0}) && f.stops==1);
-        CHECK(c.set(1,0) && f.sent.size()==2); // inactive until game gate
+        CHECK(c.initialize(guid,defaults)); CHECK(f.opens==0 && !c.supported());
+        CHECK(c.set_active(false) && f.sent.empty()); // no init at menus/background
         CHECK(c.set_active(true)); CHECK(c.set(1,0));
-        CHECK(f.sent==std::vector<int>({0,0,0,-9000}));
-        CHECK(c.set(8,0) && f.sent.back()==0 && f.stops==2);
-        CHECK(c.set(15,0)); CHECK(f.sent[f.sent.size()-2]==0 && f.sent.back()==9000);
-        CHECK(c.set_active(false) && f.sent.back()==0 && f.stops==3);
+        CHECK(f.sent==std::vector<int>({0,-9000}) && f.hold==100);
+        CHECK(c.set(8,0) && f.sent.back()==0 && f.stops==0);
+        CHECK(c.set(15,0)); CHECK(f.sent.back()==9000 && f.stops==0);
+        CHECK(c.set_active(false) && f.sent.back()==0 && f.stops==1);
         auto count=f.sent.size(); CHECK(c.set(1,0) && f.sent.size()==count);
         CHECK(c.set_active(true) && c.set(1,0));
         CHECK(f.sent[f.sent.size()-2]==0);
@@ -56,23 +59,23 @@ int main() {
     }
     {
         Fake f; f.open_ok=false; CabinetForce c(f);
-        CHECK(!c.initialize(guid,defaults)); CHECK(f.releases==1 && f.stops==1);
+        CHECK(c.initialize(guid,defaults)); CHECK(!c.set_active(true)); CHECK(f.releases==1 && f.stops==1);
         CHECK(!c.initialize(guid,defaults) && f.opens==1);
     }
     {
         Fake f; f.fail_on=1; CabinetForce c(f);
-        CHECK(!c.initialize(guid,defaults)); CHECK(f.sent.size()==2 && f.stops==1 && f.releases==1);
+        CHECK(c.initialize(guid,defaults)); CHECK(!c.set_active(true)); CHECK(f.sent.size()==2 && f.stops==1 && f.releases==1);
         CHECK(!c.supported());
     }
     {
         Fake f; CabinetForce c(f); CHECK(c.initialize(guid,defaults));
-        CHECK(c.set_active(true)); f.fail_on=3;
+        CHECK(c.set_active(true)); CHECK(c.set_active(false)); CHECK(c.set_active(true)); f.fail_on=3;
         CHECK(!c.set(15,0)); CHECK(f.sent.back()==0 && f.releases==1);
         for(int v:f.sent) CHECK(v==0); // rejected neutral never followed by force
     }
     {
         Fake f; CabinetForce c(f); CHECK(c.initialize(guid,defaults));
-        CHECK(c.set_active(true)); f.fail_on=4;
+        CHECK(c.set_active(true)); f.fail_on=2;
         CHECK(!c.set(15,0)); CHECK(f.sent.back()==0 && f.releases==1 && !c.supported());
         CHECK(!c.set(1,0)); CHECK(!c.initialize(guid,defaults) && f.opens==1);
     }
@@ -82,13 +85,47 @@ int main() {
         f.send_ok=zero_ok; f.stop_ok=stop_ok;
         CHECK(c.set_active(false)==(zero_ok||stop_ok));
         CHECK(c.supported()==(zero_ok||stop_ok));
-        CHECK(f.stops>=2); // failed zero never suppresses stop
+        CHECK(f.stops>=1); // failed zero never suppresses stop
         c.close(); CHECK(f.releases==1);
     }
     {
-        Fake f; CabinetForce c(f); CHECK(c.initialize(guid,{9000,8500,INT_MAX})); CHECK(f.hold==500);
-        CHECK(c.set_active(true) && c.set(1,0)); CHECK(!c.set(INT_MIN,0));
+        Fake f; CabinetForce c(f); CHECK(c.initialize(guid,{9000,8500,INT_MAX}));
+        CHECK(c.set_active(true) && c.set(1,0)); CHECK(f.hold==500); CHECK(!c.set(INT_MIN,0));
         CHECK(!c.supported() && f.releases==1 && f.sent.back()==0);
+    }
+    {
+        Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));
+        f.fail_on=2; CHECK(!c.set(15,0)); CHECK(c.supported() && c.is_recovering() && f.releases==0);
+        auto count=f.sent.size(); f.now=99; CHECK(!c.set(15,0) && f.sent.size()==count);
+        f.now=100; CHECK(c.set(15,0)); CHECK(c.supported() && !c.is_recovering() && f.opens==1);
+        CHECK(f.sent[f.sent.size()-2]==0 && f.sent.back()==9000);
+        c.close(); CHECK(f.releases==1);
+    }
+    {
+        Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));
+        f.block_nonzero=true; CHECK(!c.set(1,0));
+        for(int tick=1;tick<20;++tick) { f.now=tick*100; CHECK(!c.set(1,0) && c.supported()); }
+        f.now=2000; CHECK(!c.set(1,0) && !c.supported() && f.releases==1 && f.opens==1);
+    }
+    {
+        Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));
+        f.fail_on=2; CHECK(!c.set(1,0));
+        for(int tick=1;tick<20;++tick) { f.now=tick*100; CHECK(c.set(8,0) && c.is_recovering()); }
+        f.now=2000; CHECK(!c.set(8,0) && !c.supported()); // zeros do not reset the episode
+    }
+    {
+        Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));
+        f.fail_on=2; CHECK(!c.set(1,0)); f.now=50; CHECK(c.set_active(false));
+        f.now=30000; CHECK(c.set_active(false)); CHECK(c.set_active(true));
+        f.now=30050; CHECK(c.set(1,0) && c.supported() && !c.is_recovering());
+        CHECK(f.opens==1); // foreground budget excludes the inactive interval
+    }
+    {
+        Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));
+        f.send_ok=f.stop_ok=false; CHECK(!c.set(1,0)); CHECK(c.supported() && c.is_recovering());
+        CHECK(!c.set_active(false)); CHECK(!c.supported() && f.releases==1);
+        f.now=30000; f.send_ok=f.stop_ok=true; CHECK(!c.set_active(true));
+        CHECK(!c.set(1,0) && f.opens==1); // cannot leave an unresolved force paused forever
     }
     std::printf("PASS: %d cabinet mapping and production lifecycle checks; fake sink only\n", checks);
 }

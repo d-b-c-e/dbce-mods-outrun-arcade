@@ -1,6 +1,8 @@
 // Included only on Windows. No gamepad-rumble caller may open this actuator.
 #define NOMINMAX
 #include <windows.h>
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
 #include "cabinet_force.hpp"
 #include "../../../lib/toolkit/native/include/wheelffb.h"
 
@@ -54,6 +56,13 @@ public:
     }
     bool send(int force) override { return api.SetDeviceForcesXY && api.SetDeviceForcesXY(force, 0) != 0; }
     bool stop() override { return api.StopEffect && api.StopEffect() != 0; }
+    bool transient_failure() override {
+        if (!api.GetLastHResult) return false;
+        const HRESULT hr = static_cast<HRESULT>(api.GetLastHResult());
+        return hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED ||
+            hr == DIERR_NOTEXCLUSIVEACQUIRED || hr == DIERR_INCOMPLETEEFFECT;
+    }
+    uint64_t now_ms() override { return GetTickCount64(); }
     void release() override {
         // Each operation remains independent of the previous return value.
         if (api.ZeroForces) api.ZeroForces();
@@ -74,19 +83,26 @@ bool init(int maximum, int minimum, int duration) {
         return false;
     }
     const bool ready = controller.initialize(reinterpret_cast<const unsigned char*>(&guid), {maximum, minimum, duration});
-    std::fprintf(stderr, "Wheel FFB cabinet-command@2: %s (explicit wheel, bounded hold; calibration pending).\n", ready ? "ready" : "refused");
+    std::fprintf(stderr, "Wheel FFB cabinet-command@2: %s (explicit wheel, bounded hold; calibration pending).\n", ready ? "configured; waiting for foreground driving" : "refused");
     return ready;
 }
 void set_active(bool enabled) {
     const bool was_ready = controller.supported();
     controller.set_active(enabled && owned_foreground());
+    if (!was_ready && controller.supported())
+        std::fprintf(stderr, "Wheel FFB opened for the selected wheel in foreground driving.\n");
     if (was_ready && !controller.supported())
         std::fprintf(stderr, "Wheel FFB stopped: neutral/stop was not acknowledged at gameplay or focus handback; no automatic reopen.\n");
 }
 int set(int command, int force) {
     if (!owned_foreground()) controller.set_active(false);
     const bool was_ready = controller.supported();
+    const bool recovering = controller.is_recovering();
     const bool accepted = controller.set(command, force);
+    if (!recovering && controller.is_recovering())
+        std::fprintf(stderr, "Wheel FFB transient refusal: neutral-gated recovery (2 foreground seconds, at most20 retries).\n");
+    if (recovering && !controller.is_recovering() && controller.supported())
+        std::fprintf(stderr, "Wheel FFB delivery recovered after an accepted neutral and command.\n");
     if (was_ready && !controller.supported())
         std::fprintf(stderr, "Wheel FFB stopped after invalid input or refused delivery; no automatic reopen.\n");
     return accepted ? 0 : -1;

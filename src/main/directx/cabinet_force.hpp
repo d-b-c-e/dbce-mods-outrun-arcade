@@ -1,5 +1,7 @@
 #pragma once
 #include <algorithm>
+#include <cstdint>
+#include <cstring>
 
 // cabinet-command@2: the original seven-step nonzero map, explicit neutral,
 // checked delivery. This is not a tyre model or an Art-normalized gain.
@@ -26,12 +28,18 @@ struct CabinetSink {
     virtual bool send(int force) = 0;
     virtual bool stop() = 0;
     virtual void release() = 0;
+    virtual bool transient_failure() = 0;
+    virtual uint64_t now_ms() = 0;
 };
 
 class CabinetForce {
     CabinetSink& sink;
     CabinetSettings settings{};
-    bool opened = false, active = false, primed = false, fault = false;
+    unsigned char selected[16]{};
+    bool configured = false, opened = false, active = false, primed = false, fault = false;
+    bool recovering = false;
+    uint64_t deadline = 0, retry_at = 0, paused_at = 0;
+    int retries = 0;
     bool silence() {
         // Always attempt both. Void best-effort native helpers are not an ack.
         const bool zero = sink.send(0);
@@ -43,43 +51,80 @@ class CabinetForce {
         fault = true;
         if (opened) { silence(); sink.release(); }
         opened = active = primed = false;
+        recovering = false;
+        return false;
+    }
+    bool refused(bool transient) {
+        // The HRESULT must be captured BEFORE zero/stop overwrite it.
+        if (!transient) return fail();
+        if (!recovering) {
+            recovering = true; retries = 0; deadline = sink.now_ms() + 2000;
+            if (!active) paused_at = sink.now_ms();
+        }
+        silence(); // no nonzero until a later accepted prime
+        retry_at = sink.now_ms() + 100;
         return false;
     }
 public:
     explicit CabinetForce(CabinetSink& value) : sink(value) {}
     bool initialize(const unsigned char* guid, CabinetSettings value) {
-        // One explicit startup attempt. Never reopen after a delivery fault.
-        if (opened || fault || !guid || !value.valid()) return false;
+        // Remember one explicit identity; open only when the game gate admits it.
+        if (configured || fault || !guid || !value.valid()) return false;
         bool nonzero = false;
         for (int i = 0; i < 16; ++i) nonzero |= guid[i] != 0;
         if (!nonzero) return false;
         settings = value;
-        opened = true; // even failed initialization requires partial cleanup
-        if (!sink.open(guid, std::clamp(value.hold_ms, 100, 500))) return fail();
-        if (!sink.send(0)) return fail(); // never StartEffect with stored force
-        if (!silence()) return fail();
+        std::memcpy(selected, guid, 16);
+        configured = true;
         return true;
     }
     bool supported() const { return opened && !fault; }
+    bool is_recovering() const { return recovering; }
     bool set_active(bool enabled) {
-        if (!supported()) return false;
+        if (!configured || fault) return false;
+        const bool was_active = active;
         active = enabled;
-        if (!enabled && primed && !silence()) return fail();
+        if (!enabled) {
+            if (recovering && was_active) paused_at = sink.now_ms();
+            // Never pause a recovery budget while an old force is unacknowledged.
+            // A failed gate-close release retires the handle instead.
+            if (opened && was_active && (primed || recovering) && !silence()) return fail();
+            return true;
+        }
+        if (recovering && !was_active) {
+            const uint64_t paused = sink.now_ms() - paused_at;
+            deadline += paused; retry_at += paused;
+        }
+        if (!opened) {
+            opened = true; // failed initialization still needs partial cleanup
+            if (!sink.open(selected, std::clamp(settings.hold_ms, 100, 500))) return fail();
+            if (!sink.send(0)) return refused(sink.transient_failure());
+            primed = true; // no StartEffect; only this accepted zero starts it
+        }
         return true;
     }
     bool set(int command, int step) {
         if (!supported()) return false;
         int value = 0;
         if (!cabinet_force(command, step, settings, value)) return fail();
-        if (!active || value == 0) {
+        if (!active) {
             if (primed && !silence()) return fail();
             return true;
         }
+        if (recovering) {
+            const uint64_t now = sink.now_ms();
+            if (now >= deadline || retries >= 20) return fail();
+            if (now < retry_at) return false;
+            ++retries; retry_at = now + 100;
+        }
         if (!primed) {
-            if (!sink.send(0)) return fail();
+            if (!sink.send(0)) return refused(sink.transient_failure());
             primed = true;
         }
-        if (!sink.send(value)) return fail();
+        if (!sink.send(value)) return refused(sink.transient_failure());
+        // An active neutral is an acknowledged zero, not Stop/Start chatter.
+        // Zero alone must not erase a persistent nonzero-delivery episode.
+        if (value != 0) recovering = false;
         return true;
     }
     void close() {
@@ -87,7 +132,7 @@ public:
             if (!silence()) fault = true;
             sink.release();
         }
-        opened = active = primed = false;
+        configured = opened = active = primed = recovering = false;
     }
 };
 } // namespace forcefeedback

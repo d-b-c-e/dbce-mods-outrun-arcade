@@ -15,8 +15,9 @@ The candidate replaces that private DirectInput implementation with the reviewed
 It requires an explicit **DirectInput instance GUID** in `FF_TARGET_GUID`; missing,
 malformed, zero or disconnected selections refuse without selecting another wheel.
 VID/PID, product GUID and first-device fallback are deliberately unsupported.
-The current FFB configuration still controls whether initialization is attempted;
-a refused initialization no longer overwrites its saved enabled preference.
+The current FFB configuration controls whether the selected identity is armed;
+opening is deferred until foreground, unpaused driving. A refused initialization
+no longer overwrites its saved enabled preference.
 An eventual player device picker remains a release requirement.
 
 `DBCE_FFB_MUTE=1` refuses before loading the force DLL and suppresses automatic
@@ -24,12 +25,20 @@ SDL haptic opening. Normal SDL rumble is limited to mapped gamepads; it never ca
 the cabinet actuator. These are process environment settings for a diagnostic
 launcher, not machine-wide changes. No physical test command is supplied here.
 
-The production `CabinetForce` controller accepts zero before any nonzero command,
-attempts zero and Stop independently, and latches unavailable after a failed send
-or invalid command. It never calls StartEffect, automatically reopens or retries
-a nonzero request after failure. Off, neutral, pause, menus, non-driving game states
-and background release the output. After a valid gate reopens, another accepted
-zero precedes the next force. The toolkit binds an owned process window, stops on
+The production `CabinetForce` controller accepts zero before any nonzero command
+and attempts zero and Stop independently at gate close, fault and cleanup. A
+neutral motor code during active driving sends an acknowledged zero without
+Stop/Start chatter. Known transient INPUTLOST, NOTACQUIRED, NOTEXCLUSIVEACQUIRED
+or INCOMPLETEEFFECT refusals allow at most twenty retries, spaced by 100 ms,
+within two foreground seconds. Every refused force is followed by attempted
+zero/stop, and a later accepted zero must precede resumed nonzero output.
+Neutral-only acceptance never resets a persistent failure episode. Recovery
+time pauses only after the inactive gate successfully acknowledges release;
+otherwise the device is retired. Invalid commands, other errors and exhausted
+recovery latch unavailable until restart. The device is never automatically
+reopened or replaced. It never calls StartEffect. Pause, menus, non-driving game
+states and background release the output. After a valid gate reopens, another
+accepted zero precedes the next force. The toolkit binds an owned process window, stops on
 focus loss and uses a hold watchdog. Legacy force_duration was ignored on Windows;
 it now requests a stale-producer timeout clamped to 100–500 ms, not pulse duration.
 Cleanup attempts zero, stop and Free independently before unloading.
@@ -50,16 +59,27 @@ ctest --test-dir build-check/ffb-tests -C Release --output-on-failure
 cmake --build build-check --config Release
 ```
 
-Ten CTest cases cover all motor codes against the original arithmetic, invalid
+Eleven CTest cases cover all motor codes against the original arithmetic, invalid
 settings, partial initialization, accepted-neutral ordering, foreground handback,
 refused output, every zero/stop acknowledgement combination and cleanup. The
 adapter fixture compiles the actual Windows adapter with fake toolkit and window
 calls; it neither loads a DLL nor opens hardware. The existing full-game x64
 Release configuration also builds. No launch or installed-file changes occur.
-The mapping/controller executable makes 160 assertions. Removing only the
+The mapping/controller executable makes 234 assertions. Removing only the
 initial accepted-zero call makes two production fixture cases fail; restoring
-the original bytes returns all ten cases to passing. Private negative-control
+the original bytes returns all eleven cases to passing. Private negative-control
 log: `build-check/ffb-negative.log`.
+
+Claude independently reviewed the first candidate and rebuilt its ten cases.
+His recovery/startup findings led to the bounded recovery and deferred open above.
+The revised cases cover a transient failure followed by success, repeated nonzero
+refusals despite accepted zero, inactive time excluded from the budget, and an
+unacknowledged gate-close stop retiring the device rather than pausing forever.
+An earlier configure-only hash check missed an incremental-build tamper; the
+new always-run verification/staging target refuses that case and accepts the
+restored bytes. Evidence: `build-check/ffb-pin-negative.log` and
+`build-check/ffb-pin-restored.log`. Header attributes preserve the pinned raw bytes
+in fresh checkouts. These refinements await peer follow-up before a muted run.
 
 Before packaging: independent review, producer recording/normalization contract,
 player device selection and release inventory/notice adoption. Then a bounded

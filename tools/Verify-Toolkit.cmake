@@ -1,0 +1,22 @@
+# Used during configuration and before every incremental Windows build.
+if(NOT DEFINED TOOLKIT_PIN_ROOT)
+    message(FATAL_ERROR "TOOLKIT_PIN_ROOT is required")
+endif()
+file(READ "${TOOLKIT_PIN_ROOT}/VERSION.json" toolkit_pin)
+foreach(payload native/x64/WheelFfb.dll native/include/wheelffb.h)
+    string(JSON expected_sha GET "${toolkit_pin}" files "${payload}")
+    file(SHA256 "${TOOLKIT_PIN_ROOT}/${payload}" actual_sha)
+    string(TOUPPER "${actual_sha}" actual_sha)
+    if(NOT actual_sha STREQUAL expected_sha)
+        message(FATAL_ERROR "WheelFfb pin mismatch: ${payload}")
+    endif()
+endforeach()
+if(DEFINED TOOLKIT_DESTINATION)
+    file(MAKE_DIRECTORY "${TOOLKIT_DESTINATION}")
+    execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+        "${TOOLKIT_PIN_ROOT}/native/x64/WheelFfb.dll"
+        "${TOOLKIT_DESTINATION}/WheelFfb.dll" RESULT_VARIABLE copy_result)
+    if(NOT copy_result EQUAL 0)
+        message(FATAL_ERROR "Could not stage verified WheelFfb payload")
+    endif()
+endif()
