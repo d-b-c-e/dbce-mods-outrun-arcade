@@ -21,7 +21,10 @@ VID/PID, product GUID and first-device fallback are deliberately unsupported.
 The current FFB configuration controls whether the selected identity is armed;
 opening is deferred until foreground, unpaused driving. A refused initialization
 no longer overwrites its saved enabled preference.
-The new player picker still requires its muted rendered/config-roundtrip check.
+The player picker passed its muted rendered/save/restart check on October 8,
+13:47–13:56 CT; read [the exact evidence](WHEEL-SELECTION.md#muted-runtime-check-october-8-13471356-central).
+The earlier installed executable was restored afterward. Device acquisition and
+physical force still require an attended check.
 
 `DBCE_FFB_MUTE=1` refuses before loading the force DLL and suppresses automatic
 SDL haptic opening. Normal SDL rumble is limited to mapped gamepads; it never calls

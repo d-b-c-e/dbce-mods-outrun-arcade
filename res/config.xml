@@ -79,7 +79,8 @@
 	<!-- Gears: 
         0 = Manual   (Click to shift, for normal play)
         1 = Manual   (Hold to shift, for cabinet play)
-        2 = Automatic 
+        2 = Manual   (Separate buttons for low and high gear)
+        3 = Automatic
     -->
 	<gear>2</gear>
 	<!-- Keyboard Button Configuration. Easiest to configure with inbuilt menu. -->
