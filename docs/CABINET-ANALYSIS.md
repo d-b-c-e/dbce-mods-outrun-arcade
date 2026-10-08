@@ -58,3 +58,8 @@ This describes sparse strong cabinet pulses, not physical duty or a weak gain.
 The short automated drive is not representative cornering and does not justify
 a multiplier against Art. A future independent steering/crash model requires
 an explicit versioned adapter and preserved original replay.
+
+Claude independently reviewed exporter commit `03e25e7`: no blocking finding.
+The current exporter accepts one continuous capture, so all rows share epoch 0.
+If a future tool combines captures, it must assign a new epoch to each one;
+never let the analyzer bridge a hold across separate sessions.
