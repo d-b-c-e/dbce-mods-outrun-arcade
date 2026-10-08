@@ -110,8 +110,29 @@ int main() {
     {
         Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));
         f.fail_on=2; CHECK(!c.set(1,0));
-        for(int tick=1;tick<20;++tick) { f.now=tick*100; CHECK(c.set(8,0) && c.is_recovering()); }
-        f.now=2000; CHECK(!c.set(8,0) && !c.supported()); // zeros do not reset the episode
+        for(int tick=1;tick<=31;++tick) { f.now=tick*100; CHECK(c.set(8,0) && c.is_recovering() && c.supported()); }
+        CHECK(f.stops==1 && f.opens==1); // acknowledged neutral does not stop/re-prime
+        f.now=3200; CHECK(c.set(1,0) && c.supported() && !c.is_recovering());
+    }
+    {
+        Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));
+        f.block_nonzero=true; CHECK(!c.set(1,0));
+        int attempts=0;
+        while(c.supported() && attempts<25) {
+            f.now+=100;
+            if (!c.set(0,0)) { CHECK(!c.supported()); break; }
+            CHECK(c.is_recovering());
+            f.now+=3000; CHECK(c.set(8,0) && c.supported());
+            f.now+=100; CHECK(!c.set(1,0)); ++attempts;
+        }
+        CHECK(attempts>1 && attempts<=20 && !c.supported() && f.releases==1);
+        // Accepted zeros pause time; they never reset rejected nonzero attempts.
+    }
+    {
+        Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));
+        f.fail_on=2; CHECK(!c.set(1,0)); f.now=100; CHECK(c.set(8,0));
+        f.now=4000; f.send_ok=false; CHECK(!c.set(0,0) && c.supported());
+        f.now=6000; CHECK(!c.set(0,0) && !c.supported()); // failed neutral resumes the bound
     }
     {
         Fake f; f.transient=true; CabinetForce c(f); CHECK(c.initialize(guid,defaults)); CHECK(c.set_active(true));

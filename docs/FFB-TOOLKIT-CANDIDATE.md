@@ -32,9 +32,11 @@ Stop/Start chatter. Known transient INPUTLOST, NOTACQUIRED, NOTEXCLUSIVEACQUIRED
 or INCOMPLETEEFFECT refusals allow at most twenty retries, spaced by 100 ms,
 within two foreground seconds. Every refused force is followed by attempted
 zero/stop, and a later accepted zero must precede resumed nonzero output.
-Neutral-only acceptance never resets a persistent failure episode. Recovery
-time pauses only after the inactive gate successfully acknowledges release;
-otherwise the device is retired. Invalid commands, other errors and exhausted
+Neutral-only acceptance never resets a persistent failure episode or its failed
+nonzero-attempt count. Accepted neutral demand pauses its time budget, so a long
+straight does not disable an otherwise responsive device. A later failed neutral
+resumes that budget. Inactive time pauses only after the gate successfully
+acknowledges release; otherwise the device is retired. Invalid commands, other errors and exhausted
 recovery latch unavailable until restart. The device is never automatically
 reopened or replaced. It never calls StartEffect. Pause, menus, non-driving game
 states and background release the output. After a valid gate reopens, another
@@ -65,7 +67,7 @@ refused output, every zero/stop acknowledgement combination and cleanup. The
 adapter fixture compiles the actual Windows adapter with fake toolkit and window
 calls; it neither loads a DLL nor opens hardware. The existing full-game x64
 Release configuration also builds. No launch or installed-file changes occur.
-The mapping/controller executable makes 234 assertions. Removing only the
+The mapping/controller executable makes 315 assertions. Removing only the
 initial accepted-zero call makes two production fixture cases fail; restoring
 the original bytes returns all eleven cases to passing. Private negative-control
 log: `build-check/ffb-negative.log`.
@@ -79,7 +81,19 @@ An earlier configure-only hash check missed an incremental-build tamper; the
 new always-run verification/staging target refuses that case and accepts the
 restored bytes. Evidence: `build-check/ffb-pin-negative.log` and
 `build-check/ffb-pin-restored.log`. Header attributes preserve the pinned raw bytes
-in fresh checkouts. These refinements await peer follow-up before a muted run.
+in fresh checkouts. Claude's follow-up independently passed eleven cases and
+found that neutral-only success could still exhaust recovery. The correction
+adds a three-second accepted-neutral interval followed by successful force,
+repeated rejected nonzero requests separated by accepted neutral (still bounded),
+and failed neutral resuming the deadline. All eleven cases and the full Release
+build pass. The correction awaits peer follow-up before a muted run.
+
+The pinned native's GetLastHResult updates only on failed DirectInput HRESULTs;
+a refused send caused by an absent effect can retain an older HRESULT. Such a
+refusal may therefore enter transient recovery on stale classification. Recovery
+still applies the same time/attempt bound, never treats that refusal as an
+accepted command, and never opens another device. Exact refusal-reason reporting
+needs a future native contract, not an inferred success from the cached code.
 
 Before packaging: independent review, producer recording/normalization contract,
 player device selection and release inventory/notice adoption. Then a bounded

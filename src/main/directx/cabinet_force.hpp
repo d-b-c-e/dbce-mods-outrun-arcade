@@ -37,9 +37,18 @@ class CabinetForce {
     CabinetSettings settings{};
     unsigned char selected[16]{};
     bool configured = false, opened = false, active = false, primed = false, fault = false;
-    bool recovering = false;
+    bool recovering = false, budget_paused = false;
     uint64_t deadline = 0, retry_at = 0, paused_at = 0;
     int retries = 0;
+    void pause_budget() {
+        if (recovering && !budget_paused) { paused_at = sink.now_ms(); budget_paused = true; }
+    }
+    void resume_budget() {
+        if (recovering && budget_paused) {
+            const uint64_t paused = sink.now_ms() - paused_at;
+            deadline += paused; budget_paused = false;
+        }
+    }
     bool silence() {
         // Always attempt both. Void best-effort native helpers are not an ack.
         const bool zero = sink.send(0);
@@ -51,15 +60,14 @@ class CabinetForce {
         fault = true;
         if (opened) { silence(); sink.release(); }
         opened = active = primed = false;
-        recovering = false;
+        recovering = budget_paused = false;
         return false;
     }
     bool refused(bool transient) {
         // The HRESULT must be captured BEFORE zero/stop overwrite it.
         if (!transient) return fail();
         if (!recovering) {
-            recovering = true; retries = 0; deadline = sink.now_ms() + 2000;
-            if (!active) paused_at = sink.now_ms();
+            recovering = true; budget_paused = false; retries = 0; deadline = sink.now_ms() + 2000;
         }
         silence(); // no nonzero until a later accepted prime
         retry_at = sink.now_ms() + 100;
@@ -85,15 +93,11 @@ public:
         const bool was_active = active;
         active = enabled;
         if (!enabled) {
-            if (recovering && was_active) paused_at = sink.now_ms();
             // Never pause a recovery budget while an old force is unacknowledged.
             // A failed gate-close release retires the handle instead.
             if (opened && was_active && (primed || recovering) && !silence()) return fail();
+            if (recovering && was_active) pause_budget();
             return true;
-        }
-        if (recovering && !was_active) {
-            const uint64_t paused = sink.now_ms() - paused_at;
-            deadline += paused; retry_at += paused;
         }
         if (!opened) {
             opened = true; // failed initialization still needs partial cleanup
@@ -112,10 +116,20 @@ public:
             return true;
         }
         if (recovering) {
+            // Successful neutral demand is not a failed nonzero retry. Keep the
+            // episode and its attempt count, but exclude acknowledged idle time.
+            if (value == 0 && primed && budget_paused) {
+                if (sink.send(0)) return true;
+                const bool transient = sink.transient_failure();
+                resume_budget();
+                return refused(transient);
+            }
+            resume_budget();
             const uint64_t now = sink.now_ms();
             if (now >= deadline || retries >= 20) return fail();
             if (now < retry_at) return false;
-            ++retries; retry_at = now + 100;
+            if (value != 0) ++retries;
+            retry_at = now + 100;
         }
         if (!primed) {
             if (!sink.send(0)) return refused(sink.transient_failure());
@@ -124,7 +138,8 @@ public:
         if (!sink.send(value)) return refused(sink.transient_failure());
         // An active neutral is an acknowledged zero, not Stop/Start chatter.
         // Zero alone must not erase a persistent nonzero-delivery episode.
-        if (value != 0) recovering = false;
+        if (value != 0) recovering = budget_paused = false;
+        else pause_budget();
         return true;
     }
     void close() {
@@ -132,7 +147,7 @@ public:
             if (!silence()) fault = true;
             sink.release();
         }
-        configured = opened = active = primed = recovering = false;
+        configured = opened = active = primed = recovering = budget_paused = false;
     }
 };
 } // namespace forcefeedback
