@@ -23,6 +23,7 @@ struct Frame {
     Inputs inputs{};
     State before{},after{};
     int command{},step{},nominal{};
+    int delivery_result=-2; // unset is distinct from the mute guard's -1
 };
 inline bool in(int64_t n,int64_t lo,int64_t hi) { return n>=lo && n<=hi; }
 inline bool valid_inputs(const Inputs& i) {
@@ -38,7 +39,7 @@ inline bool valid_state(const State& s) {
 }
 inline bool valid_frame(const Frame& f,const forcefeedback::CabinetSettings& settings) {
     if(!valid_inputs(f.inputs) || !valid_state(f.before) || !valid_state(f.after) ||
-       f.after[0]!=f.command) return false;
+       f.after[0]!=f.command || f.delivery_result!=-1) return false;
     const int step=f.command==0 || f.command==8 ? 0 : f.command<8 ? f.command-1 : 15-f.command;
     int nominal=0;
     return f.step==step && forcefeedback::cabinet_force(f.command,f.step,settings,nominal) && nominal==f.nominal;

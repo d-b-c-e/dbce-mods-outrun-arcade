@@ -24,13 +24,14 @@ int main(int argc,char** argv) {
             ended=true;continue;
         }
         if(kind!="frame" || count>=8192){std::cerr<<"record kind/count\n";return 2;}
-        std::array<int64_t,45> values{};for(auto& v:values)if(!(stream>>v)){std::cerr<<"row numeric field\n";return 2;}
+        std::array<int64_t,46> values{};for(auto& v:values)if(!(stream>>v)){std::cerr<<"row numeric field\n";return 2;}
         std::string extra;if(stream>>extra){std::cerr<<"extra field\n";return 2;}
         if(!in(values[0],0,121000000) || !in(values[1],0,UINT32_MAX)){std::cerr<<"time/update range\n";return 2;}
         for(size_t n=11;n<values.size();++n)if(!in(values[n],INT32_MIN,INT32_MAX)){std::cerr<<"integer range\n";return 2;}
         Frame f{};size_t at=0;f.elapsed_us=uint64_t(values[at++]);f.update=uint32_t(values[at++]);
         for(auto& v:f.inputs)v=values[at++];for(auto& v:f.before)v=int32_t(values[at++]);for(auto& v:f.after)v=int32_t(values[at++]);
         f.command=int(values[at++]);f.step=int(values[at++]);f.nominal=int(values[at++]);
+        f.delivery_result=int(values[at++]);
         forcefeedback::CabinetSettings current{int(values[at]),int(values[at+1]),int(values[at+2])};
         if(count==0){settings=current;if(!buffer.arm(settings,unsigned(seconds)))return 2;}
         if(current.maximum!=settings.maximum || current.minimum!=settings.minimum || current.hold_ms!=settings.hold_ms || !buffer.append(f)) {

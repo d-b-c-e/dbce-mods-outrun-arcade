@@ -56,7 +56,7 @@ int main() {
         CHECK(!buffer.append(rows.back()));CHECK(buffer.frames().size()==1801);
         // Truncation, invalid values, dropped updates and mutated checkpoint
         // histories must never acquire a completion claim.
-        for(int mutation=0;mutation<11;++mutation){
+        for(int mutation=0;mutation<12;++mutation){
             Buffer bad;CHECK(bad.arm({9000,8500,20},60));CHECK(bad.append(rows[0]));
             Frame next=rows[1];
             switch(mutation){
@@ -71,6 +71,7 @@ int main() {
                 case 8:next.step++;break;
                 case 9:next.before[4]=1;break; // cabinet-only movement state
                 case 10:next.inputs[Steering]=128;break;
+                case 11:next.delivery_result=0;break;
             }
             CHECK(!bad.append(next));CHECK(!bad.complete());CHECK(bad.frames().size()==1);
         }

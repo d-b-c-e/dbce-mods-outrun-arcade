@@ -843,7 +843,7 @@ void OOutputs::motor_output(uint8_t cmd)
     {
 #ifdef _WIN32
         cabinet_recording::request(cmd,0);
-        forcefeedback::set(cmd, 0); // Explicitly release the previous command.
+        cabinet_recording::delivery(forcefeedback::set(cmd, 0)); // Explicitly release the previous command.
 #endif
         return;
     }
@@ -857,8 +857,10 @@ void OOutputs::motor_output(uint8_t cmd)
 
 #ifdef _WIN32
     cabinet_recording::request(cmd,force);
-#endif
+    cabinet_recording::delivery(forcefeedback::set(cmd, force));
+#else
     forcefeedback::set(cmd, force);
+#endif
 }
 
 // ------------------------------------------------------------------------------------------------

@@ -13,6 +13,7 @@ void initialize(bool haptic,bool real_cabinet,forcefeedback::CabinetSettings set
 void service(bool driving,bool paused) noexcept;
 void begin(uint32_t update,const cabinet_signal::Inputs&,const cabinet_signal::State&) noexcept;
 void request(int command,int step) noexcept;
+void delivery(int result) noexcept;
 void end(const cabinet_signal::State&) noexcept;
 void close() noexcept;
 }

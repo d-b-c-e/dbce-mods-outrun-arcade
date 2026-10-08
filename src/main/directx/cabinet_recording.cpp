@@ -24,7 +24,7 @@ Clock::time_point clock_now() noexcept {
 cabinet_signal::Buffer buffer;
 cabinet_signal::Frame row;
 bool configured=false,started=false,pending=false,saved=false;
-unsigned requests=0,seconds=0;
+unsigned requests=0,deliveries=0,seconds=0;
 Clock::time_point first;
 std::filesystem::path directory;
 std::string lease,armed_utc;
@@ -81,7 +81,7 @@ void save() {
     for(const auto& r:buffer.frames()) {
         dbce::session::Channels c={{"update",r.update},{"force.command",r.command},{"force.step",r.step},
             {"force.nominal",r.nominal},{"tuning.maximum",settings.maximum},{"tuning.minimum",settings.minimum},
-            {"tuning.holdMs",settings.hold_ms},{"delivery.muted",1}};
+            {"tuning.holdMs",settings.hold_ms},{"delivery.muted",1},{"delivery.result",r.delivery_result}};
         for(size_t n=0;n<r.inputs.size();++n)c[std::string("input.")+cabinet_signal::input_names[n]]=double(r.inputs[n]);
         for(size_t n=0;n<r.before.size();++n){c[std::string("before.")+cabinet_signal::state_names[n]]=r.before[n];c[std::string("after.")+cabinet_signal::state_names[n]]=r.after[n];}
         if(!writer.sample(double(r.elapsed_us)/1000000,c)) throw std::runtime_error("write sample");
@@ -145,16 +145,22 @@ void begin(uint32_t update,const cabinet_signal::Inputs& input,const cabinet_sig
     if(!started){started=true;first=now;}
     row={};row.update=update;row.inputs=input;row.before=before;
     row.elapsed_us=uint64_t(std::chrono::duration_cast<std::chrono::microseconds>(now-first).count());
-    pending=true;requests=0;
+    pending=true;requests=0;deliveries=0;
 }
 void request(int command,int step) noexcept {
     if(!pending)return;
     ++requests;row.command=command;row.step=step;
 }
+void delivery(int result) noexcept {
+    if(!pending)return;
+    if(requests!=1 || deliveries!=0){fail("delivery order/count invalid");return;}
+    ++deliveries;row.delivery_result=result;
+    if(result!=-1)fail("force call was not refused by mute guard");
+}
 void end(const cabinet_signal::State& after) noexcept {
     if(!pending)return;
     pending=false;row.after=after;
-    if(requests!=1 || !forcefeedback::cabinet_force(row.command,row.step,buffer.settings(),row.nominal)){
+    if(requests!=1 || deliveries!=1 || !forcefeedback::cabinet_force(row.command,row.step,buffer.settings(),row.nominal)){
         fail("producer request count or mapper invalid");return;
     }
     buffer.append(row);

@@ -13,7 +13,7 @@ import subprocess
 
 INPUTS = "gameState crashCounter skidCounter carIncrement roadCurve wheelState carXDiff steeringAdjust motorInput".split()
 STATE = "command enabled positionChange control movement centred movementLatch speedIndex curveIndex counter smallChange steeringHistory1 steeringHistory2 steeringHistory3".split()
-CHANNELS = {"update", "force.command", "force.step", "force.nominal", "tuning.maximum", "tuning.minimum", "tuning.holdMs", "delivery.muted"}
+CHANNELS = {"update", "force.command", "force.step", "force.nominal", "tuning.maximum", "tuning.minimum", "tuning.holdMs", "delivery.muted", "delivery.result"}
 CHANNELS |= {"input." + x for x in INPUTS} | {prefix + x for prefix in ("before.", "after.") for x in STATE}
 
 def require(ok, message):
@@ -72,11 +72,12 @@ def prepare(source: Path, identity: list[str]):
         c = sample["channels"]
         require(set(c) == CHANNELS, "missing/unknown channels")
         require(integer(c["delivery.muted"]) == 1, "unmuted row")
+        require(integer(c["delivery.result"]) == -1, "force call not refused by mute guard")
         fields = [micro, integer(c["update"])]
         fields += [integer(c["input." + key]) for key in INPUTS]
         fields += [integer(c[prefix + key]) for prefix in ("before.", "after.") for key in STATE]
-        fields += [integer(c[key]) for key in ("force.command", "force.step", "force.nominal", "tuning.maximum", "tuning.minimum", "tuning.holdMs")]
-        require(len(fields) == 45, "internal protocol count")
+        fields += [integer(c[key]) for key in ("force.command", "force.step", "force.nominal", "delivery.result", "tuning.maximum", "tuning.minimum", "tuning.holdMs")]
+        require(len(fields) == 46, "internal protocol count")
         protocol.append("frame " + " ".join(map(str, fields)))
         nominal.append(integer(c["force.nominal"]))
     require(last == footer["footer"]["elapsedSeconds"], "footer time")

@@ -19,10 +19,11 @@ struct OFerrari { enum { WHEELS_ON=0, WHEELS_OFF=3 }; uint8_t wheel_state; int16
 struct { int16_t steering_adjust; } oinputs;
 namespace forcefeedback {
     static std::vector<std::pair<int,int>> requests;
-    int set(int command, int step) { requests.emplace_back(command, step); return 0; }
+    static int delivery_result=-1;
+    int set(int command, int step) { requests.emplace_back(command, step); return delivery_result; }
 }
 #ifndef CABINET_RECORDING_REAL
-namespace cabinet_recording { void request(int,int) noexcept {} }
+namespace cabinet_recording { void request(int,int) noexcept {} void delivery(int) noexcept {} }
 #endif
 #include "cabinet_producer.inc"
 
@@ -78,5 +79,5 @@ static void equal(const Row& a,const Row& b) {
 static cabinet_signal::Frame frame(const Row& r,uint64_t us,uint32_t update) {
     const auto& i=r.input;
     return {us,update,{i.game,i.crash,i.skid,i.increment,i.curve,i.wheels,i.x_diff,i.steering,i.motor},
-        r.before,r.after,r.command,r.step,r.nominal};
+        r.before,r.after,r.command,r.step,r.nominal,-1};
 }

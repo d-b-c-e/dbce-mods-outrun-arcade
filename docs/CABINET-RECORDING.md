@@ -2,7 +2,8 @@
 
 October 8: runtime recorder and standalone replay candidate, not installed or
 live-qualified. The original producer fixture is independently reviewed. The
-complete runtime candidate requires peer review before a rig capture. STD-012
+runtime at cb01492 passed independent source review before a rig capture.
+The subsequent observed-delivery addition below awaits its narrow follow-up review. STD-012
 remains partial; gameplay playback and cross-game normalization remain pending.
 
 The original `OOutputs` deluxe-cabinet producer is stateful. It combines steering,
@@ -115,7 +116,7 @@ py -3 tools/replay_cabinet.py '<result>/source.jsonl' --replayer build-check/ffb
 ```
 
 Results are under `%LOCALAPPDATA%/Dbce/StagePlayback/cannonball-force/<id>`.
-Source-only validation now passes 29 CTest cases, including 13 strict reader/replay
+Source-only validation now passes 31 CTest cases, including 14 strict reader/replay
 cases and real shared-writer file tests with a controlled clock. These cover
 lease loss before sealing, early interruption, nested calls, occupied outputs,
 invalid arming, native mute, malformed/tampered rows and unsafe table inputs.
@@ -123,5 +124,25 @@ Claude's baseline suggestions are adopted: unrecorded members are poisoned
 before both stateful replays; steering stays in[-127,127]; nonzero cabinet-only
 motor movement is refused in the recording contract. No physical/live result
 is implied by these fixtures. The full Release game build also passes. Current
-producer checks total 146,342; the older count above names the reviewed baseline.
+producer checks total 146,347; the older count above names the reviewed baseline.
 Both build entry points verify the shared writer against its recorded SHA-256.
+
+## Observed mute result, before the first original capture
+
+Every Windows producer call now records the actual return from
+`forcefeedback::set` as `delivery.result`, after preserving its existing command
+and step. A complete row requires exactly one request followed by exactly one
+delivery result of -1. An unset result, accepted call (0), ordering error or
+missing callback stops the capture without a completed footer. The startup mute
+path returns -1 before loading the force DLL; this is observed software refusal,
+not a measurement of the actuator. Non-Windows delivery is unchanged.
+
+The private signal contract now has that required channel; no original gameplay
+captures predate this addition. The strict Python reader and original C++ replay
+both refuse a changed result. Runtime writer tests include accepted-output and
+early-delivery faults. Full Release build, 31 CTest cases, 14 strict reader tests
+and 146,347 producer assertions pass. Evidence: `build-check/cabinet-delivery-*`.
+
+`source.jsonl` is independently validated through its complete footer, counts,
+source identities and original producer replay. The standalone reader does not
+consume sibling `outcome.txt`; do not describe it as verifying that file.

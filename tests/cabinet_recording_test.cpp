@@ -39,6 +39,8 @@ int main(int argc,char** argv) {
         for(uint32_t n=0;n<8;++n){
             cabinet_recording::begin(500+n,{i.game,i.crash,i.skid,i.increment,i.curve,i.wheels,i.x_diff,i.steering,i.motor},snapshot(m));
             if(test=="nested" && n==1)cabinet_recording::begin(501,{},snapshot(m));
+            if(test=="unexpected-delivery" && n==1)forcefeedback::delivery_result=0;
+            if(test=="early-delivery" && n==1)cabinet_recording::delivery(-1);
             advance(m,i);cabinet_recording::end(snapshot(m));
             if(test=="interrupted" && n==1){cabinet_recording::service(false,true);break;}
             if(test=="lost-lease" && n==7){std::ofstream f(root/"dbce"/"test-slot.txt");f<<"replacement\n";}

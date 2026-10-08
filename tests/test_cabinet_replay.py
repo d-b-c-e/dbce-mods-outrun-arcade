@@ -58,6 +58,9 @@ class ReplayTests(unittest.TestCase):
     def test_partial(self):
         self.refused(lambda x: x[-1]["footer"].update(completed=False))
 
+    def test_unexpected_delivery(self):
+        self.refused(lambda x: x[2]["sample"]["channels"].update({"delivery.result": 0}))
+
     def test_unsafe_table_input(self):
         self.refused(lambda x: x[2]["sample"]["channels"].update({"input.motorInput": 0}))
 
