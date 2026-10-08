@@ -77,7 +77,12 @@ bool init(int maximum, int minimum, int duration) {
     std::fprintf(stderr, "Wheel FFB cabinet-command@2: %s (explicit wheel, bounded hold; calibration pending).\n", ready ? "ready" : "refused");
     return ready;
 }
-void set_active(bool enabled) { controller.set_active(enabled && owned_foreground()); }
+void set_active(bool enabled) {
+    const bool was_ready = controller.supported();
+    controller.set_active(enabled && owned_foreground());
+    if (was_ready && !controller.supported())
+        std::fprintf(stderr, "Wheel FFB stopped: neutral/stop was not acknowledged at gameplay or focus handback; no automatic reopen.\n");
+}
 int set(int command, int force) {
     if (!owned_foreground()) controller.set_active(false);
     const bool was_ready = controller.supported();
