@@ -6,8 +6,10 @@ Open **Settings → Controls → Wheel output**. `Choose` cycles through None an
 the attached force-capable device names, each with part of its instance GUID.
 `Use choice after restart` selects that exact identity. `Output next start`
 controls the existing force-enable setting. Use **Save settings** and restart
-the game. `Refresh wheel list` refreshes discovery and resets the proposed
-choice to None; it never chooses the first wheel for you.
+the game. `Refresh wheel list` refreshes discovery and starts on the saved
+wheel if it is present. A missing saved wheel leaves the proposal unchosen;
+Apply then asks for a choice. Clearing a saved wheel requires explicitly
+cycling to None. It never chooses the first wheel for you.
 
 The next wheel is stored in `controls.analog.haptic.device_guid` in the normal
 config.xml. Empty, malformed, zero and disconnected identities refuse output;
@@ -34,3 +36,9 @@ cases for saved identity, override/refusal, read-only enumeration and retirement
 The full Windows Release game builds; its existing unrelated renderer warnings
 remain. The menu's rendering, config round trip and plain-launch use still need
 a bounded muted runtime check. No gain, physical sign or normalization claim.
+
+Claude's independent source review passed for a muted menu/config check. It
+confirmed native enumeration does not replace the active actuator identity and
+cleanup releases the controller before the catalog. The unchosen state above
+addresses its usability finding: Apply must not silently clear a disconnected
+saved wheel. Long device-name row fit remains a rendered check.

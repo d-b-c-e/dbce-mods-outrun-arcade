@@ -102,7 +102,7 @@ private:
 #ifdef _WIN32
     std::vector<std::string> menu_wheel;
     std::vector<forcefeedback::WheelDevice> wheel_choices;
-    int wheel_choice = -1; // None, never automatically select the first wheel
+    int wheel_choice = -2; // Unchosen; -1 is an explicit None, >=0 an enumerated wheel
     void refresh_wheels();
 #endif
     std::vector<std::string> menu_engine;

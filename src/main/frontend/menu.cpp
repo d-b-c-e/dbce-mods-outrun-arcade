@@ -290,7 +290,10 @@ void Menu::populate_controls()
 #ifdef _WIN32
 void Menu::refresh_wheels() {
     wheel_choices=forcefeedback::enumerate_wheels();
-    wheel_choice=-1;
+    wheel_choice=-2; // Applying an unopened/disconnected choice must not clear a saved wheel.
+    if (config.controls.force_device_guid.empty()) wheel_choice=-1;
+    else for (size_t i=0;i<wheel_choices.size();++i)
+        if (wheel_choices[i].guid==config.controls.force_device_guid) wheel_choice=static_cast<int>(i);
     menu_wheel={ENTRY_WHEEL_SAVED, ENTRY_WHEEL_CHOICE, ENTRY_WHEEL_APPLY,
         ENTRY_WHEEL_ENABLE, ENTRY_WHEEL_REFRESH, ENTRY_BACK};
 }
@@ -1144,6 +1147,8 @@ void Menu::tick_menu()
             if (SELECTED(ENTRY_WHEEL_CHOICE)) {
                 if (++wheel_choice >= static_cast<int>(wheel_choices.size())) wheel_choice=-1;
             } else if (SELECTED(ENTRY_WHEEL_APPLY)) {
+                if (wheel_choice==-2) display_message("CHOOSE A WHEEL OR NONE FIRST");
+                else {
                 const std::string chosen=wheel_choice<0 ? "" : wheel_choices.at(wheel_choice).guid;
                 const auto present=forcefeedback::enumerate_wheels();
                 const bool found=chosen.empty() || std::any_of(present.begin(),present.end(),[&](const auto& d){return d.guid==chosen;});
@@ -1152,6 +1157,7 @@ void Menu::tick_menu()
                     forcefeedback::close(); // retire current actuator; no hot swap
                     config.controls.force_device_guid=chosen;
                     display_message("SAVE SETTINGS AND RESTART GAME");
+                }
                 }
             } else if (SELECTED(ENTRY_WHEEL_ENABLE)) {
                 forcefeedback::close();
@@ -1534,7 +1540,7 @@ void Menu::refresh_menu()
                 // This row shows a saved/pending identity, never active acquisition.
                 set_menu_text(ENTRY_WHEEL_SAVED,label.substr(0,24));
             } else if (SELECTED(ENTRY_WHEEL_CHOICE)) {
-                set_menu_text(ENTRY_WHEEL_CHOICE,wheel_choice<0 ? "NONE" : wheel_label(wheel_choices.at(wheel_choice)));
+                set_menu_text(ENTRY_WHEEL_CHOICE,wheel_choice==-2 ? "SELECT A CHOICE" : wheel_choice<0 ? "NONE" : wheel_label(wheel_choices.at(wheel_choice)));
             } else if (SELECTED(ENTRY_WHEEL_ENABLE)) set_menu_text(ENTRY_WHEEL_ENABLE,config.controls.haptic ? "ON" : "OFF");
         }
 #endif
