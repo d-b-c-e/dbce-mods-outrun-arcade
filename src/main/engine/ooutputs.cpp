@@ -29,6 +29,14 @@
 #include "engine/oinputs.hpp"
 #include "engine/ooutputs.hpp"
 #include "directx/ffeedback.hpp"
+#ifdef _WIN32
+#include "directx/cabinet_recording.hpp"
+cabinet_signal::State OOutputs::cabinet_snapshot() const {
+    return {hw_motor_control,motor_enabled,motor_x_change,motor_control,
+        motor_movement,is_centered,motor_change_latch,speed,curve,counter,
+        was_small_change,movement_adjust1,movement_adjust2,movement_adjust3};
+}
+#endif
 
 OOutputs::OOutputs(void)
 {
@@ -92,8 +100,17 @@ void OOutputs::tick(int16_t input_motor)
 
         // Force Feedback Steering Wheels
         case MODE_FFEEDBACK:
+#ifdef _WIN32
+            cabinet_recording::begin(outrun.tick_counter,
+                {outrun.game_state,ocrash.crash_counter,ocrash.skid_counter,
+                 oinitengine.car_increment,oinitengine.road_curve,oferrari.wheel_state,
+                 oferrari.car_x_diff,oinputs.steering_adjust,input_motor},cabinet_snapshot());
+#endif
             do_motors(mode, input_motor);   // Use X-Position of wheel instead of motor position
             motor_output(hw_motor_control); // Force Feedback Handling
+#ifdef _WIN32
+            cabinet_recording::end(cabinet_snapshot());
+#endif
             break;
 
         // SMARTYPI: Real Cabinet
@@ -825,6 +842,7 @@ void OOutputs::motor_output(uint8_t cmd)
     if (cmd == MOTOR_OFF || cmd == MOTOR_CENTRE)
     {
 #ifdef _WIN32
+        cabinet_recording::request(cmd,0);
         forcefeedback::set(cmd, 0); // Explicitly release the previous command.
 #endif
         return;
@@ -837,6 +855,9 @@ void OOutputs::motor_output(uint8_t cmd)
     else if (cmd > MOTOR_CENTRE) // right
         force = 15 - cmd;
 
+#ifdef _WIN32
+    cabinet_recording::request(cmd,force);
+#endif
     forcefeedback::set(cmd, force);
 }
 

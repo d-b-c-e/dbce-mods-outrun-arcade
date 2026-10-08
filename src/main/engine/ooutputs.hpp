@@ -17,6 +17,9 @@
 #pragma once
 
 #include "stdint.hpp"
+#ifdef _WIN32
+#include "directx/cabinet_signal.hpp"
+#endif
 
 struct CoinChute
 {
@@ -69,8 +72,13 @@ public:
     void clear_digital(uint8_t);
     int is_set(uint8_t);
     void coin_chute_out(CoinChute* chute, bool insert);
+#ifdef _WIN32
+    cabinet_signal::State cabinet_snapshot() const;
+#endif
 
 private:
+    // Defined only by the offline original-producer fixture. No runtime writer.
+    friend struct CabinetReplayAccess;
     int mode;
 
     uint8_t dig_out, dig_out_old;

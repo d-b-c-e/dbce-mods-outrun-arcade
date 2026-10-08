@@ -101,6 +101,11 @@ int main(int argc,char** argv) {
         CHECK(init(9000,8500,20)); set_active(true); CHECK(set(15,0)==0);
         enumerate_wheels(); CHECK(opens==1 && frees==0); close();
         auto count=sent.size(); set_active(true); CHECK(set(15,0)==-1 && sent.size()==count && opens==1);
+    } else if(std::strcmp(test,"capture-mute")==0) {
+        _putenv_s("DBCE_CANNONBALL_CAPTURE","invalid request still mutes");
+        CHECK(!init(9000,8500,20));_putenv_s("DBCE_CANNONBALL_CAPTURE","");
+        set_active(true);CHECK(set(15,0)==-1); // startup mute cannot be lifted later
+        CHECK(loads==0 && opens==0 && sent.empty());
     } else if(std::strcmp(test,"mute")==0) {
         _putenv_s("DBCE_FFB_MUTE","1"); CHECK(!init(9000,8500,20)); CHECK(loads==0);
     } else if(std::strcmp(test,"missing-guid")==0) {

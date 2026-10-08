@@ -12,6 +12,9 @@
 #include <cstring>
 #include <cstdlib> // abs
 #include "sdl2/input.hpp"
+#ifdef _WIN32
+#include "directx/cabinet_recording.hpp"
+#endif
 
 #if defined(__has_include)
 #  if __has_include("directx/ffeedback.hpp")
@@ -189,7 +192,7 @@ void Input::open_joy()
         // Keep SDL rumble for mapped gamepads. DirectInput wheels use the
         // explicit cabinet transport, never this automatic haptic fallback.
         const char* muted = std::getenv("DBCE_FFB_MUTE");
-        if (!controller || (muted && std::strcmp(muted, "0") != 0)) __joy_for_haptic = nullptr;
+        if (!controller || cabinet_recording::requested() || (muted && std::strcmp(muted, "0") != 0)) __joy_for_haptic = nullptr;
 #endif
         haptic = __joy_for_haptic ? SDL_HapticOpenFromJoystick(__joy_for_haptic) : NULL;
         if (haptic)
@@ -602,6 +605,9 @@ void Input::handle_joy_hat(SDL_JoyHatEvent* evt)
 
 void Input::set_rumble(bool enable, float strength, int mode)
 {
+#ifdef _WIN32
+    if(cabinet_recording::requested())return;
+#endif
 #ifndef WIN32
     if (hidraw_device >= 0) {
         // takes precidence over SDL native support

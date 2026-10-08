@@ -40,6 +40,9 @@
 // Direct X Haptic Support.
 // Fine to include on non-windows builds as dummy functions used.
 #include "directx/ffeedback.hpp"
+#ifdef _WIN32
+#include "directx/cabinet_recording.hpp"
+#endif
 #include "telemetry/forza.hpp"
 #include "engine/oferrari.hpp"
 #include "engine/oinitengine.hpp"
@@ -201,6 +204,9 @@ static void quit_func(int code)
     input.close_joy();
     forcefeedback::close();
     telemetry::close();
+#ifdef _WIN32
+    cabinet_recording::close(); // releases above precede fallible file finalization
+#endif
     if (menu) delete menu;
     SDL_Quit();
     _Exit(code); // exit without invoking atexit bindings; this prevents seg fault caused by uninitialised SDLgpu.
@@ -310,6 +316,9 @@ static void tick()
                  : 1;
 
     process_events();
+#ifdef _WIN32
+    cabinet_recording::service(cannonball::state==STATE_GAME && outrun.game_state==GS_INGAME,pause_engine);
+#endif
 
 #ifdef _WIN32
     forcefeedback::set_active(cannonball::state == STATE_GAME && !pause_engine &&
@@ -854,6 +863,10 @@ int main(int argc, char* argv[]) {
 
     if (ok) {
         config.load(); // Load config.XML file, also loads custom music files
+#ifdef _WIN32
+        cabinet_recording::initialize(config.controls.haptic!=0,config.smartypi.enabled!=0,
+            {config.controls.max_force,config.controls.min_force,config.controls.force_duration});
+#endif
     telemetry::init(config.telemetry.enabled != 0, config.telemetry.host, config.telemetry.port);
         ok = roms.load_revb_roms(config.sound.fix_samples);
 

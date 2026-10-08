@@ -1,67 +1,4 @@
-// Original engine arithmetic compiled verbatim by extract_cabinet_producer.py.
-// No SDL, game assets, native wheel API, game process or physical output.
-#include <array>
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <vector>
-#include <algorithm>
-#define private public
-#include "../src/main/engine/ooutputs.hpp"
-#undef private
-#include "../src/main/directx/cabinet_force.hpp"
-
-enum { GS_INGAME = 12 };
-struct { int game_state; } outrun;
-struct { int16_t crash_counter, skid_counter; } ocrash;
-struct { uint32_t car_increment; int16_t road_curve; } oinitengine;
-struct OFerrari { enum { WHEELS_ON=0, WHEELS_OFF=3 }; uint8_t wheel_state; int16_t car_x_diff; } oferrari;
-struct { int16_t steering_adjust; } oinputs;
-namespace forcefeedback {
-    static std::vector<std::pair<int,int>> requests;
-    int set(int command, int step) { requests.emplace_back(command, step); return 0; }
-}
-#include "cabinet_producer.inc"
-
-static unsigned checks;
-#define CHECK(x) do { ++checks; if (!(x)) { std::fprintf(stderr,"line %d: %s\n",__LINE__,#x); std::exit(1); } } while(0)
-
-// All state read/written by the FFEEDBACK producer. Cabinet hardware limits and
-// calibration state are deliberately outside this contract and mode.
-using State = std::array<int,14>;
-static State snapshot(const OOutputs& m) {
-    return {m.hw_motor_control,m.motor_enabled,m.motor_x_change,m.motor_control,
-        m.motor_movement,m.is_centered,m.motor_change_latch,m.speed,m.curve,
-        m.counter,m.was_small_change,m.movement_adjust1,m.movement_adjust2,m.movement_adjust3};
-}
-static void restore(OOutputs& m, const State& s) {
-    m.hw_motor_control=static_cast<uint8_t>(s[0]);m.motor_enabled=s[1]!=0;
-    m.motor_x_change=static_cast<int16_t>(s[2]);m.motor_control=static_cast<int8_t>(s[3]);
-    m.motor_movement=static_cast<int8_t>(s[4]);m.is_centered=s[5]!=0;
-    m.motor_change_latch=static_cast<int16_t>(s[6]);m.speed=static_cast<int16_t>(s[7]);
-    m.curve=static_cast<int16_t>(s[8]);m.counter=static_cast<int16_t>(s[9]);
-    m.was_small_change=s[10]!=0;m.movement_adjust1=static_cast<int16_t>(s[11]);
-    m.movement_adjust2=static_cast<int16_t>(s[12]);m.movement_adjust3=static_cast<int16_t>(s[13]);
-}
-struct Input {
-    int game; int16_t crash,skid,curve,steering,motor,x_diff; uint32_t increment; uint8_t wheels;
-};
-struct Row { Input input; State before,after; int command,step,nominal; };
-static Row advance(OOutputs& m, const Input& i) {
-    outrun.game_state=i.game;ocrash.crash_counter=i.crash;ocrash.skid_counter=i.skid;
-    oinitengine.road_curve=i.curve;oinitengine.car_increment=i.increment;
-    oferrari.car_x_diff=i.x_diff;oferrari.wheel_state=i.wheels;oinputs.steering_adjust=i.steering;
-    Row r{};r.input=i;r.before=snapshot(m);forcefeedback::requests.clear();
-    m.do_motors(OOutputs::MODE_FFEEDBACK,i.motor);m.motor_output(m.hw_motor_control);
-    r.after=snapshot(m);CHECK(forcefeedback::requests.size()==1);
-    r.command=forcefeedback::requests[0].first;r.step=forcefeedback::requests[0].second;
-    CHECK(forcefeedback::cabinet_force(r.command,r.step,{9000,8500,20},r.nominal));
-    return r;
-}
-static void equal(const Row& a,const Row& b) {
-    CHECK(a.before==b.before);CHECK(a.after==b.after);CHECK(a.command==b.command);
-    CHECK(a.step==b.step);CHECK(a.nominal==b.nominal);
-}
+#include "cabinet_producer_fixture.hpp"
 int main() {
     OOutputs m;m.init();
     // Independently readable fixed cases: neutral, stationary signs, original
@@ -88,19 +25,61 @@ int main() {
         v.crash=n%103<13?1:0;v.skid=n%83<9?-20:0;
         v.curve=static_cast<int16_t>(next()%150);
         v.motor=static_cast<int16_t>(72+next()%113);
-        v.steering=static_cast<int16_t>((static_cast<int>(v.motor)-128)*256/112);
+        v.steering=static_cast<int16_t>(std::clamp((static_cast<int>(v.motor)-128)*256/112,-127,127));
         v.increment=(next()%300u)<<16;v.wheels=static_cast<uint8_t>(next()%4);
         v.x_diff=static_cast<int16_t>(static_cast<int>(next()%3)-1);
         tape.push_back(advance(m,v));
     }
     for(size_t start:{size_t(0),size_t(7311)}){
         OOutputs replay;replay.init();restore(replay,tape[start].before);
+        poison_unrecorded(replay);
         for(size_t n=start;n<tape.size();++n)equal(tape[n],advance(replay,tape[n].input));
     }
     // Show that checkpoint/history is required: a midstream reset is not
     // interchangeable with restoring the original producer state.
     OOutputs reset;reset.init();CHECK(snapshot(reset)!=tape[7311].before);
-    OOutputs disabled;disabled.init();disabled.motor_enabled=false;
+    OOutputs disabled;disabled.init();CabinetReplayAccess::enabled(disabled,false);
     r=advance(disabled,i);CHECK(r.command==0 && r.nominal==0);
+    {
+        using namespace cabinet_signal;
+        Buffer buffer;CHECK(buffer.arm({9000,8500,20},60));
+        OOutputs live;live.init();std::vector<Frame> rows;
+        for(uint32_t n=0;n<1801;++n){
+            Input v{12,static_cast<int16_t>(n%37<8),0,static_cast<int16_t>(n%130),
+                static_cast<int16_t>(static_cast<int>(n%255)-127),
+                static_cast<int16_t>(72+n%113),static_cast<int16_t>(static_cast<int>(n%3)-1),
+                (n%290)<<16,static_cast<uint8_t>(n%4)};
+            auto f=frame(advance(live,v),uint64_t(n)*33334,900+n);
+            CHECK(buffer.append(f));rows.push_back(f);
+        }
+        CHECK(buffer.complete());CHECK(buffer.frames().size()==1801);CHECK(!buffer.active());
+        CHECK(!buffer.append(rows.back()));CHECK(buffer.frames().size()==1801);
+        // Truncation, invalid values, dropped updates and mutated checkpoint
+        // histories must never acquire a completion claim.
+        for(int mutation=0;mutation<11;++mutation){
+            Buffer bad;CHECK(bad.arm({9000,8500,20},60));CHECK(bad.append(rows[0]));
+            Frame next=rows[1];
+            switch(mutation){
+                case 0:next.inputs[Motor]=0;break;
+                case 1:next.inputs[Game]=1;break;
+                case 2:next.nominal++;break;
+                case 3:next.before[12]++;break;
+                case 4:next.update++;break;
+                case 5:next.elapsed_us=0;break;
+                case 6:next.elapsed_us=1000001;break;
+                case 7:next.after[1]=2;break;
+                case 8:next.step++;break;
+                case 9:next.before[4]=1;break; // cabinet-only movement state
+                case 10:next.inputs[Steering]=128;break;
+            }
+            CHECK(!bad.append(next));CHECK(!bad.complete());CHECK(bad.frames().size()==1);
+        }
+        Buffer stopped;CHECK(stopped.arm({9000,8500,20},60));CHECK(stopped.append(rows[0]));
+        stopped.stop(End::Duration);CHECK(!stopped.complete());CHECK(stopped.reason()==End::Interrupted);
+        Buffer full;CHECK(full.arm({9000,8500,20},60,2));CHECK(full.append(rows[0]));CHECK(full.append(rows[1]));
+        CHECK(!full.append(rows[2]));CHECK(full.reason()==End::Overflow && !full.complete());
+        Buffer invalid;CHECK(!invalid.arm({9000,9500,20},60));CHECK(!invalid.arm({9000,8500,20},121));
+        CHECK(!invalid.arm({9000,8500,20},60,8193));
+    }
     std::printf("PASS %u original cabinet producer checks; 12000 synthetic rows, two stateful replays; no native calls\n",checks);
 }

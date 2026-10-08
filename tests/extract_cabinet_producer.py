@@ -13,7 +13,9 @@ motor_start = source.index("const static uint8_t MOTOR_VALUES[]")
 motor_end = source.index("// Deluxe Upright: Steering Wheel Movement", motor_start)
 # Stop before the divider preceding the upright (unrelated rumble) code.
 motor_end = source.rfind("// ----", motor_start, motor_end)
-state = source[start:end]
+snapshot_start = source.index("cabinet_signal::State OOutputs::cabinet_snapshot()")
+snapshot_end = source.index("#endif", snapshot_start)
+state = source[snapshot_start:snapshot_end] + source[start:end]
 motor = source[motor_start:motor_end]
 assert state.count("void OOutputs::init()") == 1
 assert motor.count("void OOutputs::do_motors(") == 1

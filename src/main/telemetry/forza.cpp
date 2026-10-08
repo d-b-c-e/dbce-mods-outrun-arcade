@@ -3,6 +3,9 @@
 ***************************************************************************/
 
 #include "telemetry/forza.hpp"
+#ifdef _WIN32
+#include "directx/cabinet_recording.hpp"
+#endif
 
 #include <cstring>
 #include <iostream>
@@ -95,7 +98,10 @@ namespace telemetry
     {
         close();
         enabled_flag = enabled;
-        if (!enabled) return;
+#ifdef _WIN32
+        if(cabinet_recording::requested())enabled_flag=false;
+#endif
+        if (!enabled_flag) return;
 #ifdef _WIN32
         WSADATA wsa;
         if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) { std::cerr << "Telemetry: WSAStartup failed" << std::endl; enabled_flag = false; return; }

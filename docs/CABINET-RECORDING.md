@@ -1,8 +1,9 @@
 # Original cabinet force recording groundwork
 
-October 8: offline fixture only. No runtime hook, recorder, gameplay writer,
-install or physical output has been added in this change. STD-012 remains partial
-and cross-game normalization remains pending.
+October 8: runtime recorder and standalone replay candidate, not installed or
+live-qualified. The original producer fixture is independently reviewed. The
+complete runtime candidate requires peer review before a rig capture. STD-012
+remains partial; gameplay playback and cross-game normalization remain pending.
 
 The original `OOutputs` deluxe-cabinet producer is stateful. It combines steering,
 crash/skid and off-road motor tables, then the Windows `motor_output` boundary
@@ -60,5 +61,67 @@ cmake --build build-check/ffb-tests --config Release
 ctest --test-dir build-check/ffb-tests -C Release --output-on-failure
 ```
 
-All17 CTest cases pass, including the existing fake-native lifecycle suite.
+The initial 17 CTest cases passed, including the existing fake-native lifecycle suite.
 The Windows-specific producer fixture does not change the Linux test contract.
+
+## Runtime candidate
+
+The Windows producer now copies its14-field state before/after the existing
+motor call, and observes its actual command/step request. A preallocated8192-row
+buffer enforces tick continuity, state continuity, finite typed domains and a
+maximum120-second duration. No allocation or file I/O occurs inside that interval.
+The original arithmetic remains unchanged. The low-speed retained-command
+behavior is preserved. A read-only state accessor serves recording; the friend
+writer exists only in the standalone test/replay executable.
+
+The capture key is a startup process choice. Its presence blocks DirectInput
+initialization/force sends, SDL haptic opening/rumble and telemetry socket opening,
+including when the capture request itself is invalid. Saved settings are not
+changed. Haptic calculation mode must already be configured; real-cabinet mode
+is refused. The renderer, controls and engine remain the game's own.
+
+The outer frame checks the shared lease (250 ms, plus every seal), ends on a
+driving interruption, and writes after the buffer stops. Process cleanup releases
+devices before finalizing a partial recording. A stopped/failed capture has no
+completed session footer. Both source and outcome use non-replacing publication.
+An existing result or temporary file is refused. No second capture is armed in
+the same process. A runner still owns launch admission, exact owner backup,
+normal close and restoration.
+
+The shared vendored `dbce.wheel.session@1` writer is pinned separately under
+`lib/toolkit/session`; the native41-export pin is unchanged. Metadata names the
+producer and mapper source hashes, configured maximum/minimum/hold, muted
+admission, uncalibrated increment units and original versus synthetic capture
+kind. Nominal force is the existing mapper's calculation, not a claimed native
+command or measured torque.
+
+The standalone `cabinet_replay.exe` uses the unchanged source-extracted producer
+and a fake sink. `tools/replay_cabinet.py` validates the shared envelope, exact
+channel inventory, footer/counts, compiled producer/mapper identity and integer
+domains before replay. It restores only the first checkpoint, then requires all
+subsequent inputs, requests and states to match. Its summary preserves capture
+kind and reports normalizationQualified=false.
+
+```powershell
+# Diagnostic child environment only; never persist these as owner settings.
+# The runner supplies a new lowercase 32-hex id and its exact shared lease token.
+$env:DBCE_CANNONBALL_CAPTURE = '<new-id>'
+$env:DBCE_CANNONBALL_CAPTURE_SECONDS = '60'
+$env:DBCE_CANNONBALL_LEASE = '<owned-token>'
+# Launch the checked candidate through the supervised runner, enter an offline
+# game and drive with muted outputs. This example does not launch it for you.
+
+py -3 tools/replay_cabinet.py '<result>/source.jsonl' --replayer build-check/ffb-tests/Release/cabinet_replay.exe
+```
+
+Results are under `%LOCALAPPDATA%/Dbce/StagePlayback/cannonball-force/<id>`.
+Source-only validation now passes 29 CTest cases, including 13 strict reader/replay
+cases and real shared-writer file tests with a controlled clock. These cover
+lease loss before sealing, early interruption, nested calls, occupied outputs,
+invalid arming, native mute, malformed/tampered rows and unsafe table inputs.
+Claude's baseline suggestions are adopted: unrecorded members are poisoned
+before both stateful replays; steering stays in[-127,127]; nonzero cabinet-only
+motor movement is refused in the recording contract. No physical/live result
+is implied by these fixtures. The full Release game build also passes. Current
+producer checks total 146,342; the older count above names the reviewed baseline.
+Both build entry points verify the shared writer against its recorded SHA-256.

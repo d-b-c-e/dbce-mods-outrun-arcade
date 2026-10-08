@@ -235,6 +235,7 @@ set(src_directx
 if(WIN32)
     list(APPEND src_directx
         "${CMAKE_SOURCE_DIR}/res/cannonball.rc"
+        "${main_cpp_base}/directx/cabinet_recording.cpp"
     )
 endif()
 
@@ -266,6 +267,11 @@ SOURCE_GROUP(src\\engine\\audio FILES ${src_engine_audio})
 add_executable(cannonball-se ${SRCS})
 
 if(WIN32)
+    include(cmake/VerifySessionWriter.cmake)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/${main_cpp_base}/engine/ooutputs.cpp" "${CMAKE_SOURCE_DIR}/${main_cpp_base}/directx/cabinet_force.hpp")
+    file(SHA256 "${CMAKE_SOURCE_DIR}/${main_cpp_base}/engine/ooutputs.cpp" CABINET_PRODUCER_HASH)
+    file(SHA256 "${CMAKE_SOURCE_DIR}/${main_cpp_base}/directx/cabinet_force.hpp" CABINET_MAPPER_HASH)
+    target_compile_definitions(cannonball-se PRIVATE DBCE_CABINET_PRODUCER_SHA256="${CABINET_PRODUCER_HASH}" DBCE_CABINET_MAPPER_SHA256="${CABINET_MAPPER_HASH}")
     target_compile_features(cannonball-se PRIVATE cxx_std_23)
     target_compile_definitions(cannonball-se PRIVATE
         MPG123_NO_LARGENAME      # stop header from mapping foo -> foo_64
