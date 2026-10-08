@@ -328,6 +328,7 @@ void Config::load()
     controls.asettings[1]  = cfg.get_int("controls.analog.wheel.dead",  0);
 
     controls.haptic        = cfg.get_int("controls.analog.haptic.<xmlattr>.enabled",    1);
+    controls.force_device_guid = cfg.get_string("controls.analog.haptic.device_guid", "");
     controls.max_force     = cfg.get_int("controls.analog.haptic.max_force",            9000);
     controls.min_force     = cfg.get_int("controls.analog.haptic.min_force",            8500);
     controls.force_duration= cfg.get_int("controls.analog.haptic.force_duration",       20);
@@ -482,6 +483,7 @@ bool Config::save()
     cfg.put_int("controls.analog.wheel.zone", controls.asettings[0]);
     cfg.put_int("controls.analog.wheel.dead", controls.asettings[1]);
     cfg.put_int("controls.analog.haptic.<xmlattr>.enabled", controls.haptic);
+    cfg.put_string("controls.analog.haptic.device_guid", controls.force_device_guid);
     cfg.put_int("controls.analog.haptic.max_force", controls.max_force);
     cfg.put_int("controls.analog.haptic.min_force", controls.min_force);
     cfg.put_int("controls.analog.haptic.force_duration", controls.force_duration);

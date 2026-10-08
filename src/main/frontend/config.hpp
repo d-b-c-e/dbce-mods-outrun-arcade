@@ -169,6 +169,7 @@ struct controls_settings_t
 
     float rumble;      // Simple Controller Rumble Support
     int haptic;        // Force Feedback Enabled
+    std::string force_device_guid; // Explicit Windows instance GUID, never an index
     int max_force;
     int min_force;
     int force_duration;

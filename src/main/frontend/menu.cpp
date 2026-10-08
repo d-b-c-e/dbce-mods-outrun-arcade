@@ -12,6 +12,24 @@
 #include "menu.hpp"
 #include "menulabels.hpp"
 #include "../utils.hpp"
+#include <cctype>
+#ifdef _WIN32
+#include "directx/ffeedback.hpp"
+static const char* ENTRY_WHEEL = "WHEEL OUTPUT";
+static const char* ENTRY_WHEEL_SAVED = "NEXT WHEEL ";
+static const char* ENTRY_WHEEL_CHOICE = "CHOOSE ";
+static const char* ENTRY_WHEEL_APPLY = "USE CHOICE AFTER RESTART";
+static const char* ENTRY_WHEEL_ENABLE = "OUTPUT NEXT START ";
+static const char* ENTRY_WHEEL_REFRESH = "REFRESH WHEEL LIST";
+static std::string wheel_label(const forcefeedback::WheelDevice& device) {
+    std::string label=device.name;
+    for (char& c : label) {
+        const unsigned char byte=static_cast<unsigned char>(c);
+        c=byte>=32 && byte<=126 ? static_cast<char>(std::toupper(byte)) : '?';
+    }
+    return label.substr(0,17) + " [" + device.guid.substr(0,8) + "]";
+}
+#endif
 
 #include "engine/ohud.hpp"
 #include "engine/oinputs.hpp"
@@ -251,6 +269,9 @@ void Menu::populate_controls()
         menu_controls.clear();
 
     menu_controls.push_back(ENTRY_GEAR);
+#ifdef _WIN32
+    menu_controls.push_back(ENTRY_WHEEL);
+#endif
     if (input.gamepad) menu_controls.push_back(ENTRY_CONFIGUREGP);
     menu_controls.push_back(ENTRY_REDEFKEY);
     menu_controls.push_back(ENTRY_DSTEER);
@@ -265,6 +286,15 @@ void Menu::populate_controls()
     menu_controls_gp.push_back(ENTRY_REDEFJOY);
     menu_controls_gp.push_back(ENTRY_BACK);
 }
+
+#ifdef _WIN32
+void Menu::refresh_wheels() {
+    wheel_choices=forcefeedback::enumerate_wheels();
+    wheel_choice=-1;
+    menu_wheel={ENTRY_WHEEL_SAVED, ENTRY_WHEEL_CHOICE, ENTRY_WHEEL_APPLY,
+        ENTRY_WHEEL_ENABLE, ENTRY_WHEEL_REFRESH, ENTRY_BACK};
+}
+#endif
 
 // ------------------------------------------------------------------------------------------------
 // Populate Menus for Genuine Cabinet Setup (via SmartyPi interface)
@@ -1074,6 +1104,13 @@ void Menu::tick_menu()
         }
         else if (menu_selected == &menu_controls)
         {
+#ifdef _WIN32
+            if (SELECTED(ENTRY_WHEEL)) {
+                refresh_wheels();
+                set_menu(&menu_wheel);
+            }
+            else
+#endif
             if (SELECTED(ENTRY_GEAR))
             {
                 if (++config.controls.gear > config.controls.GEAR_AUTO)
@@ -1101,6 +1138,29 @@ void Menu::tick_menu()
             else if (SELECTED(ENTRY_BACK))
                 menu_back();
         }
+#ifdef _WIN32
+        else if (menu_selected == &menu_wheel)
+        {
+            if (SELECTED(ENTRY_WHEEL_CHOICE)) {
+                if (++wheel_choice >= static_cast<int>(wheel_choices.size())) wheel_choice=-1;
+            } else if (SELECTED(ENTRY_WHEEL_APPLY)) {
+                const std::string chosen=wheel_choice<0 ? "" : wheel_choices.at(wheel_choice).guid;
+                const auto present=forcefeedback::enumerate_wheels();
+                const bool found=chosen.empty() || std::any_of(present.begin(),present.end(),[&](const auto& d){return d.guid==chosen;});
+                if (!found) display_message("WHEEL DISCONNECTED - REFRESH LIST");
+                else {
+                    forcefeedback::close(); // retire current actuator; no hot swap
+                    config.controls.force_device_guid=chosen;
+                    display_message("SAVE SETTINGS AND RESTART GAME");
+                }
+            } else if (SELECTED(ENTRY_WHEEL_ENABLE)) {
+                forcefeedback::close();
+                config.controls.haptic ^= 1;
+                display_message("SAVE SETTINGS AND RESTART GAME");
+            } else if (SELECTED(ENTRY_WHEEL_REFRESH)) refresh_wheels();
+            else if (SELECTED(ENTRY_BACK)) menu_back();
+        }
+#endif
         else if (menu_selected == &menu_controls_gp)
         {
             if (SELECTED(ENTRY_ANALOG))
@@ -1465,6 +1525,19 @@ void Menu::refresh_menu()
         }
         // JJP end of insert
 
+#ifdef _WIN32
+        else if (menu_selected == &menu_wheel)
+        {
+            if (SELECTED(ENTRY_WHEEL_SAVED)) {
+                std::string label=config.controls.force_device_guid.empty() ? "NONE" : config.controls.force_device_guid.substr(0,8);
+                for (const auto& device : wheel_choices) if (device.guid==config.controls.force_device_guid) label=wheel_label(device);
+                // This row shows a saved/pending identity, never active acquisition.
+                set_menu_text(ENTRY_WHEEL_SAVED,label.substr(0,24));
+            } else if (SELECTED(ENTRY_WHEEL_CHOICE)) {
+                set_menu_text(ENTRY_WHEEL_CHOICE,wheel_choice<0 ? "NONE" : wheel_label(wheel_choices.at(wheel_choice)));
+            } else if (SELECTED(ENTRY_WHEEL_ENABLE)) set_menu_text(ENTRY_WHEEL_ENABLE,config.controls.haptic ? "ON" : "OFF");
+        }
+#endif
         else if (menu_selected == &menu_controls)
         {
             if (SELECTED(ENTRY_GEAR))               set_menu_text(ENTRY_GEAR, GEAR_LABELS[config.controls.gear]);

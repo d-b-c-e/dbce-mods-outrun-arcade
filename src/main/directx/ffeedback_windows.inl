@@ -4,6 +4,7 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include "cabinet_force.hpp"
+#include "wheel_device.hpp"
 #include "../../../lib/toolkit/native/include/wheelffb.h"
 
 namespace forcefeedback {
@@ -73,13 +74,44 @@ public:
 };
 static ToolkitSink sink;
 static CabinetForce controller(sink);
+static std::string saved_guid;
+// Keep the enumeration-only DLL reference until close. Unloading a library that
+// still owns its read-only DirectInput instance would leak that instance. Never
+// free shared native state while the controller might still own an actuator.
+static WheelFfbApi catalog{};
+std::vector<WheelDevice> enumerate_wheels() {
+    std::vector<WheelDevice> result;
+    if (!catalog.module && !WheelFfb_LoadBeside(&catalog, nullptr, L"WheelFfb.dll")) {
+        WheelFfb_Unload(&catalog);
+        return result;
+    }
+    if (catalog.GetWheelFfbVersion() != 600) return result;
+    const int count = std::min(64, std::max(0, catalog.EnumerateDevices()));
+    for (int i=0; i<count; ++i) {
+        char label[256]{};
+        GUID guid{};
+        if (!catalog.GetDeviceName(i, label, sizeof(label)) || !catalog.GetDeviceGuid(i, &guid)) continue;
+        const GUID zero{};
+        if (!std::memcmp(&guid, &zero, sizeof(guid))) continue;
+        label[255]=0;
+        char identity[37]{};
+        std::snprintf(identity, sizeof(identity), "%08lx-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+            guid.Data1, guid.Data2, guid.Data3, guid.Data4[0], guid.Data4[1], guid.Data4[2],
+            guid.Data4[3], guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
+        result.push_back({label, identity});
+    }
+    return result;
+}
+void configure_guid(const char* saved) { saved_guid = saved ? saved : ""; }
 bool init(int maximum, int minimum, int duration) {
     // Diagnostic mode refuses before even loading the force library.
     const char* muted = std::getenv("DBCE_FFB_MUTE");
     if (muted && std::strcmp(muted, "0") != 0) return false;
     GUID guid{};
-    if (!explicit_guid(std::getenv("FF_TARGET_GUID"), guid)) {
-        std::fprintf(stderr, "Wheel FFB unavailable: set FF_TARGET_GUID to the chosen wheel's instance GUID; no automatic selection.\n");
+    const char* override_guid = std::getenv("FF_TARGET_GUID");
+    const char* selected_guid = override_guid && *override_guid ? override_guid : saved_guid.c_str();
+    if (!explicit_guid(selected_guid, guid)) {
+        std::fprintf(stderr, "Wheel FFB unavailable: choose a wheel in Controls, save settings and restart; no automatic selection.\n");
         return false;
     }
     const bool ready = controller.initialize(reinterpret_cast<const unsigned char*>(&guid), {maximum, minimum, duration});
@@ -107,6 +139,12 @@ int set(int command, int force) {
         std::fprintf(stderr, "Wheel FFB stopped after invalid input or refused delivery; no automatic reopen.\n");
     return accepted ? 0 : -1;
 }
-void close() { controller.close(); }
+void close() {
+    controller.close();
+    if (catalog.module) {
+        if (catalog.FreeDirectInput) catalog.FreeDirectInput();
+        WheelFfb_Unload(&catalog);
+    }
+}
 bool is_supported() { return controller.supported(); }
 } // namespace forcefeedback

@@ -11,7 +11,7 @@ Seeded 2026-10-04 from what was verified that day; `unchecked` rows need a look.
 | STD-001 | One mod per game | unchecked |  |
 | STD-002 | Recording and playback from launch | unchecked |  |
 | STD-003 | Normalized FFB strength | pending | Cabinet-command@2 retains the original nonzero law; Windows transport candidate only, no Art-matched force calibration. See docs/FFB-TOOLKIT-CANDIDATE.md. |
-| STD-004 | Consistent settings UX | unchecked |  |
+| STD-004 | Consistent settings UX | partial | Explicit saved wheel picker in Settings/Controls builds; rendering and config round trip pending. See docs/WHEEL-SELECTION.md. |
 | STD-005 | Camera numpad layout 8/2 9/3 4/6 7/1 +/- 5 | unchecked |  |
 | STD-006 | Camera step sizes are settings | unchecked |  |
 | STD-007 | Triple screens in one wide window | unchecked |  |
@@ -20,11 +20,11 @@ Seeded 2026-10-04 from what was verified that day; `unchecked` rows need a look.
 | STD-010 | Install the latest build for testing | unchecked |  |
 | STD-021 | Art FFB reference | pending | Cabinet command and nominal constant request are not measured physical torque; no normalization workload yet. |
 | STD-025 | Shared force model | partial | Cabinet game has no tyre model. Reviewed d2c1a00 uses shared native 50ba139 transport; versioned cabinet arithmetic remains local, not AxleForceCurve. Muted startup passed; previous install restored. |
-| STD-026 | One player force model | partial | No model selector; explicit instance GUID still requires developer environment setting pending a player picker. |
+| STD-026 | One player force model | partial | No model selector. Saved explicit wheel picker now builds; environment override remains developer-only. Runtime qualification pending. |
 | STD-027 | Independent strengths | pending | Cabinet law combines steering/crash/road; cannot relabel its overall gain as steering-only. |
 | STD-011 | Work lands on main | adopted | Changes committed/pushed to this fork's default master; upstream origin is not the owner fork. |
 | STD-012 | Original route and signals | pending | No original cabinet producer recording or qualified playback contract. |
-| STD-013 | Plain launch | partial | Existing install retained; new explicit-GUID candidate still needs a player picker/persisted selection before replacing it. |
+| STD-013 | Plain launch | partial | Existing install retained. Persisted explicit-GUID picker builds and passes actual-adapter fake-sink cases; menu/config runtime check pending. |
 | STD-014 | Reciprocal review | adopted | Claude independently reviewed transport/recovery, rebuilt eleven cases and ran muted startup; findings addressed. |
 | STD-015 | Surround and separate triples | unchecked | Wide cabinet rendering is not proof of three independently projected views. |
 | STD-016 | Forza telemetry defaults | unchecked | Existing telemetry path not requalified by the force transport work. |

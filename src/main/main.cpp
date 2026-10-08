@@ -951,6 +951,9 @@ int main(int argc, char* argv[]) {
     // DirectX (Windows) or /dev/input/event on Linux. This also includes control of real cabinet hardware via
     // SmartyPi. Therefore, haptic takes priority over simple rumble.
 
+#ifdef _WIN32
+    forcefeedback::configure_guid(config.controls.force_device_guid.c_str());
+#endif
     if (config.controls.haptic)
 #ifdef _WIN32
         // An unavailable/disconnected selected wheel must not rewrite the saved

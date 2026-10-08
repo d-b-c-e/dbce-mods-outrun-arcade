@@ -13,6 +13,7 @@ static ULONGLONG now_ms = 0;
 static bool foreground = true, load_ok = true, init_ok = true, guard_ok = true, send_ok = true;
 static GUID selected{};
 static std::vector<int> sent;
+static int enumerations;
 #define CHECK(v) do { ++checks; if (!(v)) { std::fprintf(stderr,"FAIL line %d: %s\n",__LINE__,#v); std::exit(1); } } while(0)
 static int fake_init(int hwnd) { ++opens; CHECK(hwnd==0); return init_ok; }
 static int fake_send(int x, int y) { CHECK(y==0); sent.push_back(x); return send_ok; }
@@ -25,8 +26,15 @@ static void fake_hold(int value) { holds=value; }
 static int fake_guards() { ++guards; return guard_ok; }
 static int fake_version() { return version; }
 static int fake_hr() { return last_hr; }
+static int fake_enum() { ++enumerations; return 2; }
+static int fake_name(int index,char* out,int size) { strcpy_s(out,size,index==0 ? "Test Wheel" : "No Identity"); return 1; }
+static int fake_device_guid(int index,void* out) {
+    GUID guid{}; if(index==0) guid.Data1=0x12345678;
+    std::memcpy(out,&guid,16); return 1;
+}
 #define DBCE_WHEELFFB_H
 struct WheelFfbApi {
+    HMODULE module{};
     int (*InitDirectInput)(int){};
     int (*SetDeviceForcesXY)(int,int){};
     int (*StopEffect)(){};
@@ -38,10 +46,13 @@ struct WheelFfbApi {
     int (*InstallExitGuards)(){};
     int (*GetWheelFfbVersion)(){};
     int (*GetLastHResult)(){};
+    int (*EnumerateDevices)(){};
+    int (*GetDeviceName)(int,char*,int){};
+    int (*GetDeviceGuid)(int,void*){};
 };
 static int WheelFfb_LoadBeside(WheelFfbApi* api, HMODULE module, const wchar_t* file) {
     ++loads; CHECK(module==nullptr); CHECK(std::wcscmp(file,L"WheelFfb.dll")==0);
-    *api={fake_init,fake_send,fake_stop,fake_zero,fake_free,fake_strict,fake_guid,fake_hold,fake_guards,fake_version,fake_hr};
+    *api={reinterpret_cast<HMODULE>(1),fake_init,fake_send,fake_stop,fake_zero,fake_free,fake_strict,fake_guid,fake_hold,fake_guards,fake_version,fake_hr,fake_enum,fake_name,fake_device_guid};
     return load_ok;
 }
 static void WheelFfb_Unload(WheelFfbApi* api) { ++unloads; *api={}; }
@@ -68,7 +79,29 @@ int main(int argc,char** argv) {
     _putenv_s("FF_TARGET_GUID","12345678-abcd-9876-5432-123456abcdef");
     _putenv_s("DBCE_FFB_MUTE","");
     const char* test=argv[1];
-    if(std::strcmp(test,"mute")==0) {
+    if(std::strcmp(test,"saved-guid")==0) {
+        _putenv_s("FF_TARGET_GUID",""); configure_guid("87654321-abcd-9876-5432-123456abcdef");
+        CHECK(init(9000,8500,20) && loads==0); set_active(true);
+        CHECK(selected.Data1==0x87654321 && opens==1 && strict==1 && sent[0]==0); close();
+    } else if(std::strcmp(test,"invalid-override")==0) {
+        configure_guid("87654321-abcd-9876-5432-123456abcdef"); _putenv_s("FF_TARGET_GUID","broken");
+        CHECK(!init(9000,8500,20) && loads==0 && opens==0);
+    } else if(std::strcmp(test,"override")==0) {
+        configure_guid("87654321-abcd-9876-5432-123456abcdef");
+        CHECK(init(9000,8500,20)); set_active(true); CHECK(selected.Data1==0x12345678); close();
+    } else if(std::strcmp(test,"catalog")==0) {
+        // Read-only menu discovery is allowed while output is muted, but never
+        // invokes Init, selection, effect creation, force setters or exit guards.
+        _putenv_s("DBCE_FFB_MUTE","1");
+        auto choices=enumerate_wheels();
+        CHECK(choices.size()==1 && choices[0].name=="Test Wheel" && choices[0].guid=="12345678-0000-0000-0000-000000000000");
+        CHECK(enumerations==1 && loads==1 && opens==0 && sent.empty() && guards==0 && strict==0);
+        enumerate_wheels(); CHECK(loads==1 && enumerations==2); close(); CHECK(frees==1 && unloads==1);
+    } else if(std::strcmp(test,"retire-choice")==0) {
+        CHECK(init(9000,8500,20)); set_active(true); CHECK(set(15,0)==0);
+        enumerate_wheels(); CHECK(opens==1 && frees==0); close();
+        auto count=sent.size(); set_active(true); CHECK(set(15,0)==-1 && sent.size()==count && opens==1);
+    } else if(std::strcmp(test,"mute")==0) {
         _putenv_s("DBCE_FFB_MUTE","1"); CHECK(!init(9000,8500,20)); CHECK(loads==0);
     } else if(std::strcmp(test,"missing-guid")==0) {
         _putenv_s("FF_TARGET_GUID",""); CHECK(!init(9000,8500,20)); CHECK(loads==0);

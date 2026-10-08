@@ -13,13 +13,15 @@ passed as signed cabinet commands even when rumble was disabled.
 
 The candidate replaces that private DirectInput implementation with the reviewed
 41-export toolkit transport (`lib/toolkit/VERSION.json`, MIT notice beside it).
-It requires an explicit **DirectInput instance GUID** in `FF_TARGET_GUID`; missing,
+It requires an explicit **DirectInput instance GUID**. The new source candidate
+adds a [saved Controls-menu choice](WHEEL-SELECTION.md); `FF_TARGET_GUID` remains
+a developer override. Missing,
 malformed, zero or disconnected selections refuse without selecting another wheel.
 VID/PID, product GUID and first-device fallback are deliberately unsupported.
 The current FFB configuration controls whether the selected identity is armed;
 opening is deferred until foreground, unpaused driving. A refused initialization
 no longer overwrites its saved enabled preference.
-An eventual player device picker remains a release requirement.
+The new player picker still requires its muted rendered/config-roundtrip check.
 
 `DBCE_FFB_MUTE=1` refuses before loading the force DLL and suppresses automatic
 SDL haptic opening. Normal SDL rumble is limited to mapped gamepads; it never calls
@@ -112,6 +114,6 @@ accepted command, and never opens another device. Exact refusal-reason reporting
 needs a future native contract, not an inferred success from the cached code.
 
 Before packaging: producer recording/normalization contract, player device
-selection and release inventory/notice adoption. Physical sign, release and feel
+selection qualification and release inventory/notice adoption. Physical sign, release and feel
 remain owner-attended. The shared native version number alone does not establish
 the retained-identity fix: use the committed source and binary hashes.

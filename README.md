@@ -8,8 +8,9 @@ with minimal hardware requirements - anything from a RaspberryPi Zero will work!
 
 October 8 source builds contain a [Windows toolkit FFB candidate](docs/FFB-TOOLKIT-CANDIDATE.md)
 requiring an explicit wheel instance GUID. A temporary muted startup passed and
-the previous install was restored. Physical force, player device selection and
-public packaging remain pending.
+the previous install was restored. A [saved wheel picker](docs/WHEEL-SELECTION.md)
+now builds with offline tests; its menu check, physical force and public packaging
+remain pending.
 
 ![CannonBall-SE Start Line](screenshots/CannonBall-SE-Startline.jpg)
 
