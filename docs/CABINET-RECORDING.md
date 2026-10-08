@@ -1,9 +1,8 @@
 # Original cabinet force recording groundwork
 
-October 8: runtime recorder and standalone replay candidate, not installed or
-live-qualified. The original producer fixture is independently reviewed. The
-runtime at cb01492 passed independent source review before a rig capture.
-The subsequent observed-delivery addition below awaits its narrow follow-up review. STD-012
+October 8: runtime4336bd9 passed independent review and a first muted original
+gameplay capture. The temporary candidate was removed and the prior owner
+installation restored. STD-012
 remains partial; gameplay playback and cross-game normalization remain pending.
 
 The original `OOutputs` deluxe-cabinet producer is stateful. It combines steering,
@@ -146,3 +145,40 @@ and 146,347 producer assertions pass. Evidence: `build-check/cabinet-delivery-*`
 `source.jsonl` is independently validated through its complete footer, counts,
 source identities and original producer replay. The standalone reader does not
 consume sibling `outcome.txt`; do not describe it as verifying that file.
+
+## First original gameplay capture: 16:24–16:26 CT
+
+Source4336bd9 and Release executable
+`7C30DA4C2F2F33B2259445A9120B20133A3D21099474A49E4A150377E4C991B4`
+were temporarily installed under the shared lease after Claude's source review.
+Existing display/CRT settings were retained. The temporary control copy selected
+the one toolkit virtual pad, Automatic (enum3), digital pedals and analog
+steering; the owner's original config remained in the immutable backup.
+
+The offline route was Play Game (B), Start, music selection, Start. A20s B
+accelerator pulse moved the car (HUD66 observed); a later1s left-stick pulse
+produced steeringAdjust down to-45. A right pulse at the end was outside the
+completed trace and is not claimed as recorded input. This is an automated
+diagnostic workload, not an owner drive or a normalization reference.
+
+Capture `6e6d13fa8ca64ea898e19dcd481e6079` completed1,802 consecutive updates
+1324–3125 across60.033117s. Intervals ranged28.086–39.020ms (median33.221ms).
+Every actual delivery return is-1. The standalone original producer replay
+matched all command/step/nominal outputs and before/after state with no native
+sink. The77nonzero nominal rows range-8286 to+8286; those are calculated mapper
+values with the saved tune, not torque measurements.
+
+Source SHA256:`82B0FC01AF853DADAC596777AF11D87DC2F391055DB56C2498B72BBB7CDD4239`.
+Private evidence:`E:/Source/_archive/2026-10-08/cannonball-capture-20261008-162417`
+contains recording/, replay.json, capture-stats.json, frames, command log,
+review/build identity and immutable owner files. Native WheelFfb was never
+loaded; telemetry delivery and SDL haptics were muted by the startup key.
+Normal window close returned0. All10original root files (including the previous
+executable/native/config) and the complete inventory restored byte-exact; pad
+closed and lease released. No new installed player version or public release.
+
+The first runner attempt stopped before game launch because legacy TinyXML
+comments are not valid strict.NET XML. It also restored10files exactly. The
+retry parsed a comment-stripped temporary config copy; no owner comment/settings
+changes survived. This runner remains private; reusable packaging/launch and
+gameplay route playback are still separate open work.
