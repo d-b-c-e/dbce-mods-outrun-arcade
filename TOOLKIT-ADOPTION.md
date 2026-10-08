@@ -19,6 +19,20 @@ Seeded 2026-10-04 from what was verified that day; `unchecked` rows need a look.
 | STD-009 | Dashboard telemetry matches the HUD | unchecked |  |
 | STD-010 | Install the latest build for testing | unchecked |  |
 | STD-021 | Art FFB reference | pending | Cabinet command and nominal constant request are not measured physical torque; no normalization workload yet. |
-| STD-025 | Shared force model | partial | Cabinet game has no tyre model. Source candidate uses reviewed shared native 50ba139 transport; versioned cabinet arithmetic remains local, not AxleForceCurve. Not installed. |
+| STD-025 | Shared force model | partial | Cabinet game has no tyre model. Reviewed d2c1a00 uses shared native 50ba139 transport; versioned cabinet arithmetic remains local, not AxleForceCurve. Muted startup passed; previous install restored. |
 | STD-026 | One player force model | partial | No model selector; explicit instance GUID still requires developer environment setting pending a player picker. |
 | STD-027 | Independent strengths | pending | Cabinet law combines steering/crash/road; cannot relabel its overall gain as steering-only. |
+| STD-011 | Work lands on main | adopted | Changes committed/pushed to this fork's default master; upstream origin is not the owner fork. |
+| STD-012 | Original route and signals | pending | No original cabinet producer recording or qualified playback contract. |
+| STD-013 | Plain launch | partial | Existing install retained; new explicit-GUID candidate still needs a player picker/persisted selection before replacing it. |
+| STD-014 | Reciprocal review | adopted | Claude independently reviewed transport/recovery, rebuilt eleven cases and ran muted startup; findings addressed. |
+| STD-015 | Surround and separate triples | unchecked | Wide cabinet rendering is not proof of three independently projected views. |
+| STD-016 | Forza telemetry defaults | unchecked | Existing telemetry path not requalified by the force transport work. |
+| STD-017 | Hide empty settings pages | unchecked | Player settings not audited here. |
+| STD-018 | Online score guard | unchecked | Transport changes no driving physics; broader score paths not audited here. |
+| STD-019 | Centre menus | unchecked | One wide menu frame does not establish the full menu/race matrix. |
+| STD-020 | Standard feature checklist | partial | Ledger gaps made explicit October 8; unchecked rows still require feature evidence. |
+| STD-022 | Triple selector | unchecked | No selector adoption claimed by native FFB work. |
+| STD-023 | Panel/log frame rate | unchecked | No runtime qualification in this change. |
+| STD-024 | On-screen frame rate | unchecked | No runtime qualification in this change. |
+| STD-028 | Raw registry preservation | partial | October 8 muted test preserved ten owner files and restored binaries; it made no display/profile/registry override. A registry-changing test needs its own raw snapshot. |

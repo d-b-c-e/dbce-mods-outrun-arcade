@@ -1,7 +1,8 @@
 # Windows cabinet force transport candidate — October 8
 
-Source and offline tests only. **Not installed, physically tested or normalized.**
-The installed executable and owner's settings stay unchanged. Linux evdev remains
+Candidate d2c1a00 passed source review and a temporarily installed muted startup
+on October 8; the previous installed executable was then restored. **No physical
+force or normalization qualification.** Owner settings are unchanged. Linux evdev remains
 the previous implementation and is not qualified by these checks.
 
 The old Windows path could open the first wheel from a gamepad-rumble fallback,
@@ -86,7 +87,22 @@ found that neutral-only success could still exhaust recovery. The correction
 adds a three-second accepted-neutral interval followed by successful force,
 repeated rejected nonzero requests separated by accepted neutral (still bounded),
 and failed neutral resuming the deadline. All eleven cases and the full Release
-build pass. The correction awaits peer follow-up before a muted run.
+build pass. Claude's d2c1a00 follow-up review passed before the muted run below.
+
+On October 8, 09:18–09:19 CT, Claude temporarily installed the eight exact build
+outputs with explicit GUID and `DBCE_FFB_MUTE=1`. The main menu rendered at
+7680x1440; module snapshots at 25/35 seconds contained no WheelFfb. Claude
+reported normal window-close exit 0 and no native log growth. This proves muted
+startup/presentation, not driving, acquisition, sign or delivered force.
+Candidate EXE SHA-256:
+`3189590E6516F88B050F46976B8586EFAD5D688563A45B2D9E71AFD1059E453B`.
+
+The old installed EXE and six changed binaries were restored; the new native DLL
+was archived out of the game. Independent checks confirmed all eight candidate
+build hashes, all ten protected owner-file hashes and exact current top-level
+owner inventory. Evidence is private archive
+`2026-10-08/cannonball-muted-20261008-091825/independent-verification.json`.
+The old installation remains until plain-launch device selection is ready.
 
 The pinned native's GetLastHResult updates only on failed DirectInput HRESULTs;
 a refused send caused by an absent effect can retain an older HRESULT. Such a
@@ -95,8 +111,7 @@ still applies the same time/attempt bound, never treats that refusal as an
 accepted command, and never opens another device. Exact refusal-reason reporting
 needs a future native contract, not an inferred success from the cached code.
 
-Before packaging: independent review, producer recording/normalization contract,
-player device selection and release inventory/notice adoption. Then a bounded
-muted startup with exact owner-state restoration; physical sign, release and feel
+Before packaging: producer recording/normalization contract, player device
+selection and release inventory/notice adoption. Physical sign, release and feel
 remain owner-attended. The shared native version number alone does not establish
 the retained-identity fix: use the committed source and binary hashes.
