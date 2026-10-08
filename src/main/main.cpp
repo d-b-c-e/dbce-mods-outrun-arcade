@@ -311,6 +311,11 @@ static void tick()
 
     process_events();
 
+#ifdef _WIN32
+    forcefeedback::set_active(cannonball::state == STATE_GAME && !pause_engine &&
+        outrun.game_state == GS_INGAME);
+#endif
+
     if (tick_frame) {
         oinputs.tick();           // Do Controls
         oinputs.do_gear();        // Digital Gear
@@ -359,6 +364,11 @@ static void tick()
     }
 
     // Report output state for SmartyPi
+#ifdef _WIN32
+    // A menu/pause change during this frame must release output in this frame.
+    forcefeedback::set_active(cannonball::state == STATE_GAME && !pause_engine &&
+        outrun.game_state == GS_INGAME);
+#endif
     outrun.outputs->writeDigitalToConsole();
 
     if (tick_frame) {
@@ -942,7 +952,13 @@ int main(int argc, char* argv[]) {
     // SmartyPi. Therefore, haptic takes priority over simple rumble.
 
     if (config.controls.haptic)
+#ifdef _WIN32
+        // An unavailable/disconnected selected wheel must not rewrite the saved
+        // owner's enabled preference. The transport reports its own availability.
+        forcefeedback::init(config.controls.max_force, config.controls.min_force, config.controls.force_duration);
+#else
         config.controls.haptic = forcefeedback::init(config.controls.max_force, config.controls.min_force, config.controls.force_duration);
+#endif
 
     // Populate menus
     menu = new Menu();

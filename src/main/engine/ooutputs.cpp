@@ -823,7 +823,12 @@ void OOutputs::done()
 void OOutputs::motor_output(uint8_t cmd)
 {
     if (cmd == MOTOR_OFF || cmd == MOTOR_CENTRE)
+    {
+#ifdef _WIN32
+        forcefeedback::set(cmd, 0); // Explicitly release the previous command.
+#endif
         return;
+    }
 
     int8_t force = 0;
 

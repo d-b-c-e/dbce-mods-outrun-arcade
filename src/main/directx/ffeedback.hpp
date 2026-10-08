@@ -23,4 +23,8 @@ namespace forcefeedback
     extern void close();
     extern int  set(int xdirection, int force);
     extern bool is_supported();
+#ifdef _WIN32
+    // Gate cabinet output on gameplay, pause and foreground state each frame.
+    extern void set_active(bool active);
+#endif
 };

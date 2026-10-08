@@ -78,3 +78,13 @@ but the bundled copy's historical source revision/license is not established.
 No replacement notice is asserted for that copy. `tilemap.bin`, `tilepatch.bin`
 and icon asset creation/rights provenance are unresolved. Preserve historical
 assets; do not infer ROM-free redistribution clearance from tracked hashes.
+
+## WheelFfb Windows transport candidate
+
+`lib/toolkit` adds d-b-c-e's MIT-licensed WheelFfb native x64 library and C API
+header from source `50ba139bcaee14aee080abe438d6beec4f6a2b47` of
+`https://github.com/d-b-c-e/dbce-wheel-mod-toolkit`. Preserve the complete
+`lib/toolkit/LICENSE` notice. Exact source/tag and file hashes are in
+`lib/toolkit/VERSION.json`. This source candidate has not been added to the
+historical release inventory or a published package; its transport tests do not
+resolve the unrelated release provenance questions above.

@@ -185,6 +185,12 @@ void Input::open_joy()
 #endif
         } // if (SDL_IsGameController(pad_id))
         SDL_Joystick* __joy_for_haptic = controller ? SDL_GameControllerGetJoystick(controller) : stick;
+#ifdef _WIN32
+        // Keep SDL rumble for mapped gamepads. DirectInput wheels use the
+        // explicit cabinet transport, never this automatic haptic fallback.
+        const char* muted = std::getenv("DBCE_FFB_MUTE");
+        if (!controller || (muted && std::strcmp(muted, "0") != 0)) __joy_for_haptic = nullptr;
+#endif
         haptic = __joy_for_haptic ? SDL_HapticOpenFromJoystick(__joy_for_haptic) : NULL;
         if (haptic)
         {
@@ -194,23 +200,9 @@ void Input::open_joy()
                 rumble_supported = SDL_HapticRumbleInit(haptic) != -1;
         }
 #ifdef _WIN32
-        // Try DirectInput backend first; if not available we already attempted SDL above.
-        if (!rumble_supported) {
-            // Pass VID:PID to DI via env var so helper can match SDL device (optional).
-            if (stick) {
-                Uint16 vid = SDL_JoystickGetVendor(stick);
-                Uint16 pid = SDL_JoystickGetProduct(stick);
-                char buf[32]; std::snprintf(buf, sizeof(buf), "0x%04x:0x%04x", (unsigned)vid, (unsigned)pid);
-                #ifdef _MSC_VER
-                _putenv_s("FF_TARGET_VIDPID", buf);
-                #else
-                setenv("FF_TARGET_VIDPID", buf, 1);
-                #endif
-            }
-            if (forcefeedback::init(0x7fff, 0x2fff, 50)) {
-                std::cout << "DirectInput force feedback enabled" << std::endl;
-            }
-        }
+        // Wheel output opens only through explicit haptic configuration.
+        // SDL gamepad rumble is not a signed cabinet motor command.
+
 #else
         // Linux: if SDL rumble is not available, try evdev kernel FF
         if (!rumble_supported) {
@@ -656,13 +648,15 @@ void Input::set_rumble(bool enable, float strength, int mode)
     else
 #endif
     {
-        // If DI/evdev backend is available, prefer it
+#ifndef _WIN32
+        // The Linux evdev path consumes rumble. Windows cabinet FFB does not.
         if (forcefeedback::is_supported())
         {
             int level = 1 + int((1.0f - std::max(0.0f, std::min(1.0f, strength))) * 4.0f); // 1 strong .. 5 soft
             forcefeedback::set(mode, level);
             return;
         }
+#endif
 
         // SDL rumble fallback
         if (haptic == NULL || !rumble_supported || strength == 0) return;

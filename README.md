@@ -6,6 +6,10 @@ with minimal hardware requirements - anything from a RaspberryPi Zero will work!
 
 > This is the d-b-c-e OutRun arcade fork of CannonBall-SE. Start with the [standalone setup guide](docs/OUTRUN-ARCADE-SETUP.md). The current [fork release page](https://github.com/d-b-c-e/dbce-mods-outrun-arcade/releases) has no published release as of 2026-10-01; upstream downloads do not include this fork's Windows FFB fix.
 
+October 8 source builds contain a [Windows toolkit FFB candidate](docs/FFB-TOOLKIT-CANDIDATE.md)
+requiring an explicit wheel instance GUID. It is not yet installed, physically
+tested or included in a public release. Existing installed builds are unchanged.
+
 ![CannonBall-SE Start Line](screenshots/CannonBall-SE-Startline.jpg)
 
 ---
