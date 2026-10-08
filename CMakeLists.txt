@@ -408,6 +408,15 @@ if(WIN32)
     if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
         message(FATAL_ERROR "The reviewed CannonBall WheelFfb pin is x64 only; qualify an x86 payload before building x86.")
     endif()
+    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/lib/toolkit/VERSION.json" toolkit_pin)
+    foreach(payload native/x64/WheelFfb.dll native/include/wheelffb.h)
+        string(JSON expected_sha GET "${toolkit_pin}" files "${payload}")
+        file(SHA256 "${CMAKE_CURRENT_SOURCE_DIR}/lib/toolkit/${payload}" actual_sha)
+        string(TOUPPER "${actual_sha}" actual_sha)
+        if(NOT actual_sha STREQUAL expected_sha)
+            message(FATAL_ERROR "WheelFfb pin mismatch: ${payload}")
+        endif()
+    endforeach()
     add_custom_command(TARGET cannonball-se POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_CURRENT_SOURCE_DIR}/lib/toolkit/native/x64/WheelFfb.dll"

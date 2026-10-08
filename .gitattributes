@@ -1,0 +1,3 @@
+# Preserve the upstream bytes recorded in the native component pin.
+lib/toolkit/native/include/wheelffb.h -text
+lib/toolkit/native/x64/WheelFfb.dll -text
