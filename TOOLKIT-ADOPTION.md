@@ -23,8 +23,8 @@ Seeded 2026-10-04 from what was verified that day; `unchecked` rows need a look.
 | STD-026 | One player force model | partial | No model selector. Saved explicit wheel picker passed a muted two-launch round trip; environment override remains developer-only. Physical qualification pending. |
 | STD-027 | Independent strengths | pending | Cabinet law combines steering/crash/road; cannot relabel its overall gain as steering-only. |
 | STD-011 | Work lands on main | adopted | Changes committed/pushed to this fork's default master; upstream origin is not the owner fork. |
-| STD-012 | Original route and signals | pending | No original cabinet producer recording or qualified playback contract. |
-| STD-013 | Plain launch | partial | Existing install retained. Persisted explicit-GUID picker builds and passes actual-adapter fake-sink cases; menu/config runtime check pending. |
+| STD-012 | Original route and signals | partial | Actual cabinet producer compiles in an offline fixture: 12,000 synthetic rows replay from initial and midstream state, 140,866 checks. Runtime recorder/original capture/gameplay playback remain pending. See docs/CABINET-RECORDING.md. |
+| STD-013 | Plain launch | partial | Existing install retained. Persisted explicit-GUID picker passed the October 8 muted menu/save/restart check; candidate restored afterward. Physical output remains pending. |
 | STD-014 | Reciprocal review | adopted | Claude independently reviewed transport/recovery, rebuilt eleven cases and ran muted startup; findings addressed. |
 | STD-015 | Surround and separate triples | unchecked | Wide cabinet rendering is not proof of three independently projected views. |
 | STD-016 | Forza telemetry defaults | unchecked | Existing telemetry path not requalified by the force transport work. |
