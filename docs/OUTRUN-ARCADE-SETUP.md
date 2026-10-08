@@ -30,8 +30,12 @@ Upstream releases remain upstream artifacts and do not establish fork acceptance
 SDL wheel/gamepad input, SDL rumble and a Windows DirectInput force backend exist.
 Current hardware acceptance is still separate from source presence. Widescreen
 output exists, but calibrated simultaneous triple-screen views are unverified.
-Telemetry export, session recording, recorded-force analysis and driving-input
-playback are unverified. The game's play-count/statistics files are not session recordings.
+Telemetry export has since been observed from the engine. The October 8
+[original cabinet force capture](CABINET-RECORDING.md) reproduced all 1,802
+updates offline with output muted, and the [wheel picker](WHEEL-SELECTION.md)
+passed menu/save/restart checks. These qualify the force-data path and saved
+selection; gameplay trajectory/input playback and physical normalization are
+still unfinished. The game's play-count/statistics files are not recordings.
 
 ## Windows setup
 
