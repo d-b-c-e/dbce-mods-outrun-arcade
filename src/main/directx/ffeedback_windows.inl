@@ -5,6 +5,7 @@
 #include <dinput.h>
 #include "cabinet_force.hpp"
 #include "cabinet_recording.hpp"
+#include "../sdl2/test_inject.hpp"
 #include "wheel_device.hpp"
 #include "../../../lib/toolkit/native/include/wheelffb.h"
 
@@ -108,6 +109,9 @@ bool init(int maximum, int minimum, int duration) {
     // Diagnostic mode refuses before even loading the force library.
     const char* muted = std::getenv("DBCE_FFB_MUTE");
     if (cabinet_recording::requested() || (muted && std::strcmp(muted, "0") != 0)) return false;
+    // A test injection requested at start rules force out for the process (sdl2/test_inject.hpp); otherwise this
+    // claims the process for force, and no test injection arms after it.
+    if (!test_inject::allow_force_output()) return false;
     GUID guid{};
     const char* override_guid = std::getenv("FF_TARGET_GUID");
     const char* selected_guid = override_guid && *override_guid ? override_guid : saved_guid.c_str();
@@ -120,7 +124,7 @@ bool init(int maximum, int minimum, int duration) {
     return ready;
 }
 void set_active(bool enabled) {
-    if(cabinet_recording::requested())return;
+    if(cabinet_recording::requested()||test_inject::no_force())return;
     const bool was_ready = controller.supported();
     controller.set_active(enabled && owned_foreground());
     if (!was_ready && controller.supported())
@@ -129,7 +133,7 @@ void set_active(bool enabled) {
         std::fprintf(stderr, "Wheel FFB stopped: neutral/stop was not acknowledged at gameplay or focus handback; no automatic reopen.\n");
 }
 int set(int command, int force) {
-    if(cabinet_recording::requested())return -1;
+    if(cabinet_recording::requested()||test_inject::no_force())return -1;
     if (!owned_foreground()) controller.set_active(false);
     const bool was_ready = controller.supported();
     const bool recovering = controller.is_recovering();

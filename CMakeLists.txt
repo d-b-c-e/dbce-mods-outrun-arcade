@@ -633,3 +633,13 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/licenses")
   install(DIRECTORY "${CMAKE_SOURCE_DIR}/licenses/"
           DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/licenses")
 endif()
+
+# STD-033/034 dev-only test injection through the real Input handlers: an SDL2 virtual joystick with the R12's
+# vendor/product; no device, window, haptic or force (tests/input_inject_test.cpp).
+if(WIN32 AND _SDL2_TARGETS)
+    add_executable(input_inject_test tests/input_inject_test.cpp
+        "${main_cpp_base}/sdl2/input.cpp" "${main_cpp_base}/sdl2/test_inject.cpp")
+    target_include_directories(input_inject_test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/main" ${_SDL2_INCLUDE_DIRS})
+    target_compile_features(input_inject_test PRIVATE cxx_std_23)
+    target_link_libraries(input_inject_test PRIVATE ${_SDL2_TARGETS} ${_TINYXML2_TARGET} dinput8 dxguid)
+endif()

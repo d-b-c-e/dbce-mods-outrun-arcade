@@ -204,7 +204,8 @@ void Input::open_joy()
         // Keep SDL rumble for mapped gamepads. DirectInput wheels use the
         // explicit cabinet transport, never this automatic haptic fallback.
         const char* muted = std::getenv("DBCE_FFB_MUTE");
-        if (!controller || cabinet_recording::requested() || (muted && std::strcmp(muted, "0") != 0)) __joy_for_haptic = nullptr;
+        if (!controller || cabinet_recording::requested() || (muted && std::strcmp(muted, "0") != 0) || test_inject::no_force())
+            __joy_for_haptic = nullptr;
 #endif
         haptic = __joy_for_haptic ? SDL_HapticOpenFromJoystick(__joy_for_haptic) : NULL;
         if (haptic)
@@ -248,6 +249,8 @@ void Input::bind_button(SDL_GameControllerButton button, int offset)
 
 void Input::close_joy()
 {
+    // Test injection: an injected held value must not stay in the game's state after the stick goes.
+    if (test_inject::armed() || inject_dirty) release_injected();
     if (controller != NULL)
     {
         SDL_GameControllerClose(controller);
@@ -638,14 +641,50 @@ void Input::apply_hat(const uint8_t hat, const uint8_t value)
     keys[RIGHT] = value == SDL_HAT_RIGHT;
 }
 
-// What the game's input state reflects when injection first runs on this stick: SDL's own state (the events it has
-// already delivered through the handlers above).
+// The stick's released state for the game: centred axes, pedals at their released end (the configured rest, or the end
+// invert names), buttons up, hats centred.
+int16_t Input::neutral_axis(int i) const
+{
+    for (int slot = 1; slot <= 2; ++slot)
+        if (axis && i == axis[slot]) {
+            const long rest = config.controls.rest[slot];
+            if (config.controls.has_rest[slot] && rest >= -32768 && rest <= 32767) return (int16_t)rest;
+            return invert && invert[slot] ? 32767 : -32768;
+        }
+    return 0;
+}
+
+// Before the stick closes (or after injection ends without one): every object the game holds at a non-released value
+// goes back through the same handlers, so no injected throttle, button or hat outlives its stick.
+void Input::release_injected()
+{
+    for (int i = 0; i < 8; ++i)
+        if (sent_axes[i] != neutral_axis(i)) { sent_axes[i] = neutral_axis(i); handle_axis((uint8_t)i, sent_axes[i]); }
+    for (int i = 0; i < 128; ++i)
+        if (sent_buttons[i]) { sent_buttons[i] = 0; handle_joy((uint8_t)i, false); }
+    for (int i = 0; i < 4; ++i)
+        if (sent_hats[i]) { sent_hats[i] = 0; apply_hat((uint8_t)i, 0); }
+    sent_synced = false;
+    inject_dirty = false;
+}
+
+// When injection first runs on a (re)opened stick: the game takes SDL's own state for every object that differs from
+// what it holds (released after a close), as if those events had just arrived.
 void Input::sync_sent()
 {
     const int na = SDL_JoystickNumAxes(stick), nb = SDL_JoystickNumButtons(stick), nh = SDL_JoystickNumHats(stick);
-    for (int i = 0; i < 8; ++i) sent_axes[i] = i < na ? SDL_JoystickGetAxis(stick, i) : 0;
-    for (int i = 0; i < 128; ++i) sent_buttons[i] = i < nb && SDL_JoystickGetButton(stick, i) ? 1 : 0;
-    for (int i = 0; i < 4; ++i) sent_hats[i] = i < nh ? SDL_JoystickGetHat(stick, i) : 0;
+    for (int i = 0; i < 8; ++i) {
+        const int16_t v = i < na ? SDL_JoystickGetAxis(stick, i) : neutral_axis(i);
+        if (v != sent_axes[i]) { sent_axes[i] = v; handle_axis((uint8_t)i, v); }
+    }
+    for (int i = 0; i < 128; ++i) {
+        const uint8_t v = i < nb && SDL_JoystickGetButton(stick, i) ? 1 : 0;
+        if (v != sent_buttons[i]) { sent_buttons[i] = v; handle_joy((uint8_t)i, v != 0); }
+    }
+    for (int i = 0; i < 4; ++i) {
+        const uint8_t v = i < nh ? SDL_JoystickGetHat(stick, i) : 0;
+        if (v != sent_hats[i]) { sent_hats[i] = v; apply_hat((uint8_t)i, v); }
+    }
     sent_synced = true;
 }
 
@@ -654,9 +693,15 @@ void Input::sync_sent()
 // so a sample is taken through the applied padconfig/axis settings and its end gives the physical value back.
 void Input::inject_frame()
 {
-    if (!test_inject::armed() || controller != NULL || stick == NULL) return;
+    if (controller != NULL || stick == NULL) return;
+    if (!test_inject::armed()) {
+        // The session ended (expiry): the game gets the stick's physical state back once.
+        if (inject_dirty) { sync_sent(); inject_dirty = false; }
+        return;
+    }
     test_inject::poll();
     if (!sent_synced) sync_sent();
+    inject_dirty = true;
     const int na = std::min(8, std::max(0, SDL_JoystickNumAxes(stick)));
     const int nb = std::min(128, std::max(0, SDL_JoystickNumButtons(stick)));
     const int nh = std::min(4, std::max(0, SDL_JoystickNumHats(stick)));
@@ -680,6 +725,7 @@ void Input::set_rumble(bool enable, float strength, int mode)
 #ifdef _WIN32
     if(cabinet_recording::requested())return;
 #endif
+    if (test_inject::no_force()) return;   // a test injection was requested: no rumble either
 #ifndef WIN32
     if (hidraw_device >= 0) {
         // takes precidence over SDL native support

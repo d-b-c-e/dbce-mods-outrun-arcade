@@ -122,7 +122,10 @@ private:
     uint8_t sent_buttons[128];
     uint8_t sent_hats[4];
     bool sent_synced = false;   // set from SDL's state at the first injected frame after the stick opens
+    bool inject_dirty = false;  // the game's state may hold injected values: give the physical ones back once disarmed
     void sync_sent();
+    void release_injected();
+    int16_t neutral_axis(int axis_index) const;
     void apply_hat(const uint8_t hat, const uint8_t value);
 
     void bind_axis(SDL_GameControllerAxis ax, int offset);

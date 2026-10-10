@@ -865,14 +865,16 @@ int main(int argc, char* argv[]) {
 
     if (ok) {
         config.load(); // Load config.XML file, also loads custom music files
+        // Dev only, before anything that can start force: inject.on latches no force for the process; arming also needs
+        // DBCE_FFB_MUTE and the profile wheel's DirectInput identity (sdl2/test_inject.hpp).
+        for (const auto& line : test_inject::init(config.controls.pad_device_instance, config.controls.pad_device.set,
+                                                  config.controls.pad_device.vendor, config.controls.pad_device.product))
+            std::cerr << line << std::endl;
 #ifdef _WIN32
         cabinet_recording::initialize(config.controls.haptic!=0,config.smartypi.enabled!=0,
             {config.controls.max_force,config.controls.min_force,config.controls.force_duration});
 #endif
     telemetry::init(config.telemetry.enabled != 0, config.telemetry.host, config.telemetry.port);
-        // Dev only: arms just for a DBCE_FFB_MUTE process with inject.on and a profile wheel (sdl2/test_inject.hpp).
-        for (const auto& line : test_inject::init(config.controls.pad_device_instance, config.controls.pad_device.set))
-            std::cerr << line << std::endl;
         ok = roms.load_revb_roms(config.sound.fix_samples);
 
         if (cannonball::singlecore_detect || cannonball::singlecore_mode) {

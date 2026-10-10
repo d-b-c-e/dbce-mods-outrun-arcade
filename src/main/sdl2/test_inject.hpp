@@ -5,8 +5,12 @@
 // are applied to a snapshot of the opened stick's physical state once per frame (Input::inject_frame) and every object
 // whose effective value changed goes through the game's own handlers (handle_axis, the padconfig buttons, the hat);
 // when a sample ends, the physical value is delivered again. It arms once, at startup, only when all of these hold:
-//   - the process is force-muted: DBCE_FFB_MUTE is set (not "0") at its start, so the force library never loads and
-//     no SDL haptic opens (ffeedback_windows.inl, input.cpp), whatever config.xml or the menu say later;
+//   - inject.on present at start latches "no force" for the process before any other check (latch_no_force), valid
+//     or not: forcefeedback::init/set and the SDL haptic refuse from then on; force already started refuses the request;
+//   - the process is also force-muted: DBCE_FFB_MUTE is set (not "0") at its start, so the force library never loads
+//     and no SDL haptic opens (ffeedback_windows.inl, input.cpp), a second, independent interlock;
+//   - DirectInput lists exactly one attached game controller with the profile's vendor/product, and it is the
+//     configured instance (identity_error);
 //   - %LOCALAPPDATA%\dbce\outrun-arcade\inject.on names a session: "nonce=<8-64 letters/digits>" and
 //     "expires=<unix seconds, UTC>" no more than an hour ahead;
 //   - config.xml names the profile wheel: controls.pad_device vendor/product and its DirectInput instance (attribute
@@ -25,9 +29,21 @@
 
 namespace test_inject
 {
-// Startup, after config.xml is read and before the joystick or force opens. `instance` is controls.pad_device's
-// instance attribute, `wanted` whether pad_device names a wheel. Returns the log lines (none when not requested).
-std::vector<std::string> init(const std::string& instance, bool wanted);
+// One process-wide fact, whichever comes first wins and it never clears: a test request (inject.on present at start,
+// valid or not) means no force output in this process; force output started means no test injection arms.
+bool latch_no_force();       // true: no force from now on; false: force output had already started
+bool allow_force_output();   // true: force may start (no test injection will arm); false: a test was requested
+bool no_force();
+
+// The profile wheel's DirectInput identity: exactly one attached game controller has the profile's vendor/product,
+// and it is the configured instance. SDL opens by that unique vendor/product, so together they name one device.
+struct DiDevice { std::string instance; unsigned vendor, product; };
+std::string identity_error(const std::vector<DiDevice>& devices, unsigned vendor, unsigned product, const std::string& instance);
+
+// Startup, right after config.xml is read and before anything can start force or open the joystick. `instance` is
+// controls.pad_device's instance attribute; `wanted`, vendor and product its identity. Returns the log lines (none
+// when not requested).
+std::vector<std::string> init(const std::string& instance, bool wanted, unsigned vendor, unsigned product);
 bool armed();
 // Reads new commands when the file changed (at most every 100 ms).
 void poll();

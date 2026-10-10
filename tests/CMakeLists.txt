@@ -12,6 +12,9 @@ add_test(NAME profile_device COMMAND profile_device_test)
 add_executable(test_inject_test test_inject_test.cpp ../src/main/sdl2/test_inject.cpp)
 target_include_directories(test_inject_test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../src/main")
 add_test(NAME test_inject COMMAND test_inject_test)
+# The force latch is process-wide: each order is its own process.
+add_test(NAME test_inject_request_first COMMAND test_inject_test --request-first)
+add_test(NAME test_inject_force_first COMMAND test_inject_test --force-first)
 if(WIN32)
     include(../cmake/VerifySessionWriter.cmake)
     # The captured Windows contract includes explicit neutral sends; Linux's

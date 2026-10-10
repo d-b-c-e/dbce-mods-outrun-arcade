@@ -25,9 +25,41 @@ struct Stick
     { return test_inject::apply(axes, axes_n, buttons, buttons_n, hats, hats_n); }
 };
 
-int main()
+// The force latch is process-wide and permanent, so each order runs as its own process (two ctest entries).
+static int latch(bool force_first)
 {
+    if (force_first) {
+        check(test_inject::allow_force_output() && !test_inject::no_force(), "force output starts");
+        check(!test_inject::latch_no_force() && !test_inject::no_force(), "a later test request is refused: force already started");
+    } else {
+        check(test_inject::latch_no_force() && test_inject::no_force(), "a test request latches no force");
+        check(!test_inject::allow_force_output() && test_inject::latch_no_force(), "force output is refused for the process, the latch holds");
+    }
+    std::printf("test_inject latch (%s): %d checks, %d failed\n", force_first ? "force first" : "request first", g_checks, g_failed);
+    return g_failed ? 1 : 0;
+}
+
+int main(int argc, char** argv)
+{
+    if (argc > 1 && !std::strcmp(argv[1], "--request-first")) return latch(false);
+    if (argc > 1 && !std::strcmp(argv[1], "--force-first")) return latch(true);
     std::string why;
+
+    // The profile wheel's DirectInput identity: exactly one attached controller with its vendor/product, and it is ours.
+    using D = test_inject::DiDevice;
+    check(test_inject::identity_error({{WHEEL, 0x346E, 0x0006}}, 0x346E, 0x0006, WHEEL).empty(), "the one R12 is the profile's instance");
+    check(test_inject::identity_error({{"{11111111-2222-3333-4444-555555555555}", 0x346E, 0x0006}, {OTHER, 0x346E, 0x0101}}, 0x346E, 0x0006,
+                                      "{11111111-2222-3333-4444-555555555555}").empty(), "another product beside it is fine");
+    check(test_inject::identity_error({{"{66666666-7777-8888-9999-AAAAAAAAAAAA}", 0x346E, 0x0006}}, 0x346E, 0x0006, OTHER).empty(),
+          "instance text compares case-insensitively");
+    check(test_inject::identity_error({}, 0x346E, 0x0006, WHEEL).find("no attached") != std::string::npos, "no wheel attached");
+    check(test_inject::identity_error({{WHEEL, 0x346E, 0x0006}, {OTHER, 0x346E, 0x0006}}, 0x346E, 0x0006, WHEEL).find("two attached") != std::string::npos,
+          "twins refused");
+    check(test_inject::identity_error({{OTHER, 0x346E, 0x0006}}, 0x346E, 0x0006, WHEEL).find("another DirectInput instance") != std::string::npos,
+          "another instance of the wheel refused");
+    check(test_inject::identity_error({{WHEEL, 0x346E, 0x0006}}, 0x346E, 0x0006, "").find("no DirectInput instance") != std::string::npos,
+          "no configured instance refused");
+    (void)sizeof(D);
     check(!test_inject::armed() && !test_inject::test_command("inject raw axis 0 dev=" WHEEL " value=65535 ms=500", why) &&
           why.find("session") != std::string::npos, "not armed: commands refused");
     Stick s;

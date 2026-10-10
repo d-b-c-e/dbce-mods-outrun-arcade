@@ -18,6 +18,10 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dxguid.lib")
 #endif
 
 namespace ctl = dbce::controls;
@@ -31,6 +35,7 @@ constexpr int kMaxFileCommands = 32;
 constexpr int kMaxSessionCommands = 2000;
 constexpr uint64_t kMaxSessionSeconds = 3600;
 
+std::atomic<int> g_force{0};       // 0 undecided, 1 no force (a test was requested), 2 force output started
 std::atomic<bool> g_armed{false};
 std::mutex g_session;              // the instance, nonce and counts; the table has its own lock
 std::string g_instance;            // the profile wheel's DirectInput instance (normalized), as raw commands name it
@@ -165,7 +170,52 @@ uint8_t hat_bits(unsigned long angle)
 }
 } // namespace
 
-std::vector<std::string> init(const std::string& instance, bool wanted)
+bool latch_no_force() { int undecided = 0; return g_force.compare_exchange_strong(undecided, 1) || undecided == 1; }
+bool allow_force_output() { int undecided = 0; return g_force.compare_exchange_strong(undecided, 2) || undecided == 2; }
+bool no_force() { return g_force == 1; }
+
+std::string identity_error(const std::vector<DiDevice>& devices, unsigned vendor, unsigned product, const std::string& instance)
+{
+    const std::string want = ctl::detail::guid(instance);
+    if (want.empty()) return "controls.pad_device names no DirectInput instance (written by Wheelkit)";
+    int matches = 0;
+    bool found = false;
+    for (const auto& d : devices)
+        if (d.vendor == vendor && d.product == product) { ++matches; found = found || ctl::detail::guid(d.instance) == want; }
+    if (matches == 0) return "no attached DirectInput game controller has the profile wheel's vendor/product";
+    if (matches > 1) return "two attached DirectInput game controllers share the profile wheel's vendor/product";
+    if (!found) return "the attached profile wheel is another DirectInput instance than the profile's";
+    return {};
+}
+
+#ifdef _WIN32
+namespace
+{
+BOOL CALLBACK collect_device(const DIDEVICEINSTANCEW* d, void* ctx)
+{
+    char text[40];
+    const GUID& g = d->guidInstance;
+    std::snprintf(text, sizeof text, "{%08lx-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}", g.Data1, g.Data2, g.Data3,
+                  g.Data4[0], g.Data4[1], g.Data4[2], g.Data4[3], g.Data4[4], g.Data4[5], g.Data4[6], g.Data4[7]);
+    // guidProduct.Data1 is MAKELONG(vendor, product) for HID game controllers.
+    static_cast<std::vector<DiDevice>*>(ctx)->push_back({text, (unsigned)(d->guidProduct.Data1 & 0xFFFF), (unsigned)(d->guidProduct.Data1 >> 16)});
+    return DIENUM_CONTINUE;
+}
+// Listing only: no device is created, acquired or given any effect.
+bool list_devices(std::vector<DiDevice>& out, std::string& why)
+{
+    IDirectInput8W* di = nullptr;
+    if (FAILED(DirectInput8Create(GetModuleHandleW(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8W, (void**)&di, nullptr)) || !di)
+    { why = "DirectInput is unavailable for the identity check"; return false; }
+    const HRESULT hr = di->EnumDevices(DI8DEVCLASS_GAMECTRL, collect_device, &out, DIEDFL_ATTACHEDONLY);
+    di->Release();
+    if (FAILED(hr)) { why = "DirectInput could not list the attached game controllers"; return false; }
+    return true;
+}
+}
+#endif
+
+std::vector<std::string> init(const std::string& instance, bool wanted, unsigned vendor, unsigned product)
 {
     std::vector<std::string> out;
     g_armed = false;
@@ -176,7 +226,10 @@ std::vector<std::string> init(const std::string& instance, bool wanted)
     const std::wstring on = dir + L"inject.on";
     if (GetFileAttributesW(on.c_str()) == INVALID_FILE_ATTRIBUTES) return out;   // not requested
     auto refuse = [&](const std::string& why) { out.push_back("[test-inject] test injection refused: " + why); return out; };
-    // Force is ruled out for the whole process by DBCE_FFB_MUTE at its start; without it, nothing arms.
+    // The request alone rules force out for the whole process, before anything below can refuse it.
+    if (!latch_no_force()) return refuse("force output already started in this process");
+    out.push_back("[test-inject] test injection requested (inject.on): no force output in this process");
+    // DBCE_FFB_MUTE is the second, independent interlock: the force library never loads, no SDL haptic opens.
     const char* muted = std::getenv("DBCE_FFB_MUTE");
     if (!muted || !std::strcmp(muted, "0"))
         return refuse("the process is not force-muted (start it with DBCE_FFB_MUTE=1, which keeps the force library unloaded)");
@@ -194,6 +247,10 @@ std::vector<std::string> init(const std::string& instance, bool wanted)
     uint64_t expires_unix = 0;
     if (!parse_session(text, now_unix, nonce, expires_unix, why)) return refuse(why);
     if (!wanted) return refuse("config.xml names no profile wheel (controls.pad_device)");
+    std::vector<DiDevice> devices;
+    if (!list_devices(devices, why)) return refuse(why);
+    const std::string identity = identity_error(devices, vendor, product, instance);
+    if (!identity.empty()) return refuse(identity);
     if (!arm_with(instance, why)) return refuse(why);
     {
         std::lock_guard<std::mutex> g(g_session);
@@ -206,7 +263,7 @@ std::vector<std::string> init(const std::string& instance, bool wanted)
     out.push_back("[test-inject] test injection ARMED (DBCE_FFB_MUTE: no force output) for " + g_instance +
                   "; session ends in " + std::to_string(expires_unix - now_unix) + " s");
 #else
-    (void)instance; (void)wanted;
+    (void)instance; (void)wanted; (void)vendor; (void)product;
 #endif
     return out;
 }
