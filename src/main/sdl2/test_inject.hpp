@@ -19,8 +19,8 @@
 // 100 ms), at most 4096 bytes: "nonce=<the session's>" first, then at most 32 raw commands in the toolkit grammar:
 //   inject raw <axis|button|hat> <index> [angle] dev=<instance> value=<raw> ms=<50-15000> [range=<min>..<max>]
 // Axis values are in the binding's range (default 0..65535); SDL's axis is that minus 32768 (the R12's numbering is
-// qualified as equal in both, profile_device.hpp). A session takes at most 2000 commands and ends at its expiry;
-// running samples are dropped then and whenever the stick closes.
+// qualified as equal in both, profile_device.hpp). A session takes at most 2000 commands and ends at its expiry or
+// when the stick closes; running samples are dropped then, and a reopened stick never takes raw samples.
 
 #include <cstddef>
 #include <cstdint>
@@ -50,7 +50,9 @@ void poll();
 // One frame of the stick in SDL units (axes -32768..32767, buttons 0/1, hats SDL bits), each as many as the stick
 // has: running samples replace their objects in place. Returns how many objects carried one.
 int apply(int16_t* axes, int axis_count, uint8_t* buttons, int button_count, uint8_t* hats, int hat_count);
-// The stick closed (removed or shut down): its running samples never reach a reopened stick.
+// The stick closed (removed or shut down): its running samples are dropped and injection is off for the rest of the
+// process, since the identity check named only the device that was open; a reopened or replacement stick never takes a
+// raw sample (no-force stays latched; physical input carries on).
 void device_closed();
 
 // Tests only: arm without files or environment (nonce "test", no expiry), feed one command or a whole command file,

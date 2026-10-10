@@ -37,6 +37,7 @@ constexpr uint64_t kMaxSessionSeconds = 3600;
 
 std::atomic<int> g_force{0};       // 0 undecided, 1 no force (a test was requested), 2 force output started
 std::atomic<bool> g_armed{false};
+std::atomic<bool> g_closed{false};   // a stick closed while armed: no arming again in this process
 std::mutex g_session;              // the instance, nonce and counts; the table has its own lock
 std::string g_instance;            // the profile wheel's DirectInput instance (normalized), as raw commands name it
 std::string g_nonce;
@@ -143,6 +144,7 @@ int take_file(const std::string& text, std::string& why)
 
 bool arm_with(const std::string& instance, std::string& why)
 {
+    if (g_closed) { why = "the profile wheel closed earlier in this process; injection stays off"; return false; }
     const std::string normalized = ctl::detail::guid(instance);
     if (normalized.empty()) { why = "controls.pad_device names no DirectInput instance (written by Wheelkit)"; return false; }
     g_table.clearFor("");   // a new arming starts with nothing running
@@ -331,13 +333,18 @@ int apply(int16_t* axes, int axis_count, uint8_t* buttons, int button_count, uin
 
 void device_closed()
 {
+    // The identity was checked once, at arming: a reopened stick (or a replacement with the same vendor/product) is a
+    // new device epoch, so injection ends for this process. The no-force latch stays; physical input carries on.
+    const bool was = g_armed.exchange(false);
+    if (was) g_closed = true;
     const int n = g_table.clearFor("");
-    if (n) log("the stick closed; " + std::to_string(n) + " running sample(s) dropped");
+    if (was || n) log("the stick closed; " + std::to_string(n) + " running sample(s) dropped; injection off for this process");
 }
 
 bool test_arm(const std::string& instance)
 {
     g_testing = true;
+    g_closed = false;   // tests only: a fresh epoch
     g_armed = false;
     { std::lock_guard<std::mutex> g(g_session); g_nonce = "test"; }
     g_expires_ms = 0;

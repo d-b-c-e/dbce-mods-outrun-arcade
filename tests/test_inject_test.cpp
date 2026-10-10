@@ -98,6 +98,11 @@ int main(int argc, char** argv)
     test_inject::device_closed();
     s = Stick();
     check(s.apply() == 0 && s.axes[5] == -32768, "dropped when the stick closes");
+    // A close ends injection for the process: a reopened or replacement stick takes no raw sample.
+    check(!test_inject::armed() && !test_inject::test_command("inject raw axis 5 dev=" WHEEL " value=65535 ms=500", why) &&
+          why.find("session") != std::string::npos, "after a close no command is accepted");
+    check(test_inject::test_arm(WHEEL), "tests only: a fresh test arm for the remaining checks");
+    test_inject::test_clock(1600);
 
     // The command file: this session's nonce first, then at most 32 commands in at most 4096 bytes.
     check(test_inject::test_file("nonce=test\r\ninject raw button 35 dev=" WHEEL " value=1 ms=500\r\n", why) == 1 && why.empty(), "file read");

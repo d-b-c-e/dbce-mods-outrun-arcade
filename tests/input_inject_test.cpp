@@ -100,7 +100,8 @@ int main()
     input.inject_frame();
     check(input.a_accel == 0 && !input.is_pressed(Input::START) && !input.is_pressed(Input::DOWN), "physical rest before any sample");
 
-    // Injected held throttle, start button and hat-down reach the game through the applied padconfig/axis settings.
+    // Session 1: an injected held throttle, start button and hat-down reach the game through the applied
+    // padconfig/axis settings; the session's expiry gives the physical state back.
     command("inject raw axis 2 dev=" WHEEL " value=65535 ms=5000");
     command("inject raw button 35 dev=" WHEEL " value=1 ms=5000");
     command("inject raw hat 0 18000 dev=" WHEEL " value=18000 ms=5000");
@@ -109,19 +110,44 @@ int main()
     check(input.is_pressed(Input::START), "injected start reaches the game");
     check(input.is_pressed(Input::DOWN), "injected hat-down reaches the game");
     input.frame_done();
+    test_inject::test_expire(2000);
+    test_inject::test_clock(2000);
+    input.inject_frame();   // the session ends here (disarmed): samples dropped
+    input.inject_frame();   // and the game takes the physical state back
+    check(!test_inject::armed() && input.a_accel == 0 && !input.is_pressed(Input::START) && !input.is_pressed(Input::DOWN),
+          "expiry gives the physical throttle, button and hat back");
+    input.frame_done();
 
-    // Closing the stick releases every injected held value in the game's state.
+    // Session 2 (tests only: a fresh arm): held values, then the stick closes.
+    check(test_inject::test_arm(WHEEL), "second session");
+    test_inject::test_clock(3000);
+    command("inject raw axis 2 dev=" WHEEL " value=65535 ms=5000");
+    command("inject raw button 35 dev=" WHEEL " value=1 ms=5000");
+    command("inject raw hat 0 18000 dev=" WHEEL " value=18000 ms=5000");
+    input.inject_frame();
+    check(input.a_accel == 255 && input.is_pressed(Input::START) && input.is_pressed(Input::DOWN), "held again");
+    input.frame_done();
+    // Closing the stick releases every injected held value in the game's state, and ends injection for the process.
     input.close_joy();
     check(input.a_accel == 0, "close releases the throttle");
     check(!input.is_pressed(Input::START) && !input.is_pressed(Input::DOWN), "close releases the button and the hat");
+    check(!test_inject::armed(), "a close ends injection");
     input.frame_done();
 
-    // Reopening starts neutral: the samples were dropped with the stick, and no edge appears.
+    // Reopening (here the same virtual wheel stands in for a replacement with the same vendor/product) starts neutral,
+    // with no edge, and takes no raw sample: the identity check named only the stick that was open.
     pump();
     input.open_joy();
     input.inject_frame();
     check(input.gamepad && input.a_accel == 0, "reopened stick: throttle at rest");
     check(!input.is_pressed(Input::START) && !input.has_pressed(Input::START) && !input.is_pressed(Input::DOWN), "reopened stick: no stale press or edge");
+    {
+        std::string why;
+        check(!test_inject::test_command("inject raw axis 2 dev=" WHEEL " value=65535 ms=5000", why) && why.find("session") != std::string::npos,
+              "replacement stick: raw commands refused");
+        input.inject_frame();
+        check(input.a_accel == 0, "replacement stick: nothing injected");
+    }
     input.frame_done();
 
     // A physical press after the reopen still reaches the game (the game's own event path).
@@ -133,17 +159,6 @@ int main()
     pump();
     input.inject_frame();
     check(!input.is_pressed(Input::START), "and its release");
-
-    // The session's expiry gives the physical state back.
-    command("inject raw axis 2 dev=" WHEEL " value=65535 ms=5000");
-    input.inject_frame();
-    check(input.a_accel == 255, "a new injected throttle");
-    test_inject::test_expire(2000);
-    test_inject::test_clock(2000);
-    input.inject_frame();   // the session ends here (disarmed): samples dropped
-    input.inject_frame();   // and the game takes the physical state back
-    check(!test_inject::armed() && input.a_accel == 0, "expiry gives the physical throttle back");
-
     input.close_joy();
     SDL_JoystickClose(physical);
     SDL_JoystickDetachVirtual(index);
