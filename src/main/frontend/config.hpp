@@ -261,6 +261,8 @@ public:
     void get_custom_music(const std::string& respath);
     void set_config_file(const std::string& filename);
     void load();
+    // The controls section of load() (config_controls.cpp), from an already read config.xml.
+    void load_controls(const xml_parser::ptree& xml);
     bool save();
     void load_scores(bool original_mode);
     void save_scores(bool original_mode);

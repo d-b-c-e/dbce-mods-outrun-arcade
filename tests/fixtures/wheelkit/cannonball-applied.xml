@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <!-- Controls -->
+    <controls>
+        <pad_id>2</pad_id>
+        <gear>2</gear>
+        <padconfig>
+            <acc>-1</acc>
+            <brake>-1</brake>
+            <start>35</start>
+            <coin>-1</coin>
+            <menu>-1</menu>
+            <view>-1</view>
+            <up>-1</up>
+            <down>130</down>
+        </padconfig>
+        <analog enabled="1">
+            <axis>
+                <wheel>0</wheel>
+                <accel invert="0" rest="-32768">2</accel>
+                <brake invert="0" rest="-31025">5</brake>
+            </axis>
+            <haptic enabled="0">
+                <max_force>8500</max_force>
+            </haptic>
+        </analog>
+        <pad_device vendor="346E" product="0006" name="Fixture wheel" instance="{00000000-0000-0000-0000-0000000000a1}"/>
+    </controls>
+    <engine>
+        <!-- Japanese tracks need extra ROMs
+        --->
+        <japanese_tracks>0</japanese_tracks>
+        <!-- More level objects
+        --->
+        <levelobjects>1</levelobjects>
+    </engine>
+</config>
