@@ -4,6 +4,10 @@ set(CMAKE_CXX_STANDARD 17)
 enable_testing()
 add_executable(cabinet_force_test cabinet_force_test.cpp)
 add_test(NAME cabinet_force COMMAND cabinet_force_test)
+# STD-033 rig-profile controls: identity resolve, pedal rest, POV (src/main/frontend/profile_device.hpp).
+add_executable(profile_device_test profile_device_test.cpp)
+target_include_directories(profile_device_test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../src/main")
+add_test(NAME profile_device COMMAND profile_device_test)
 if(WIN32)
     include(../cmake/VerifySessionWriter.cmake)
     # The captured Windows contract includes explicit neutral sends; Linux's
