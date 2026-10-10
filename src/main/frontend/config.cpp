@@ -324,6 +324,24 @@ void Config::load()
     controls.axis[3]       = cfg.get_int("controls.analog.axis.motor",  -1);
     controls.invert[1]     = cfg.get_int("controls.analog.axis.accel.<xmlattr>.invert", 0);
     controls.invert[2]     = cfg.get_int("controls.analog.axis.brake.<xmlattr>.invert", 0);
+    // Rig profile (STD-033, profile_device.hpp). Malformed values fail closed: an unreadable identity is not qualified
+    // (joystick off), an unreadable rest reads as a released pedal. Config::save keeps these keys (it reuses cfg).
+    {
+        const std::string vendor  = cfg.get_string("controls.pad_device.<xmlattr>.vendor", "");
+        const std::string product = cfg.get_string("controls.pad_device.<xmlattr>.product", "");
+        controls.pad_device = profile_device::Want{};
+        controls.pad_device.set = !vendor.empty() || !product.empty();
+        if (controls.pad_device.set && (!profile_device::parseId(vendor, controls.pad_device.vendor) ||
+                                        !profile_device::parseId(product, controls.pad_device.product)))
+            controls.pad_device.vendor = controls.pad_device.product = 0;
+        controls.pad_device.name = cfg.get_string("controls.pad_device.<xmlattr>.name", "");
+        const char* rests[3] = {nullptr, "controls.analog.axis.accel.<xmlattr>.rest", "controls.analog.axis.brake.<xmlattr>.rest"};
+        for (int i = 0; i < 3; ++i) {
+            const std::string rest = rests[i] ? cfg.get_string(rests[i], "") : "";
+            controls.has_rest[i] = !rest.empty();
+            controls.rest[i] = controls.has_rest[i] ? profile_device::parseRest(rest) : 0;
+        }
+    }
     controls.asettings[0]  = cfg.get_int("controls.analog.wheel.zone",  75);
     controls.asettings[1]  = cfg.get_int("controls.analog.wheel.dead",  0);
 

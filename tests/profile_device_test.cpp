@@ -51,6 +51,15 @@ int main()
     check(pedal(32767, false, true, 40000) == 0 && pedal(32767, false, true, -40000) == 0, "rest out of range: 0");
     check(pedal(100000, false, true, -31025) == 255 && pedal(-100000, false, true, -31025) == 0, "samples clamped to the SDL range");
 
+    // Config values: four hex digits for an id; a plain decimal rest in the SDL range, else BadRest (always released).
+    unsigned id = 0;
+    check(parseId("346E", id) && id == 0x346E && parseId("0006", id) && id == 6 && parseId("beef", id) && id == 0xBEEF, "ids parse");
+    check(!parseId("346", id) && !parseId("0x346E", id) && !parseId("34 6E", id) && !parseId("", id) && !parseId("346G", id), "malformed ids refused");
+    check(parseRest("-31025") == -31025 && parseRest("0") == 0 && parseRest("32767") == 32767 && parseRest("-32768") == -32768, "rests parse");
+    check(parseRest("32768") == BadRest && parseRest("-32769") == BadRest && parseRest("1e3") == BadRest && parseRest(" 5") == BadRest &&
+          parseRest("-") == BadRest && parseRest("") == BadRest && parseRest("123456") == BadRest, "malformed rests are BadRest");
+    check(pedal(32767, false, true, BadRest) == 0 && pedal(-32768, true, true, BadRest) == 0, "BadRest pedal reads released");
+
     // POV directions: 128 + hat * 4 + direction, SDL hat bits.
     check(isPov(128) && isPov(143) && !isPov(127) && !isPov(144), "POV range");
     check(povHat(128) == 0 && povHat(133) == 1, "POV hat index");

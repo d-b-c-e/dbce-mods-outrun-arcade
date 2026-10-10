@@ -71,16 +71,23 @@ void Input::init(int pad_id, int* key_config, int* pad_config, int analog, int* 
 
 void Input::open_joy()
 {
-    gamepad = SDL_NumJoysticks() > pad_id;
+    // A rig profile names the wheel by USB identity; without one, the N'th joystick (pad_id) as before.
+    std::string why;
+    const int index = profile_device::resolve(config.controls.pad_device, pad_id, SDL_NumJoysticks(),
+        [](int i) { return (unsigned)SDL_JoystickGetDeviceVendor(i); },
+        [](int i) { return (unsigned)SDL_JoystickGetDeviceProduct(i); }, why);
+    if (config.controls.pad_device.set)
+        std::cout << "Rig profile wheel: " << (index >= 0 ? "SDL joystick " + std::to_string(index) : "not opened, " + why) << std::endl;
+    gamepad = index >= 0;
     if (gamepad)
     {
-        stick = SDL_JoystickOpen(pad_id);
+        stick = SDL_JoystickOpen(index);
 
         // If this is a recognized Game Controller, set up buttons and attempt to configure rumble support
-        if (SDL_IsGameController(pad_id))
+        if (SDL_IsGameController(index))
         {
             std::cout << "Game controller detected";
-            controller = SDL_GameControllerOpen(pad_id);
+            controller = SDL_GameControllerOpen(index);
 
             bind_axis(SDL_CONTROLLER_AXIS_LEFTX, 0);                // Analog: Default Steering Axis
             bind_axis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT, 1);         // Analog: Default Accelerate Axis
@@ -466,7 +473,9 @@ void Input::handle_axis(const uint8_t ax, const int16_t value)
         // Accelerator [Single Axis]
         else if (ax == axis[1])
         {
-            a_accel = scale_trigger(invert[1] ? -workingv : workingv);
+            a_accel = config.controls.has_rest[1] && controller == NULL
+                ? profile_device::pedal(value, invert[1], true, config.controls.rest[1])
+                : scale_trigger(invert[1] ? -workingv : workingv);
             if (a_accel > 0xff) a_accel = 0xff;
 //            std::cout << "throttle zone : " << value << ", processed: " << std::hex << " : " << (int) a_accel << std::endl;
         }
@@ -474,7 +483,9 @@ void Input::handle_axis(const uint8_t ax, const int16_t value)
         // Brake [Single Axis]
         else if (ax == axis[2])
         {
-            a_brake = scale_trigger(invert[2] ? -workingv : workingv);
+            a_brake = config.controls.has_rest[2] && controller == NULL
+                ? profile_device::pedal(value, invert[2], true, config.controls.rest[2])
+                : scale_trigger(invert[2] ? -workingv : workingv);
             if (a_brake > 0xff) a_brake = 0xff;
 //            std::cout << "brake zone : " << value << ", processed: " << std::hex << " : " << (int) a_brake << std::endl;
         }
@@ -573,29 +584,37 @@ void Input::handle_controller_up(SDL_ControllerButtonEvent* evt)
 }
 
 void Input::handle_joy(const uint8_t button, const bool is_pressed)
-{	
-    if (button == pad_config[0])   keys[ACCEL]     = is_pressed;
-    if (button == pad_config[1])   keys[BRAKE]     = is_pressed;
-    if (button == pad_config[2])   keys[GEAR1]     = is_pressed;
-    if (button == pad_config[3])   keys[GEAR2]     = is_pressed;
-    if (button == pad_config[4])   keys[START]     = is_pressed;
-    if (button == pad_config[5])   keys[COIN]      = is_pressed;
-    if (button == pad_config[6])   keys[MENU]      = is_pressed;
-    if (button == pad_config[7])   keys[VIEWPOINT] = is_pressed;
-    if (button == pad_config[8])   keys[UP]        = is_pressed;
-    if (button == pad_config[9])   keys[DOWN]      = is_pressed;
-    if (button == pad_config[10])  keys[LEFT]      = is_pressed;
-    if (button == pad_config[11])  keys[RIGHT]     = is_pressed;
-   
+{
+    // padconfig values from 128 are hat directions (profile_device.hpp), never button numbers.
+    for (int slot = 0; slot < 15; ++slot)
+        if (button == pad_config[slot] && !profile_device::isPov(pad_config[slot])) set_pad(slot, is_pressed);
+}
+
+// One padconfig slot (acc, brake, gear1, gear2, start, coin, menu, view, up, down, left, right, limit_l/c/r).
+void Input::set_pad(const int slot, const bool is_pressed)
+{
+    static const presses kSlots[12] = {ACCEL, BRAKE, GEAR1, GEAR2, START, COIN, MENU, VIEWPOINT, UP, DOWN, LEFT, RIGHT};
+    if (slot < 12) keys[kSlots[slot]] = is_pressed;
     // Limit Input Switches
-    if (button == pad_config[12])  motor_limits[SW_LEFT]   = is_pressed;
-    if (button == pad_config[13])  motor_limits[SW_CENTRE] = is_pressed;
-    if (button == pad_config[14])  motor_limits[SW_RIGHT]  = is_pressed;
+    else if (slot == 12) motor_limits[SW_LEFT]   = is_pressed;
+    else if (slot == 13) motor_limits[SW_CENTRE] = is_pressed;
+    else if (slot == 14) motor_limits[SW_RIGHT]  = is_pressed;
 }
 
 void Input::handle_joy_hat(SDL_JoyHatEvent* evt)
 {
     if (controller != NULL) return;
+
+    // A rig profile binds hat directions in padconfig; then a hat drives only what it is bound to, and a diagonal holds
+    // both neighbours (STD-033). Without such a binding, the hat is the menu D-pad as before.
+    bool bound = false;
+    for (int slot = 0; slot < 15; ++slot)
+        if (profile_device::isPov(pad_config[slot])) {
+            bound = true;
+            if (profile_device::povHat(pad_config[slot]) == evt->hat)
+                set_pad(slot, profile_device::povPressed(pad_config[slot], evt->value));
+        }
+    if (bound) return;
 
     keys[UP] = evt->value == SDL_HAT_UP;
     keys[DOWN] = evt->value == SDL_HAT_DOWN;

@@ -118,6 +118,7 @@ private:
     void bind_button(SDL_GameControllerButton button, int offset);
     void handle_key(const int, const bool);
     void handle_joy(const uint8_t, const bool);
+    void set_pad(const int slot, const bool is_pressed);
     void handle_axis(const uint8_t axis, const int16_t value);
     void store_last_axis(const uint8_t axis, const int16_t value);
     int scale_trigger(const int);

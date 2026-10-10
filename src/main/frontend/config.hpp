@@ -16,6 +16,7 @@
 #include <vector>
 #include "stdint.hpp"
 #include "xml_parser.h" // replaces Boost for XML handling
+#include "frontend/profile_device.hpp"
 
 struct data_settings_t
 {
@@ -166,6 +167,9 @@ struct controls_settings_t
     int axis[4];       // Analog Axis
     int asettings[2];  // Analog Settings
     bool invert[3];    // Invert Analog Axis
+    profile_device::Want pad_device; // controls.pad_device: the wheel by USB identity (STD-033 rig profile)
+    bool has_rest[3];  // controls.analog.axis.accel/brake rest attribute present
+    long rest[3];      // the pedal's released end in SDL units, or BadRest
 
     float rumble;      // Simple Controller Rumble Support
     int haptic;        // Force Feedback Enabled

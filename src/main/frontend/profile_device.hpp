@@ -57,6 +57,36 @@ inline int pedal(int value, bool invert, bool hasRest, long rest)
     return (int)(a < 0 ? 0 : a > 0xff ? 0xff : a);
 }
 
+// A USB id as the profile writer stores it: exactly four hex digits ("346E"). Anything else is malformed.
+inline bool parseId(const std::string& s, unsigned& out)
+{
+    if (s.size() != 4) return false;
+    unsigned v = 0;
+    for (char c : s) {
+        const int d = c >= '0' && c <= '9' ? c - '0' : c >= 'a' && c <= 'f' ? c - 'a' + 10 : c >= 'A' && c <= 'F' ? c - 'A' + 10 : -1;
+        if (d < 0) return false;
+        v = v * 16 + (unsigned)d;
+    }
+    out = v;
+    return true;
+}
+
+// A rest: a decimal SDL axis value (-32768..32767) and nothing else. A malformed rest becomes BadRest, which pedal()
+// reads as always released.
+constexpr long BadRest = -40000;
+inline long parseRest(const std::string& s)
+{
+    size_t i = s.size() && s[0] == '-' ? 1 : 0;
+    if (i == s.size() || s.size() - i > 5) return BadRest;
+    long v = 0;
+    for (; i < s.size(); ++i) {
+        if (s[i] < '0' || s[i] > '9') return BadRest;
+        v = v * 10 + (s[i] - '0');
+    }
+    v = s[0] == '-' ? -v : v;
+    return v < -32768 || v > 32767 ? BadRest : v;
+}
+
 constexpr int PovBase = 128, PovLast = PovBase + 4 * 4 - 1;
 inline bool isPov(int binding) { return binding >= PovBase && binding <= PovLast; }
 inline int povHat(int binding) { return (binding - PovBase) / 4; }
