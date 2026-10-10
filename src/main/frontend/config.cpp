@@ -335,6 +335,8 @@ void Config::load()
                                         !profile_device::parseId(product, controls.pad_device.product)))
             controls.pad_device.vendor = controls.pad_device.product = 0;
         controls.pad_device.name = cfg.get_string("controls.pad_device.<xmlattr>.name", "");
+        // The profile wheel's DirectInput instance (Wheelkit writes it): what test injection's raw commands name as dev=.
+        controls.pad_device_instance = cfg.get_string("controls.pad_device.<xmlattr>.instance", "");
         const char* rests[3] = {nullptr, "controls.analog.axis.accel.<xmlattr>.rest", "controls.analog.axis.brake.<xmlattr>.rest"};
         for (int i = 0; i < 3; ++i) {
             const std::string rest = rests[i] ? cfg.get_string(rests[i], "") : "";

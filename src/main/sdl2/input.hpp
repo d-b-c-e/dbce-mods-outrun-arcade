@@ -85,6 +85,8 @@ public:
     void handle_controller_down(SDL_ControllerButtonEvent*);
     void handle_controller_up(SDL_ControllerButtonEvent*);
     void frame_done();
+    // Dev-only test injection (test_inject.hpp): once per frame after the events, before the engine reads input.
+    void inject_frame();
     bool is_pressed(presses p);
     bool is_pressed_clear(presses p);
     bool has_pressed(presses p);
@@ -113,6 +115,15 @@ private:
 
     // Last axis used
     int axis_last , axis_counter, axis_config;
+
+    // What the game's input state last received for each raw-stick object, so test injection (inject_frame) delivers
+    // only changes and gives the physical value back when a sample ends. Physical events keep it current.
+    int16_t sent_axes[8];
+    uint8_t sent_buttons[128];
+    uint8_t sent_hats[4];
+    bool sent_synced = false;   // set from SDL's state at the first injected frame after the stick opens
+    void sync_sent();
+    void apply_hat(const uint8_t hat, const uint8_t value);
 
     void bind_axis(SDL_GameControllerAxis ax, int offset);
     void bind_button(SDL_GameControllerButton button, int offset);

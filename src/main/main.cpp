@@ -22,6 +22,7 @@
 // SDL Specific Code
 #include "sdl2/timer.hpp"
 #include "sdl2/input.hpp"
+#include "sdl2/test_inject.hpp"
 
 #include "video.hpp"
 
@@ -316,6 +317,7 @@ static void tick()
                  : 1;
 
     process_events();
+    input.inject_frame();   // dev-only test injection (sdl2/test_inject.hpp); nothing unless armed
 #ifdef _WIN32
     cabinet_recording::service(cannonball::state==STATE_GAME && outrun.game_state==GS_INGAME,pause_engine);
 #endif
@@ -868,6 +870,9 @@ int main(int argc, char* argv[]) {
             {config.controls.max_force,config.controls.min_force,config.controls.force_duration});
 #endif
     telemetry::init(config.telemetry.enabled != 0, config.telemetry.host, config.telemetry.port);
+        // Dev only: arms just for a DBCE_FFB_MUTE process with inject.on and a profile wheel (sdl2/test_inject.hpp).
+        for (const auto& line : test_inject::init(config.controls.pad_device_instance, config.controls.pad_device.set))
+            std::cerr << line << std::endl;
         ok = roms.load_revb_roms(config.sound.fix_samples);
 
         if (cannonball::singlecore_detect || cannonball::singlecore_mode) {

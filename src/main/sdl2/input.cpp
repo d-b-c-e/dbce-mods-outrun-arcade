@@ -9,9 +9,11 @@
 ***************************************************************************/
 
 #include <iostream>
+#include <algorithm>
 #include <cstring>
 #include <cstdlib> // abs
 #include "sdl2/input.hpp"
+#include "sdl2/test_inject.hpp"
 #ifdef _WIN32
 #include "directx/cabinet_recording.hpp"
 #endif
@@ -49,6 +51,9 @@ Input::Input(void)
 
     gamepad = false;
     rumble_supported = false;
+    std::memset(sent_axes, 0, sizeof(sent_axes));
+    std::memset(sent_buttons, 0, sizeof(sent_buttons));
+    std::memset(sent_hats, 0, sizeof(sent_hats));
 }
 
 Input::~Input(void)
@@ -265,6 +270,9 @@ void Input::close_joy()
     if (forcefeedback::is_supported())
         forcefeedback::close();
 
+    // Test injection: running samples never reach a reopened stick.
+    test_inject::device_closed();
+    sent_synced = false;
 
     gamepad = false;
 }
@@ -426,6 +434,7 @@ void Input::handle_key(const int key, const bool is_pressed)
 void Input::handle_joy_axis(SDL_JoyAxisEvent* evt)
 {
     if (controller != NULL) return;
+    if (evt->axis < 8) sent_axes[evt->axis] = evt->value;
     handle_axis(evt->axis, evt->value);
 }
 
@@ -562,12 +571,14 @@ void Input::handle_joy_down(SDL_JoyButtonEvent* evt)
     // Latch joystick button presses for redefines
     joy_button = evt->button;
 //    std::cout << "Joystick button pressed event: Button " << joy_button << std::endl;
+    if (evt->button < 128) sent_buttons[evt->button] = 1;
     handle_joy(evt->button, true);
 }
 
 void Input::handle_joy_up(SDL_JoyButtonEvent* evt)
 {
     if (controller != NULL) return;
+    if (evt->button < 128) sent_buttons[evt->button] = 0;
     handle_joy(evt->button, false);
 }
 
@@ -604,22 +615,64 @@ void Input::set_pad(const int slot, const bool is_pressed)
 void Input::handle_joy_hat(SDL_JoyHatEvent* evt)
 {
     if (controller != NULL) return;
+    if (evt->hat < 4) sent_hats[evt->hat] = evt->value;
+    apply_hat(evt->hat, evt->value);
+}
 
+void Input::apply_hat(const uint8_t hat, const uint8_t value)
+{
     // A rig profile binds hat directions in padconfig; then a hat drives only what it is bound to, and a diagonal holds
     // both neighbours (STD-033). Without such a binding, the hat is the menu D-pad as before.
     bool bound = false;
     for (int slot = 0; slot < 15; ++slot)
         if (profile_device::isPov(pad_config[slot])) {
             bound = true;
-            if (profile_device::povHat(pad_config[slot]) == evt->hat)
-                set_pad(slot, profile_device::povPressed(pad_config[slot], evt->value));
+            if (profile_device::povHat(pad_config[slot]) == hat)
+                set_pad(slot, profile_device::povPressed(pad_config[slot], value));
         }
     if (bound) return;
 
-    keys[UP] = evt->value == SDL_HAT_UP;
-    keys[DOWN] = evt->value == SDL_HAT_DOWN;
-    keys[LEFT] = evt->value == SDL_HAT_LEFT;
-    keys[RIGHT] = evt->value == SDL_HAT_RIGHT;
+    keys[UP] = value == SDL_HAT_UP;
+    keys[DOWN] = value == SDL_HAT_DOWN;
+    keys[LEFT] = value == SDL_HAT_LEFT;
+    keys[RIGHT] = value == SDL_HAT_RIGHT;
+}
+
+// What the game's input state reflects when injection first runs on this stick: SDL's own state (the events it has
+// already delivered through the handlers above).
+void Input::sync_sent()
+{
+    const int na = SDL_JoystickNumAxes(stick), nb = SDL_JoystickNumButtons(stick), nh = SDL_JoystickNumHats(stick);
+    for (int i = 0; i < 8; ++i) sent_axes[i] = i < na ? SDL_JoystickGetAxis(stick, i) : 0;
+    for (int i = 0; i < 128; ++i) sent_buttons[i] = i < nb && SDL_JoystickGetButton(stick, i) ? 1 : 0;
+    for (int i = 0; i < 4; ++i) sent_hats[i] = i < nh ? SDL_JoystickGetHat(stick, i) : 0;
+    sent_synced = true;
+}
+
+// Test injection (test_inject.hpp): the stick's physical state as SDL holds it, with the running samples applied; every
+// object whose effective value differs from what the game last received goes through the same handlers as an event,
+// so a sample is taken through the applied padconfig/axis settings and its end gives the physical value back.
+void Input::inject_frame()
+{
+    if (!test_inject::armed() || controller != NULL || stick == NULL) return;
+    test_inject::poll();
+    if (!sent_synced) sync_sent();
+    const int na = std::min(8, std::max(0, SDL_JoystickNumAxes(stick)));
+    const int nb = std::min(128, std::max(0, SDL_JoystickNumButtons(stick)));
+    const int nh = std::min(4, std::max(0, SDL_JoystickNumHats(stick)));
+    int16_t ax[8] = {0};
+    uint8_t bt[128] = {0};
+    uint8_t ht[4] = {0};
+    for (int i = 0; i < na; ++i) ax[i] = SDL_JoystickGetAxis(stick, i);
+    for (int i = 0; i < nb; ++i) bt[i] = SDL_JoystickGetButton(stick, i) ? 1 : 0;
+    for (int i = 0; i < nh; ++i) ht[i] = SDL_JoystickGetHat(stick, i);
+    test_inject::apply(ax, na, bt, nb, ht, nh);
+    for (int i = 0; i < na; ++i)
+        if (ax[i] != sent_axes[i]) { sent_axes[i] = ax[i]; handle_axis((uint8_t)i, ax[i]); }
+    for (int i = 0; i < nb; ++i)
+        if (bt[i] != sent_buttons[i]) { sent_buttons[i] = bt[i]; handle_joy((uint8_t)i, bt[i] != 0); }
+    for (int i = 0; i < nh; ++i)
+        if (ht[i] != sent_hats[i]) { sent_hats[i] = ht[i]; apply_hat((uint8_t)i, ht[i]); }
 }
 
 void Input::set_rumble(bool enable, float strength, int mode)

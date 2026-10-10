@@ -8,6 +8,10 @@ add_test(NAME cabinet_force COMMAND cabinet_force_test)
 add_executable(profile_device_test profile_device_test.cpp)
 target_include_directories(profile_device_test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../src/main")
 add_test(NAME profile_device COMMAND profile_device_test)
+# STD-033 section 6 dev-only test injection for the profile wheel (src/main/sdl2/test_inject.cpp).
+add_executable(test_inject_test test_inject_test.cpp ../src/main/sdl2/test_inject.cpp)
+target_include_directories(test_inject_test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../src/main")
+add_test(NAME test_inject COMMAND test_inject_test)
 if(WIN32)
     include(../cmake/VerifySessionWriter.cmake)
     # The captured Windows contract includes explicit neutral sends; Linux's

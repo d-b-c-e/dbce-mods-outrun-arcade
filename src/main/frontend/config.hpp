@@ -168,6 +168,7 @@ struct controls_settings_t
     int asettings[2];  // Analog Settings
     bool invert[3];    // Invert Analog Axis
     profile_device::Want pad_device; // controls.pad_device: the wheel by USB identity (STD-033 rig profile)
+    std::string pad_device_instance; // its DirectInput instance (attribute "instance"); test injection only
     bool has_rest[3];  // controls.analog.axis.accel/brake rest attribute present
     long rest[3];      // the pedal's released end in SDL units, or BadRest
 
