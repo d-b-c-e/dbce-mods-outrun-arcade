@@ -1,0 +1,48 @@
+{
+  "schema": "dbce-outrun-arcade-private-inputs-v1",
+  "engineCommit": "d128256afa2c9e7ac4dc164125c30e95a7d1ab3c",
+  "engineTree": "559f22a398640674b30c1fe6950f185644486b33",
+  "reviewOnly": true,
+  "releaseReady": false,
+  "archives": [
+    {
+      "name": "sdl2",
+      "version": "2.32.8",
+      "archive": "libsdl-org-SDL-release-2.32.8.tar.gz",
+      "sha512": "d58b5b9964fea3c04d13aae646b92e9646125f269088fc6698089f0dbb9506091739cb8a72bfead08aa3952f8b4df0a7886396eeee54a28388a6b89be01f44cf",
+      "upstream": "https://www.libsdl.org/download-2.0.php"
+    },
+    {
+      "name": "tinyxml2",
+      "version": "11.0.0",
+      "archive": "leethomason-tinyxml2-11.0.0.tar.gz",
+      "sha512": "8a6ddd48c96bc4287437d5b5ca62c131c4416c57310b664c9088ca9c1ac9f4d43d16c1bad03f82dc5588d9486752f510d631609a3930f1d4243f12184ad1c5f9",
+      "upstream": "https://github.com/leethomason/tinyxml2"
+    },
+    {
+      "name": "mpg123",
+      "version": "1.32.9#1",
+      "archive": "mpg123-1.32.9.tar.bz2",
+      "sha512": "dccb640b0845061811cb41bf145587e7093556d686d49a748232b079659b46284b6cc40db42d14febceac11277c58edf2b69d1b4c46c223829a3d15478e2e26c",
+      "upstream": "https://sourceforge.net/projects/mpg123/"
+    },
+    {
+      "name": "angle",
+      "version": "chromium_7258#1",
+      "archive": "google-angle-d9fc4a372074b1079c193c422fc4a180e79b6636.tar.gz",
+      "sha512": "483f29b6eaac5c657a3aeb238e5da48b9dd92aaa0b5eb3b4f95ebd771360cea84249ef6870dac9e1fc3b6f6c8686fa46a7a45a89a912f9b4fc258575065a28c7",
+      "upstream": "https://github.com/google/angle"
+    },
+    {
+      "name": "zlib",
+      "version": "1.3.1",
+      "archive": "madler-zlib-v1.3.1.tar.gz",
+      "sha512": "8c9642495bafd6fad4ab9fb67f09b268c69ff9af0f4f20cf15dfc18852ff1f312bd8ca41de761b3f8d8e90e77d79f2ccacd3d4c5b19e475ecf09d021fdfe9088",
+      "upstream": "https://www.zlib.net/"
+    }
+  ],
+  "notes": [
+    "Pinned cached upstream archives only. Retained DLL compiler provenance and complete patched/transitive source coverage remain unresolved.",
+    "No ROM download/build input; fixed resource provenance issues remain in frozen evidence."
+  ]
+}

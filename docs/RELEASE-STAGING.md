@@ -1,5 +1,12 @@
 # OutRun Arcade: verify a private ROM-free release stage
 
+The executable private producer is documented in
+[PRIVATE-WINDOWS-STAGE.md](PRIVATE-WINDOWS-STAGE.md). It exports the exact reviewed
+engine snapshot, snapshots authenticated retained dependency inputs, builds via
+CMake and assembles an expanded stage with external contract and receipts. Its
+producer commit is separate from the frozen engine identity; all seven holds
+and `releaseReady=false` remain.
+
 This is the downstream d-b-c-e OutRun arcade fork. Its build and stage identities
 must be recorded independently of J1mbo's upstream releases. A verified stage is
 not a public release, hardware acceptance or permission to redistribute assets.

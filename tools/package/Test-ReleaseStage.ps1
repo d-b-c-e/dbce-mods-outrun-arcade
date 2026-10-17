@@ -8,20 +8,31 @@ Set-StrictMode -Version Latest
 
 # Read-only gate. The reviewed contract must be supplied independently of the stage.
 function Fail([string]$Message) { throw "Release stage rejected: $Message" }
-function CheckPath([string]$Path) {
+function CheckPath([string]$Path, [switch]$SourceInventory) {
     if ([string]::IsNullOrWhiteSpace($Path) -or $Path -match '(^/|\\|:|[<>"|?*\x00-\x1F]|//|/$)' -or
         @($Path.Split('/') | Where-Object { $_ -in @('.','..') -or $_ -match '[ .]$' }).Count) {
         Fail "unsafe relative path: $Path"
     }
+    # These exact reviewed C++ paths are required by the frozen 148-blob
+    # inventory. They are source code, not a ROM directory or ROM payload.
+    # Raw inventory names and staged names are separate contexts; later
+    # inventory/role/Git-blob checks still authenticate the source bytes.
+    $reviewedSourcePath = if ($SourceInventory) {
+        $Path -cin @('src/main/roms.cpp','src/main/roms.hpp')
+    } else {
+        $Path -cin @('source/src/main/roms.cpp','source/src/main/roms.hpp')
+    }
     foreach ($part in $Path.Split('/')) {
-        if ($part -match '^(roms|run|userdata|saves|\.git|\.env|credentials)(\.|$)' -or
+        $reviewedSourceToken = $reviewedSourcePath -and $part -cin @('roms.cpp','roms.hpp')
+        if ((-not $reviewedSourceToken -and $part -match '^(roms|run|userdata|saves|\.git|\.env|credentials)(\.|$)') -or
             $part -match '^(epr|mpr)[-_]' -or $part -match '^(hiscores.*|play_stats)\.' -or
             $part -match '\.(zip|7z|rar|tar|gz|mp3|wav|ym|rom|ini|log)$' -or
             $part -match '^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\.|$)') {
             Fail "private/ROM/archive path is disallowed: $Path"
         }
     }
-    if ($Path -match '(^|/)config\.xml$' -and $Path -notin @('defaults/config.xml','source/res/config.xml')) {
+    if ($Path -match '(^|/)config\.xml$' -and $Path -notin @('defaults/config.xml','source/res/config.xml') -and
+        -not ($SourceInventory -and $Path -ceq 'res/config.xml')) {
         Fail 'personal configuration is disallowed; only reviewed defaults are accepted'
     }
 }
@@ -113,7 +124,7 @@ if (-not $expected.ContainsKey('docs/OUTRUN-ARCADE-SETUP.md') -or $expected['doc
 $inventory = [Collections.Generic.Dictionary[string,string]]::new([StringComparer]::OrdinalIgnoreCase)
 if (@($approvedSource.files).Count -ne @($contract.source.inventory).Count) { Fail 'source inventory is incomplete' }
 foreach ($item in $contract.source.inventory) {
-    CheckPath $item.path
+    CheckPath $item.path -SourceInventory
     if ($item.path.StartsWith('source/') -or $item.blob -notmatch '^[a-f0-9]{40}$' -or $inventory.ContainsKey($item.path)) { Fail 'invalid source inventory' }
     $inventory.Add($item.path,$item.blob)
     $approved = @($approvedSource.files | Where-Object path -CEQ $item.path)
