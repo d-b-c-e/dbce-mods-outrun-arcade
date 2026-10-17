@@ -103,3 +103,36 @@ identity and privacy checks, not playable packaging or complete licensing.
 Standards comparison found existing pending/unchecked adoption and missing
 STD029/030/031/032/036/037 entries. They remain leads; this packaging task makes
 no unrelated runtime/UI/force adoption or installation claim.
+
+## Actual private run, October 17
+
+Fresh Kobe grant241322 ran reviewed producer commit
+`0c05f3febf9518ac718d9ac7ea2af25be000f7a2` once in this isolated worktree's
+`obj/private-stage/run-01`. Prepare, native build and expanded stage all exited0.
+MSVC19.44.35229.0, toolset14.44.35207, SDK10.0.26100.0, CMake4.4.3 produced a
+new x64 Release engine (not reused and never executed), SHA256
+`73c222c4f5c215e6e3afcbf58dce4cdda9859f318510ecfec606660d88dfb34b`.
+
+Production review-only verifier passed6582files:148exact frozen Git source
+blobs,7runtime files,6resources,13notices,6documentation/provenance files and
+6402dependency-source/recipe files. Thirteen excluded upstream fixture members
+are individually recorded. Contract SHA256
+`8651865d1217f8d5f190b11f5927b088052bd3798282db19e61b7110550ccc4c`;
+stage-receipt SHA256
+`f52491e83c4b7e9f4cab4233fe721921d3c4d84a5a365d8ce6eb0b8ff86711f3`;
+build-receipt SHA256
+`2c1ed462d5526d32e6876adc7aec2230e4402d6040389a7396101f8fa05c940c`.
+Raw configure/build/verifier logs and complete input/output receipts remain
+beside the stage. Frozen d128256 source/tree559f22a and source inventory/evidence
+JSONs are unchanged. This proves one reproducible recipe execution, not two-build
+bit identity, playable behavior, patched-source completeness or release rights.
+
+Shared custody23:50:50.1916007Z–23:54:14.8792703Z (204.69s). All39tracked process
+identities were quiescent with a safe census and no remaining scoped children;
+the exact lease token was released. Hub runner/result/logs:
+`artifacts/cannonball-private-vunu-20261017/build-01/`.
+Runner A9ED617B0776EE199811B07518D2C87B9CDCA52D4374BA298C86822177E124AE
+adds the disclosed phase-start budget guard to the prepared runner: full180s
+phase plus30s closure must fit within600s. No automatic retry, executable/game
+run, UI, device, network, installation or owner-state change occurred. All seven
+holds remain open and `releaseReady=false`.
