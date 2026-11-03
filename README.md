@@ -1,5 +1,8 @@
 # OutRun Arcade (CannonBall-SE)
 
+The [F6 panel gap and integration design](docs/2026-11-03-f6-panel-gap.md) records
+the current missing panel and the requirements for a resumable SDL2/GLES host.
+
 *A fork of Chris White's incredible Outrun engine, CannonBall, with enhancements.*
 Designed with home-made cabinets in mind, gives Outrun enthusiasts an improved experience on LCD screens
 with minimal hardware requirements - anything from a RaspberryPi Zero will work!
