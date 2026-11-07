@@ -1,16 +1,44 @@
-# Agent notes
+# OutRun Arcade (CannonBall-SE) — agent guide
 
-Desktop routes (2026-11-03): follow the [route ladder](../../dbce-project-mgmt/skills/automated-testing/references/desktop-routes.md) and run `pwsh E:\Source\dbce-project-mgmt\tools\Test-DesktopRoutes.ps1`; if a route is down, continue on the next route within existing authorization and game safeguards.
+Portfolio rules: `E:\Source\dbce-project-mgmt\HOW-WE-WORK.md` (read first; it replaces older process, lease, review and testing instructions). Current focus: `E:\Source\dbce-project-mgmt\NOW.md`. Feature status lives in the portfolio grid (`python E:\Source\dbce-project-mgmt\tools\portfolio_grid.py plan outrunarcade`), not in this file. Grid id: `outrunarcade`.
 
-## Toolkit standards
+## Project
 
-At the start of every session, compare the wheel toolkit's ledger
-(`E:\Source\toolkits\dbce-wheel-mod-toolkit\STANDARDS.md`) with this repo's
-`TOOLKIT-ADOPTION.md`. Report any entry that is `pending`, `unchecked` or missing
-from the adoption file, and bring it in when your work touches that area. When you
-adopt one (or find it does not apply), update `TOOLKIT-ADOPTION.md` in the same
-commit. When you set a new family-wide standard, append it to the toolkit ledger
-and commit it in the same turn; do not leave it only in an uncommitted file.
+Fork of CannonBall-SE (J1mbo; itself a fork of Chris White's CannonBall), the OutRun arcade (revision B) engine, with DBCE wheel/FFB additions. Remotes: `origin` = upstream `J1mbo/cannonball-se` (never push there), `fork` = `d-b-c-e/cannonball-se` (PUBLIC; the owner pushes). Licenses: upstream CannonBall non-commercial terms plus CannonBall-SE terms (not for sale), see `docs/license.txt` and `docs/CannonBall-SE-license.txt`.
+
+## Build
+
+- Windows: open in Visual Studio and use the `windows-release` CMake preset (`docs/Compiling-On-Windows.txt`); vcpkg installs dependencies on first configure.
+- Linux/Pi: `./install.sh`.
+- Private staging script: `docs/PRIVATE-WINDOWS-STAGE.md`.
+
+## Test
+
+- `tests/CMakeLists.txt` builds the cabinet force, profile device, inject and toolkit adapter tests; run them with `ctest`.
+- Python tests: `tests/test_cabinet_export.py`, `tests/test_cabinet_replay.py`.
+- Original ROMs go in `roms/` (git-ignored). Back up `config.xml` and saves in the game folder before a run and restore them after.
+
+## Install / run on the rig
+
+Unknown — check `docs/OUTRUN-ARCADE-SETUP.md` and `docs/PRIVATE-WINDOWS-STAGE.md`. (`tools/Install-LaunchBox.ps1` exists but the Stream Deck is the launcher.)
+
+## Shared code
+
+Toolkit pieces are in `lib/toolkit` (checked by `tools/Verify-Toolkit.cmake`). Change shared code in the toolkit and re-sync; never edit the vendored copy.
+
+## Project-specific rules
+
+- ROMs are never committed; the user supplies OutRun revision B.
+- Windows wheel force feedback needs an explicit wheel instance GUID (see `docs/FFB-TOOLKIT-CANDIDATE.md`).
+- Distribution is non-commercial, with credits and license files preserved.
+
+## Key docs
+
+- `README.md`, `docs/OUTRUN-ARCADE-SETUP.md`
+- `docs/WHEEL-SELECTION.md`, `docs/FFB-TOOLKIT-CANDIDATE.md`, `docs/CABINET-RECORDING.md`
+- `docs/2026-11-03-f6-panel-gap.md`
+- `TOOLKIT-ADOPTION.md`
+
 
 <!-- BEGIN project-file-location -->
 ## Project files and temporary work
