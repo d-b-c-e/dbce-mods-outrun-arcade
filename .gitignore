@@ -2,5 +2,5 @@
 __pycache__/
 tests/build-claude/
 
-# New private producer runs and receipts; preserve them outside source commits.
-/obj/private-stage/
+# Local build, test and package output.
+/obj/

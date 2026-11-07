@@ -17,12 +17,11 @@ static std::string read(const std::filesystem::path& p) {
 int main(int argc,char** argv) {
     CHECK(argc==2);const std::string test=argv[1];
     const auto root=std::filesystem::current_path()/("capture-fixture-"+std::to_string(GetCurrentProcessId())+"-"+std::to_string(GetTickCount64()));
-    CHECK(!std::filesystem::exists(root));std::filesystem::create_directories(root/"dbce");
+    CHECK(!std::filesystem::exists(root));std::filesystem::create_directories(root);
     _putenv_s("LOCALAPPDATA",root.string().c_str());
+    // The developer capture flag alone arms capture; no lease or token is read.
     _putenv_s("DBCE_CANNONBALL_CAPTURE","0123456789abcdef0123456789abcdef");
     _putenv_s("DBCE_CANNONBALL_CAPTURE_SECONDS","1");
-    _putenv_s("DBCE_CANNONBALL_LEASE","fixture exact lease");
-    {std::ofstream f(root/"dbce"/"test-slot.txt");f<<"fixture exact lease\n";}
     const auto result=root/"Dbce"/"StagePlayback"/"cannonball-force"/"0123456789abcdef0123456789abcdef";
     if(test=="bad-id")_putenv_s("DBCE_CANNONBALL_CAPTURE","../bad");
     if(test=="bad-duration")_putenv_s("DBCE_CANNONBALL_CAPTURE_SECONDS","121");
@@ -43,10 +42,8 @@ int main(int argc,char** argv) {
             if(test=="early-delivery" && n==1)cabinet_recording::delivery(-1);
             advance(m,i);cabinet_recording::end(snapshot(m));
             if(test=="interrupted" && n==1){cabinet_recording::service(false,true);break;}
-            if(test=="lost-lease" && n==7){std::ofstream f(root/"dbce"/"test-slot.txt");f<<"replacement\n";}
             if(test=="write-failure" && n==7){std::ofstream f(result/"source.jsonl.tmp");f<<"original temporary file";}
-            // For loss at sealing, intentionally defer service until close.
-            if(test!="lost-lease")cabinet_recording::service(true,false);
+            cabinet_recording::service(true,false);
             cabinet_recording::fake_now+=std::chrono::milliseconds(143);
         }
         cabinet_recording::close();

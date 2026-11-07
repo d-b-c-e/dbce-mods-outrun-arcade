@@ -84,13 +84,13 @@ including when the capture request itself is invalid. Saved settings are not
 changed. Haptic calculation mode must already be configured; real-cabinet mode
 is refused. The renderer, controls and engine remain the game's own.
 
-The outer frame checks the shared lease (250 ms, plus every seal), ends on a
+Capture is a developer option: the capture key alone arms it (no lease or token). The outer frame ends on a
 driving interruption, and writes after the buffer stops. Process cleanup releases
 devices before finalizing a partial recording. A stopped/failed capture has no
 completed session footer. Both source and outcome use non-replacing publication.
 An existing result or temporary file is refused. No second capture is armed in
-the same process. A runner still owns launch admission, exact owner backup,
-normal close and restoration.
+the same process. Whoever launches the capture still backs up and restores the
+owner's files (HOW-WE-WORK safety 1).
 
 The shared vendored `dbce.wheel.session@1` writer is pinned separately under
 `lib/toolkit/session`; the native41-export pin is unchanged. Metadata names the
@@ -108,10 +108,9 @@ kind and reports normalizationQualified=false.
 
 ```powershell
 # Diagnostic child environment only; never persist these as owner settings.
-# The runner supplies a new lowercase 32-hex id and its exact shared lease token.
+# Use a new lowercase 32-hex id for each capture.
 $env:DBCE_CANNONBALL_CAPTURE = '<new-id>'
 $env:DBCE_CANNONBALL_CAPTURE_SECONDS = '60'
-$env:DBCE_CANNONBALL_LEASE = '<owned-token>'
 # Launch the checked candidate through the supervised runner, enter an offline
 # game and drive with muted outputs. This example does not launch it for you.
 
@@ -121,7 +120,7 @@ py -3 tools/replay_cabinet.py '<result>/source.jsonl' --replayer build-check/ffb
 Results are under `%LOCALAPPDATA%/Dbce/StagePlayback/cannonball-force/<id>`.
 Source-only validation now passes 31 CTest cases, including 14 strict reader/replay
 cases and real shared-writer file tests with a controlled clock. These cover
-lease loss before sealing, early interruption, nested calls, occupied outputs,
+early interruption, nested calls, occupied outputs,
 invalid arming, native mute, malformed/tampered rows and unsafe table inputs.
 Claude's baseline suggestions are adopted: unrecorded members are poisoned
 before both stateful replays; steering stays in[-127,127]; nonzero cabinet-only

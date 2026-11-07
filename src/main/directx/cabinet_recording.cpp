@@ -4,7 +4,6 @@
 #include "../../../lib/toolkit/session/session_writer.h"
 #include <chrono>
 #include <filesystem>
-#include <fstream>
 #include <cstdlib>
 #include <cstring>
 
@@ -27,20 +26,10 @@ bool configured=false,started=false,pending=false,saved=false;
 unsigned requests=0,deliveries=0,seconds=0;
 Clock::time_point first;
 std::filesystem::path directory;
-std::string lease,armed_utc;
+std::string armed_utc;
 const char* failure="";
-Clock::time_point next_lease_check;
 bool hex(const char* text,size_t count) {
     return text && std::strlen(text)==count && std::strspn(text,"0123456789abcdef")==count;
-}
-bool same_lease() {
-    const wchar_t* local=_wgetenv(L"LOCALAPPDATA");
-    if(!local || lease.empty()) return false;
-    std::ifstream file(std::filesystem::path(local)/L"dbce"/L"test-slot.txt",std::ios::binary);
-    std::string line;
-    if(!std::getline(file,line) || line.size()>4096) return false;
-    if(!line.empty() && line.back()=='\r') line.pop_back();
-    return line==lease;
 }
 void fail(const char* reason) noexcept {
     failure=reason;buffer.stop();pending=false;
@@ -57,7 +46,6 @@ const char* reason() {
 }
 void save() {
     if(saved || !configured || directory.empty()) return;
-    if(!same_lease())fail("lease lost before seal");
     saved=true; // saving is single-shot; no append/retry into an existing result
     dbce::session::Metadata m;
     m.game="CannonBall-SE";m.pluginVersion="cabinet-signal@1";m.toolkitVersion="session-85147b8";
@@ -107,19 +95,18 @@ void initialize(bool haptic,bool real_cabinet,forcefeedback::CabinetSettings set
     try {
         const char* id=std::getenv("DBCE_CANNONBALL_CAPTURE");
         const char* duration=std::getenv("DBCE_CANNONBALL_CAPTURE_SECONDS");
-        const char* token=std::getenv("DBCE_CANNONBALL_LEASE");
         const wchar_t* local=_wgetenv(L"LOCALAPPDATA");
         if(!hex(id,32) || !duration || !*duration || std::strspn(duration,"0123456789")!=std::strlen(duration) || std::strlen(duration)>3 ||
-           !token || !*token || std::strlen(token)>4096 || !local || !haptic || real_cabinet || configured)
+           !local || !haptic || real_cabinet || configured)
             throw std::runtime_error("invalid request or producer mode");
-        seconds=unsigned(std::strtoul(duration,nullptr,10));lease=token;
-        if(!same_lease() || !buffer.arm(settings,seconds))throw std::runtime_error("lease/settings/duration refused");
+        seconds=unsigned(std::strtoul(duration,nullptr,10));
+        if(!buffer.arm(settings,seconds))throw std::runtime_error("settings/duration refused");
         directory=std::filesystem::path(local)/L"Dbce"/L"StagePlayback"/L"cannonball-force"/id;
         if(std::filesystem::exists(directory))throw std::runtime_error("result already exists");
         std::filesystem::create_directories(directory);configured=true;
         SYSTEMTIME utc;GetSystemTime(&utc);char date[48];
         std::snprintf(date,sizeof(date),"%04u-%02u-%02uT%02u:%02u:%02u.%03uZ",utc.wYear,utc.wMonth,utc.wDay,utc.wHour,utc.wMinute,utc.wSecond,utc.wMilliseconds);
-        armed_utc=date;next_lease_check=clock_now();
+        armed_utc=date;
         std::fprintf(stderr,"Cabinet capture: armed %s; process outputs muted; waiting for offline driving\n",id);
     }catch(const std::exception& e){failure="initialization refused";buffer.stop();std::fprintf(stderr,"Cabinet capture refused: %s; process outputs remain muted\n",e.what());}
 }
@@ -127,12 +114,7 @@ void service(bool driving,bool paused) noexcept {
     if(!configured || saved)return;
     try {
         // Called from the outer frame, never from the producer's before/after
-        // interval. Lease loss and game/menu transitions cannot seal completion.
-        const auto now=clock_now();
-        if(now>=next_lease_check || !buffer.active()) {
-            if(!same_lease())fail("lease lost");
-            next_lease_check=now+std::chrono::milliseconds(250);
-        }
+        // interval. Game/menu transitions cannot seal completion.
         if(started && (!driving || paused))fail("driving interrupted");
         if(!buffer.active())save();
     }catch(const std::exception& e){fail("service/save failure");std::fprintf(stderr,"Cabinet capture failed: %s\n",e.what());}
