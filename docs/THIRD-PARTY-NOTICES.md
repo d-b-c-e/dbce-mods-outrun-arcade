@@ -23,13 +23,9 @@ For the full terms, see `LGPL-2.1.txt`.
 
 ## Recorded downstream Windows dependencies
 
-These notices identify the retained packages used by the existing Release x64
-build. They do not claim those DLLs were rebuilt here. Full hashes, ABI records,
-source archive SHA512 values and vcpkg recipe/patch trees are recorded in
-`tools/package/dependency-evidence.json`. All six retained DLL hashes match the
-package SPDX records and the existing build receipt. Unknown compiler provenance,
-incomplete corresponding sources and resource provenance remain in
-`tools/package/unresolved-evidence.json`; this is review-only evidence.
+These notices identify the vcpkg packages the Release x64 build uses. Open
+source and asset questions for a public release are listed in
+[PRIVATE-WINDOWS-STAGE.md](PRIVATE-WINDOWS-STAGE.md#before-a-public-release-owner).
 
 | Component | Recorded version | Exact upstream source reference | Included notice |
 |---|---|---|---|

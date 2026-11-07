@@ -10,7 +10,7 @@ Fork of CannonBall-SE (J1mbo; itself a fork of Chris White's CannonBall), the Ou
 
 - Windows: open in Visual Studio and use the `windows-release` CMake preset (`docs/Compiling-On-Windows.txt`); vcpkg installs dependencies on first configure.
 - Linux/Pi: `./install.sh`.
-- Private staging script: `docs/PRIVATE-WINDOWS-STAGE.md`.
+- Package the current commit (ROM-free zip): `python tools/package/Private-WindowsStage.py`, see `docs/PRIVATE-WINDOWS-STAGE.md`.
 
 ## Test
 
@@ -20,7 +20,7 @@ Fork of CannonBall-SE (J1mbo; itself a fork of Chris White's CannonBall), the Ou
 
 ## Install / run on the rig
 
-Unknown — check `docs/OUTRUN-ARCADE-SETUP.md` and `docs/PRIVATE-WINDOWS-STAGE.md`. (`tools/Install-LaunchBox.ps1` exists but the Stream Deck is the launcher.)
+`tools/Install-LaunchBox.ps1 -BuildDir obj/package/build/Release -Label <label>` installs the exe and DLLs into `E:\Source\tools\launchbox\Launchbox-Racing\Games\Windows\OutRun (Cannonball-SE)` with a backup (`-Restore <backup>` undoes it). The Stream Deck and LaunchBox start it through `Launch-Cannonball.bat`, which sets the working folder.
 
 ## Shared code
 

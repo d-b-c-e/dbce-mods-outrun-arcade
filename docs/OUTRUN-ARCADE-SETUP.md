@@ -94,5 +94,5 @@ Before release, verify the staged package, not the live installation:
 
 The repository rename is complete. This documentation does not publish a release.
 
-For downstream package identity and a read-only ROM-free staging gate, see
-[release staging and verification](RELEASE-STAGING.md).
+To build a ROM-free package of the current commit, see
+[the Windows package guide](PRIVATE-WINDOWS-STAGE.md).
