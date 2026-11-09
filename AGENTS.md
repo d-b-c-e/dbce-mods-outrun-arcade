@@ -29,13 +29,13 @@ Toolkit pieces are in `lib/toolkit` (checked by `tools/Verify-Toolkit.cmake`). C
 ## Project-specific rules
 
 - ROMs are never committed; the user supplies OutRun revision B.
-- Windows wheel force feedback needs an explicit wheel instance GUID (see `docs/FFB-TOOLKIT-CANDIDATE.md`).
+- Windows wheel force feedback needs an explicit wheel instance GUID (see `docs/WHEEL-SELECTION.md`).
 - Distribution is non-commercial, with credits and license files preserved.
 
 ## Key docs
 
 - `README.md`, `docs/OUTRUN-ARCADE-SETUP.md`
-- `docs/WHEEL-SELECTION.md`, `docs/FFB-TOOLKIT-CANDIDATE.md`, `docs/CABINET-RECORDING.md`
+- `docs/WHEEL-SELECTION.md`, `docs/CABINET-RECORDING.md`
 - `docs/2026-11-03-f6-panel-gap.md`
 - `TOOLKIT-ADOPTION.md`
 

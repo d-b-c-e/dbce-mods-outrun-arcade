@@ -2,7 +2,7 @@
 
 `tools/package/Private-WindowsStage.py` builds the current commit and packages it
 as one zip. It stays the packager until OutRun Arcade moves to the toolkit's shared
-packager (`mod.json`, standalone kind). It replaces the old frozen producer, which
+packager (`mod.json`, standalone kind). It replaces the old producer, which
 could only package engine commit d128256 from a fixed 148-file inventory.
 
 ```powershell
