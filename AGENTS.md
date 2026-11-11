@@ -8,6 +8,7 @@ Fork of CannonBall-SE (J1mbo; itself a fork of Chris White's CannonBall), the Ou
 
 ## Build
 
+- **One command:** `pwsh build.ps1` at the repo root builds and runs every offline test, with no arguments. Run it before pushing.
 - Windows: open in Visual Studio and use the `windows-release` CMake preset (`docs/Compiling-On-Windows.txt`); vcpkg installs dependencies on first configure.
 - Linux/Pi: `./install.sh`.
 - Package the current commit (ROM-free zip): `python tools/package/Private-WindowsStage.py`, see `docs/PRIVATE-WINDOWS-STAGE.md`.
